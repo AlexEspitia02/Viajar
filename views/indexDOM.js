@@ -59,52 +59,40 @@ async function initMap() {
   inputButton.addEventListener("click", async () => {
     const title = inputTitleBox.value;
     const file = inputImgBox.files[0];
-
+  
     if (!title || !file || !selectedLatLng) {
       alert("請填寫所有字段並選擇地圖上的位置");
       return;
     }
-
-    const reader = new FileReader();
-    reader.onload = async function (event) {
-      const imgSrc = event.target.result;
-
-      const newImage = {
-        imgSrc,
-        src:"/post.html",
-        title: title,
-        lat: selectedLatLng.lat(),
-        lng: selectedLatLng.lng(),
-      };
-
-      try {
-        const response = await fetch("http://localhost:4000/images", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newImage),
-        });
-
-        if (response.ok) {
-          alert("數據上傳成功");
-          inputTitleBox.value = "";
-          inputImgBox.value = "";
-        } else {
-          alert("數據上傳失敗");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("發生錯誤");
+  
+    const formData = new FormData();
+    formData.append('main_image', file);
+    formData.append('title', title);
+    formData.append('lat', selectedLatLng.lat());
+    formData.append('lng', selectedLatLng.lng());
+  
+    try {
+      const response = await fetch("/api/marks", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (response.ok) {
+        alert("數據上傳成功");
+        inputTitleBox.value = "";
+        inputImgBox.value = "";
+      } else {
+        alert("數據上傳失敗");
       }
-    };
-
-    reader.readAsDataURL(file);
-  });
+    } catch (error) {
+      console.error("Error:", error);
+      alert("發生錯誤");
+    }
+  });  
 
   async function fetchImages() {
     try {
-      const response = await fetch("http://localhost:4000/images");
+      const response = await fetch("/api/marks");
       const data = await response.json();
       return data;
     } catch (error) {
@@ -126,6 +114,7 @@ async function initMap() {
     imgElementLink.target = "_blank";
 
     const imgElement = document.createElement("img");
+    console.log(imgElement.src);
     imgElement.src = imageData.imgSrc;
     imgElement.className = "landmarkImg";
     imgElementLink.appendChild(imgElement);

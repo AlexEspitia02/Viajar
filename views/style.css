@@ -22,6 +22,7 @@ padding: 0;
 .titleDiv{
     font-size: 40px;
     font-family: "Caveat", cursive;
+    padding: 0px 5px;
 }
 
 .infoDiv{

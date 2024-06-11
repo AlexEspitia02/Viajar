@@ -1,8 +1,14 @@
 const express = require('express');
 const path = require('path');
+// const { ObjectId } = require('mongodb');
 
 const app = express();
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+const markHandling = require('./routes/markHandling');
+
+app.use(markHandling);
 
 // const {
 //   createProduct,
@@ -19,10 +25,6 @@ const app = express();
 // };
 
 app.use(express.static(path.join(__dirname, 'views')));
-
-// app.get('/admin/blog.html', async (req, res) => {
-//     res.json({hi:'hi'});
-// });
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
