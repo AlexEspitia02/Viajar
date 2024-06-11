@@ -1,0 +1,115 @@
+html,
+body {
+height: 100%;
+margin: 0;
+padding: 0;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+
+.landmarkImg{
+    height: 125px;
+    width:  125px;
+    object-fit: cover;
+    object-position: center center;
+    border-radius: 10px;
+}
+
+.titleDiv{
+    font-size: 40px;
+    font-family: "Caveat", cursive;
+}
+
+.infoDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inputDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #e6feff;
+    width: 200px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .inputTitleBox {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #00b7a2;
+    border-radius: 3px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background-color: #ffffff;
+  }
+  
+  .inputImgBox {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #00b7a2;
+    border-radius: 3px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background-color: #ffffff;
+    width: 100%;
+  }
+  
+  button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    background-color: #00b7a2;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+  }
+  
+  .inputTitleBox:focus,
+  .inputImgBox:focus,
+  button:focus {
+    border-color: #009382;
+    outline: none;
+  }
+  
+  .inputTitleBox:hover,
+  .inputImgBox:hover {
+    border-color: #009382;
+  }
+  
+  button:hover {
+    background-color: #009382;
+  }
+  
+  .icon{
+    height: 35px;
+  }
+
+  @media (max-width: 600px) {
+    .inputDiv {
+      width: 90%;
+      padding: 10px;
+    }
+  
+    .inputTitleBox,
+    .inputImgBox,
+    button {
+      font-size: 14px;
+      padding: 8px;
+    }
+  }
+  
+  
