@@ -2,12 +2,11 @@ const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
+const { connectToDb, getDb } = require('../models/db');
 
 const router = express.Router();
 
 router.use(express.json());
-
-const { connectToDb, getDb } = require('../models/db');
 
 let db;
 
@@ -75,6 +74,7 @@ router.post('/api/marks', upload.single('main_image'), async (req, res) => {
     .insertOne(newMark)
     .then(result => {
       res.status(201).json(result);
+      req.io.emit('newMarker', newMark);
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not create a new document' });
