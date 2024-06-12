@@ -1,3 +1,5 @@
+const socket = io();
+
 let map;
 let selectedLatLng;
 
@@ -81,6 +83,15 @@ async function initMap() {
         alert("數據上傳成功");
         inputTitleBox.value = "";
         inputImgBox.value = "";
+
+        socket.emit('newMarker', {
+          title: title,
+          lat: selectedLatLng.lat(),
+          lng: selectedLatLng.lng(),
+          imgSrc: `/uploads/${file.name}`,
+          src: "/post.html"
+        });
+
       } else {
         alert("數據上傳失敗");
       }
@@ -114,7 +125,6 @@ async function initMap() {
     imgElementLink.target = "_blank";
 
     const imgElement = document.createElement("img");
-    console.log(imgElement.src);
     imgElement.src = imageData.imgSrc;
     imgElement.className = "landmarkImg";
     imgElementLink.appendChild(imgElement);
@@ -135,6 +145,46 @@ async function initMap() {
       gmpClickable: true,
       position: { lat: imageData.lat, lng: imageData.lng },
       title: imageData.title,
+      content: beachFlagImg,
+    });
+
+    marker.addListener("click", function () {
+      infowindow.open(map, marker);
+    });
+  });
+
+  socket.on('newMarker', (data) => {
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "infoDiv";
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "titleDiv";
+    titleDiv.innerText = data.title;
+
+    const imgElementLink = document.createElement("a");
+    imgElementLink.href = data.src;
+    imgElementLink.target = "_blank";
+
+    const imgElement = document.createElement("img");
+    imgElement.src = data.imgSrc;
+    imgElement.className = "landmarkImg";
+    imgElementLink.appendChild(imgElement);
+
+    infoDiv.appendChild(titleDiv);
+    infoDiv.appendChild(imgElementLink);
+
+    const infowindow = new google.maps.InfoWindow({
+      content: infoDiv,
+    });
+
+    const beachFlagImg = document.createElement("img");
+    beachFlagImg.className = "icon";
+    beachFlagImg.src = "./images/location.png";
+
+    const marker = new AdvancedMarkerElement({
+      map,
+      gmpClickable: true,
+      position: { lat: data.lat, lng: data.lng },
+      title: data.title,
       content: beachFlagImg,
     });
 
