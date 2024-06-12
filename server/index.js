@@ -24,7 +24,7 @@ app.use(markHandling);
 //   cert: fs.readFileSync(path.join(__dirname, 'key', 'certificate.crt')),
 // };
 
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, '../client')));
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
