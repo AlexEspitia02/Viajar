@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const markHandling = require('./routes/markHandling');
+const postHandling = require('./routes/postHandling');
 
 const app = express();
 const server = http.createServer(app);
@@ -16,7 +17,10 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
 app.use(markHandling);
+app.use(postHandling);
 
 io.on('connection', (socket) => {
   console.log('新客戶端連接');

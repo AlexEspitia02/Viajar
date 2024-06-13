@@ -1,42 +1,97 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const articles = [
-        {
-            title: '第一篇文章',
-            content: '這是第一篇文章的內容。內容非常精彩，有很多有趣的資訊。',
-            image: 'https://via.placeholder.com/800x400'
-        },
-        {
-            title: '第二篇文章',
-            content: '這是第二篇文章的內容。這篇文章探討了許多有趣的主題，值得一讀。',
-            image: 'https://via.placeholder.com/800x400'
-        },
-        {
-            title: '第三篇文章',
-            content: '這是第三篇文章的內容。這篇文章介紹了很多有用的知識。',
-            image: 'https://via.placeholder.com/800x400'
+import EditorJs from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import Paragraph from '@editorjs/paragraph';
+import List from '@editorjs/list';
+import Embed from '@editorjs/embed';
+import ImageTool from '@editorjs/image';
+
+let editor;
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    editor = new EditorJs({
+        holder: 'editorjs',
+        
+        tools:{
+            header: {
+                class: Header,
+                inlineToolbar:['link']
+            },
+            list: {
+                class: List,
+                inlineToolbar:[
+                    'link',
+                    'bold',
+                ]
+            },
+            embed: {
+                class: Embed,
+                inlineToolbar: false,
+                config:{
+                    services: {
+                        youtube: true,
+                        coub: true
+                    }
+                }
+            },
+            image: {
+                class: ImageTool,
+                config: {
+                    endpoints: {
+                        byFile: '/api/upload',
+                        byUrl: 'http://localhost:8008/fetchUrl',
+                    }
+                }
+            }
         }
-    ];
-    
-    const articlesContainer = document.getElementById('articles');
-    
-    articles.forEach(article => {
-        const articleElement = document.createElement('div');
-        articleElement.classList.add('article');
-        
-        const articleTitle = document.createElement('h2');
-        articleTitle.textContent = article.title;
-        articleElement.appendChild(articleTitle);
-        
-        const articleContent = document.createElement('p');
-        articleContent.textContent = article.content;
-        articleElement.appendChild(articleContent);
-        
-        if (article.image) {
-            const articleImage = document.createElement('img');
-            articleImage.src = article.image;
-            articleElement.appendChild(articleImage);
+    });
+    loadEditorData();
+});
+
+function loadEditorData() {
+    fetch('/api/posts')
+        .then(response => response.json())
+        .then(data => {
+            editor.isReady
+                .then(() => {
+                    editor.render(data[0]);
+                })
+                .catch(error => {
+                    console.error('Error loading the post:', error);
+                });
+        });
+}
+
+let saveBtn = document.querySelector('button');
+saveBtn.addEventListener('click', function() {
+    editor.save().then((outputData) => {
+        const formData = new FormData();
+        formData.append('data', JSON.stringify(outputData));
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput.files[0]) {
+            formData.append('main_image', fileInput.files[0]);
         }
-        
-        articlesContainer.appendChild(articleElement);
+
+        fetch("/api/posts", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong on api server!');
+            }
+        })
+        .then(data => {
+            alert("數據上傳成功");
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("數據上傳失敗");
+        });
+    }).catch((error) => {
+        console.log('Saving failed', error);
     });
 });

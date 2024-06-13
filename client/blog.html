@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的部落格文章</title>
+    <title>My Blog</title>
     <link rel="stylesheet" href="./css/blog.css">
-    <script src="./js/blogDOM.js" defer></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script> -->
+    <script src="./js/blogDOM.js" type="module" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>我的部落格文章</h1>
-        <div id="articles" class="articles"></div>
-    </div>
+    <h1>My Blog</h1>
+    <div id="editorjs"></div>
+    <button>Save</button>
 </body>
 </html>
