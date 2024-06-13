@@ -1,11 +1,59 @@
+/* blog.css */
+
 body {
-    background: rgb(233, 233, 233);
-    height: 100%;
-    padding: 3em;
-    font-family: 'Montserrat';
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #e6feff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-#editorjs{
-    background: white;
-    
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+#editorjs {
+    width: 80%;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+button {
+    background-color: #00b7a2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button:hover {
+    background-color: #009382;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background-color: #009382;
+    transform: translateY(0);
 }
