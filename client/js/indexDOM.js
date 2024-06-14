@@ -1,7 +1,31 @@
 const socket = io();
+let userId = null;
+
+socket.on('init', (data) => {
+  userId = data.id;
+});
 
 let map;
 let selectedLatLng;
+
+document.addEventListener('mousemove', (event) => {
+  if (userId) {
+    const x = event.clientX;
+    const y = event.clientY;
+    socket.emit('mouseMove', { id: userId, x, y });
+  }
+});
+
+socket.on('mouseMove', (data) => {
+  const cursor = document.getElementById(`cursor-${data.id}`);
+  if (!cursor) {
+    const newCursor = document.createElement('div');
+    newCursor.id = `cursor-${data.id}`;
+    newCursor.classList.add('cursor');
+    document.getElementById('map').appendChild(newCursor);
+  }
+  document.getElementById(`cursor-${data.id}`).style.transform = `translate(${data.x}px, ${data.y}px)`;
+});
 
 async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");

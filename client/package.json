@@ -16,6 +16,11 @@
     "@editorjs/image": "^2.9.0",
     "@editorjs/list": "^1.9.0",
     "@editorjs/paragraph": "^2.11.5",
-    "editorjs-text-color-plugin": "^2.0.4"
+    "editorjs-text-color-plugin": "^2.0.4",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3"
   }
 }

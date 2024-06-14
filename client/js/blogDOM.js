@@ -5,7 +5,9 @@ import List from '@editorjs/list';
 import Embed from '@editorjs/embed';
 import ImageTool from '@editorjs/image';
 import ColorPlugin from 'editorjs-text-color-plugin';
+// import io from 'socket.io-client';
 
+// const socket = io();
 let editor;
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('id');
@@ -80,6 +82,10 @@ function loadEditorData() {
                     console.error('Error loading the post:', error);
                 });
         });
+
+    // socket.on('newPost', function(data) {
+    //     console.log('New post received:', data);
+    // });
 }
 
 let saveBtn = document.querySelector('button');
@@ -92,6 +98,8 @@ saveBtn.addEventListener('click', function() {
         if (fileInput.files[0]) {
             formData.append('main_image', fileInput.files[0]);
         }
+        
+        // socket.emit('newPost', formData);
 
         fetch("/api/posts", {
             method: "POST",
