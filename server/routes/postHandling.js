@@ -53,16 +53,32 @@ router.get('/api/posts/:id', async (req, res) => {
 
 router.post('/api/posts', upload.array('images'), async (req, res) => {
   const newPost = JSON.parse(req.body.data);
+  const hasBlog = await db.collection('posts').findOne({ _id: newPost._id });
 
-  db.collection('posts')
-    .insertOne(newPost)
-    .then(result => {
-      res.status(201).json(result);
-      req.io.emit('newPost', newPost);
-    })
-    .catch(() => {
-      res.status(500).json({ error: 'Could not create a new document' });
-    });
+  if (hasBlog) {
+    db.collection('posts')
+      .updateOne(
+        {_id:newPost._id},
+        {$set:{blocks:newPost.blocks}}
+      )
+      .then(result => {
+        res.status(201).json(result);
+        req.io.emit('newPost', newPost);
+      })
+      .catch(() => {
+        res.status(500).json({ error: 'Could not update the document' });
+      });
+  } else{
+    db.collection('posts')
+      .insertOne(newPost)
+      .then(result => {
+        res.status(201).json(result);
+        req.io.emit('newPost', newPost);
+      })
+      .catch(() => {
+        res.status(500).json({ error: 'Could not create a new document' });
+      });
+  }
 });
 
 router.post('/api/upload', upload.single('image'), async (req, res) => {
