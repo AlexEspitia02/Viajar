@@ -40,9 +40,10 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-router.get('/api/posts', async (req, res) => {
+router.get('/api/posts/:id', async (req, res) => {
   try {
-      const data = await db.collection('posts').find().sort({ author: 1 }).toArray();
+      const { id } = req.params;
+      const data = await db.collection('posts').findOne({ _id: id });
       res.status(200).json(data);
   } catch (error) {
       console.error("Error fetching posts:", error);
