@@ -1,5 +1,6 @@
 const socket = io();
 let userId = null;
+let activeWindowId = null; 
 
 socket.on('init', (data) => {
   userId = data.id;
@@ -16,8 +17,12 @@ function debounce(func, wait) {
   };
 }
 
+function updateActiveWindow() {
+  activeWindowId = userId;
+}
+
 socket.on('mapMove', (data) => {
-  if (map) {
+  if (map && data.id !== activeWindowId) { // 只在不是活動視窗時同步
     const center = new google.maps.LatLng(data.lat, data.lng);
     map.setCenter(center);
     map.setZoom(data.zoom);
@@ -26,21 +31,30 @@ socket.on('mapMove', (data) => {
 
 document.addEventListener('mousemove', (event) => {
   if (userId) {
-    const x = event.clientX;
-    const y = event.clientY;
-    socket.emit('mouseMove', { id: userId, x, y });
+    updateActiveWindow(); // 更新活動視窗
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const xOffset = event.clientX - centerX;
+    const yOffset = event.clientY - centerY;
+    socket.emit('mouseMove', { id: userId, xOffset, yOffset });
   }
 });
 
 socket.on('mouseMove', (data) => {
-  let cursor = document.getElementById(`cursor-${data.id}`);
-  if (!cursor) {
-    cursor = document.createElement('div');
-    cursor.id = `cursor-${data.id}`;
-    cursor.classList.add('cursor');
-    document.getElementById('map').appendChild(cursor);
+  if (data.id !== activeWindowId) { // 只在不是活動視窗時同步
+    let cursor = document.getElementById(`cursor-${data.id}`);
+    if (!cursor) {
+      cursor = document.createElement('div');
+      cursor.id = `cursor-${data.id}`;
+      cursor.classList.add('cursor');
+      document.getElementById('map').appendChild(cursor);
+    }
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const x = centerX + data.xOffset;
+    const y = centerY + data.yOffset;
+    cursor.style.transform = `translate(${x}px, ${y}px)`;
   }
-  cursor.style.transform = `translate(${data.x}px, ${data.y}px)`;
 });
 
 async function initMap() {
@@ -56,9 +70,10 @@ async function initMap() {
   map = new Map(document.getElementById("map"), mapOptions);
 
   const emitMapMove = debounce(() => {
+    updateActiveWindow(); // 更新活動視窗
     const center = map.getCenter();
-    socket.emit('mapMove', { lat: center.lat(), lng: center.lng(), zoom: map.getZoom() });
-  }, 500);
+    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: map.getZoom() });
+  }, 1000);
 
   google.maps.event.addListener(map, 'center_changed', emitMapMove);
   google.maps.event.addListener(map, 'zoom_changed', emitMapMove);
