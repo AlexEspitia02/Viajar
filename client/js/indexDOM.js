@@ -8,6 +8,22 @@ socket.on('init', (data) => {
 let map;
 let selectedLatLng;
 
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+socket.on('mapMove', (data) => {
+  if (map) {
+    const center = new google.maps.LatLng(data.lat, data.lng);
+    map.setCenter(center);
+    map.setZoom(data.zoom);
+  }
+});
+
 document.addEventListener('mousemove', (event) => {
   if (userId) {
     const x = event.clientX;
@@ -17,14 +33,14 @@ document.addEventListener('mousemove', (event) => {
 });
 
 socket.on('mouseMove', (data) => {
-  const cursor = document.getElementById(`cursor-${data.id}`);
+  let cursor = document.getElementById(`cursor-${data.id}`);
   if (!cursor) {
-    const newCursor = document.createElement('div');
-    newCursor.id = `cursor-${data.id}`;
-    newCursor.classList.add('cursor');
-    document.getElementById('map').appendChild(newCursor);
+    cursor = document.createElement('div');
+    cursor.id = `cursor-${data.id}`;
+    cursor.classList.add('cursor');
+    document.getElementById('map').appendChild(cursor);
   }
-  document.getElementById(`cursor-${data.id}`).style.transform = `translate(${data.x}px, ${data.y}px)`;
+  cursor.style.transform = `translate(${data.x}px, ${data.y}px)`;
 });
 
 async function initMap() {
@@ -38,6 +54,14 @@ async function initMap() {
   };
 
   map = new Map(document.getElementById("map"), mapOptions);
+
+  const emitMapMove = debounce(() => {
+    const center = map.getCenter();
+    socket.emit('mapMove', { lat: center.lat(), lng: center.lng(), zoom: map.getZoom() });
+  }, 500);
+
+  google.maps.event.addListener(map, 'center_changed', emitMapMove);
+  google.maps.event.addListener(map, 'zoom_changed', emitMapMove);
 
   map.addListener("click", (e) => {
     placeMarkerAndPanTo(e.latLng, map);

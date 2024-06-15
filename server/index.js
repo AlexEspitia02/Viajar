@@ -40,6 +40,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('mouseMove', data);
   });
 
+  socket.on('mapMove', (data) => {
+    socket.broadcast.emit('mapMove', data);
+  });
+
   socket.on('newMarker', (data) => {
     socket.broadcast.emit('newMarker', data);
   });
