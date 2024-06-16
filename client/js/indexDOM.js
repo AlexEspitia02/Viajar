@@ -184,7 +184,7 @@ async function initMap() {
     titleDiv.innerText = imageData.title;
 
     const imgElementLink = document.createElement("a");
-    imgElementLink.href = `/dist/blog.html?id=${imageData._id}`;
+    imgElementLink.href = `/dist/blog.html?id=${imageData._id}&title=${encodeURIComponent(imageData.title)}`;
     imgElementLink.target = "_blank";
 
     const imgElement = document.createElement("img");
@@ -224,7 +224,7 @@ async function initMap() {
     titleDiv.innerText = data.title;
 
     const imgElementLink = document.createElement("a");
-    imgElementLink.href = `/dist/blog.html?id=${data._id}`;
+    imgElementLink.href = `/dist/blog.html?id=${data._id}&title=${encodeURIComponent(data.title)}`;
     imgElementLink.target = "_blank";
 
     const imgElement = document.createElement("img");

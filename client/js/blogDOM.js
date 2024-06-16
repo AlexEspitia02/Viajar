@@ -11,8 +11,13 @@ import ColorPlugin from 'editorjs-text-color-plugin';
 let editor;
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('id');
+const title = urlParams.get('title');
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    const titleDiv = document.getElementById('titleDiv');
+    titleDiv.className = "titleDiv";
+    titleDiv.innerHTML = `Blog Title: <b>${title}</b>`;
 
     editor = new EditorJs({
         holder: 'editorjs',
@@ -92,6 +97,7 @@ let saveBtn = document.querySelector('button');
 saveBtn.addEventListener('click', function() {
     editor.save().then((outputData) => {
         outputData._id = postId;
+        outputData.title = title;
         const formData = new FormData();
         formData.append('data', JSON.stringify(outputData));
         const fileInput = document.querySelector('input[type="file"]');

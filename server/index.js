@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const path = require('path');
 const markHandling = require('./routes/markHandling');
 const postHandling = require('./routes/postHandling');
+const blogListHandling = require('./routes/blogListHandling');
 
 const app = express();
 const server = http.createServer(app);
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 
 app.use(markHandling);
 app.use(postHandling);
+app.use(blogListHandling);
 
 io.on('connection', (socket) => {
   console.log('新客戶端連接');
