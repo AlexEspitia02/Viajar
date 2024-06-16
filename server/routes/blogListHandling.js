@@ -18,7 +18,6 @@ router.get('/api/blogList', async (req, res) => {
   
   db.collection('posts')
     .find()
-    .sort({ author: 1 })
     .forEach(blog => blogs.push(blog))
     .then(() => {
       res.status(200).json(blogs);
@@ -26,6 +25,19 @@ router.get('/api/blogList', async (req, res) => {
     .catch(() => {
       res.status(500).json({error: 'Could not fetch the documents'});
     });
+});
+
+router.get('/api/blogList/search', async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const regex = new RegExp(keyword, 'i');
+
+    const blogs = await db.collection('posts').find({ title: { $regex: regex } }).toArray();
+
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not fetch the documents' });
+  }
 });
 
 module.exports = router;

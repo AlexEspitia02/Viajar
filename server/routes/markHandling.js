@@ -45,7 +45,6 @@ router.get('/api/marks', async (req, res) => {
   
   db.collection('marks')
     .find()
-    .sort({ author: 1 })
     .forEach(mark => marks.push(mark))
     .then(() => {
       res.status(200).json(marks);
