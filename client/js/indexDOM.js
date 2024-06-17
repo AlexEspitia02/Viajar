@@ -4,6 +4,7 @@ let activeWindowId = null;
 
 socket.on('init', (data) => {
   userId = data.id;
+  console.log(userId);
 });
 
 let map;
@@ -19,6 +20,16 @@ function debounce(func, wait) {
 
 function updateActiveWindow() {
   activeWindowId = userId;
+}
+
+function requestControl() {
+  socket.emit('requestMapControl', (response) => {
+    if (response.granted) {
+      console.log('控制权获得，现在可以移动地图');
+    } else {
+      console.log('控制权未获得');
+    }
+  });
 }
 
 socket.on('mapMove', (data) => {
@@ -69,16 +80,27 @@ async function initMap() {
 
   map = new Map(document.getElementById("map"), mapOptions);
 
-  const emitMapMove = debounce(() => {
+  const debounceEmitMapMove = debounce(() => {
     updateActiveWindow(); // 更新活動視窗
     const center = map.getCenter();
-    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: map.getZoom() });
+    const zoom = map.getZoom();
+    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: zoom });
+    socket.emit('releaseMapControl');
   }, 1000);
 
-  google.maps.event.addListener(map, 'center_changed', emitMapMove);
-  google.maps.event.addListener(map, 'zoom_changed', emitMapMove);
+  google.maps.event.addListener(map, 'center_changed', () => {
+    if (activeWindowId === userId) {
+      debounceEmitMapMove();
+    }
+  });
+  google.maps.event.addListener(map, 'zoom_changed', () => {
+    if (activeWindowId === userId) {
+      debounceEmitMapMove();
+    }
+  });
 
   map.addListener("click", (e) => {
+    requestControl();
     placeMarkerAndPanTo(e.latLng, map);
   });
 
@@ -257,7 +279,6 @@ async function initMap() {
   });
 
   const drawingManager = new google.maps.drawing.DrawingManager({
-    drawingMode: google.maps.drawing.OverlayType.MARKER,
     drawingControl: true,
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,

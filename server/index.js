@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
+// const amqp = require('amqplib');
 const markHandling = require('./routes/markHandling');
 const postHandling = require('./routes/postHandling');
 const blogListHandling = require('./routes/blogListHandling');
@@ -16,6 +17,10 @@ const io = socketIo(server
 //   }
 // }
 );
+
+let mapLock = null;
+
+// const AMQP_URL = 'amqp://guest:guest@http://127.0.0.1:15672/';
 
 app.use((req, res, next) => {
   req.io = io;
@@ -32,10 +37,26 @@ app.use(postHandling);
 app.use(blogListHandling);
 
 io.on('connection', (socket) => {
-  console.log('新客戶端連接');
-
   const userId = socket.id;
+  console.log('新客戶端連接', userId);
+
+
   socket.emit('init', { id: userId });
+
+  socket.on('requestMapControl',(callback) => {
+    if (!mapLock) {
+      mapLock = userId;
+      callback({ granted: true });
+    } else {
+      callback({ granted: false });
+    }
+  });
+
+  socket.on('releaseMapControl', () => {
+    if (mapLock === userId) {
+      mapLock = null;
+    }
+  });
 
   socket.on('mouseMove', (data) => {
     data.id = userId;
@@ -43,7 +64,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('mapMove', (data) => {
-    socket.broadcast.emit('mapMove', data);
+    if (mapLock === userId) {
+      socket.broadcast.emit('mapMove', data);
+    }
   });
 
   socket.on('newMarker', (data) => {
@@ -52,7 +75,11 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', () => {
-    console.log('客戶端斷開連接');
+    if (mapLock === userId) {
+      mapLock = null;
+      console.log('客戶端斷開連接');
+    }
+
   });
 });
 
