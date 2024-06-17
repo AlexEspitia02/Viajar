@@ -93,7 +93,7 @@ function loadEditorData() {
     // });
 }
 
-let saveBtn = document.querySelector('button');
+let saveBtn = document.getElementById('saveButton');
 saveBtn.addEventListener('click', function() {
     editor.save().then((outputData) => {
         outputData._id = postId;
@@ -129,4 +129,9 @@ saveBtn.addEventListener('click', function() {
     }).catch((error) => {
         console.log('Saving failed', error);
     });
+});
+
+let blogListButton = document.getElementById('blogListButton');
+blogListButton.addEventListener('click', function() {
+    window.location.href = 'http://localhost:3000/blogList.html';
 });
