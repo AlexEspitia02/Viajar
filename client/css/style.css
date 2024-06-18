@@ -109,13 +109,19 @@ padding: 0;
     z-index: 1000;
   }
 
-  .controlButton{
-    position: absolute;
+  .buttonBox{
+    top: 30%;
     z-index: 1;
-    top: 45%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toggleCursors, .controlButton{
     width: 45px;
-    background-color: #ccc;
+    background-color: #ffffff;
     color:black;
+    border: #ccc solid 0.5px;
   }
 
   @media (max-width: 600px) {

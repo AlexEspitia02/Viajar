@@ -9,6 +9,7 @@ socket.on('init', (data) => {
 
 let map;
 let selectedLatLng;
+let cursorsVisible = true;
 
 function debounce(func, wait) {
   let timeout;
@@ -88,7 +89,7 @@ socket.on('mouseMove', (data) => {
     const y = centerY + data.yOffset;
     cursor.style.left = `${x}px`;
     cursor.style.top = `${y}px`;
-    cursor.style.display = 'block';
+    cursor.style.display = cursorsVisible ? 'block' : 'none';
   }
 });
 
@@ -136,6 +137,21 @@ async function initMap() {
   controlButton.addEventListener("click", () => {
     debounceEmitMapMove();
     requestControl();
+  });
+
+  document.getElementById('toggleCursors').addEventListener('click', () => {
+    cursorsVisible = !cursorsVisible;
+    socket.emit('toggleCursorsVisibility', { showCursors: cursorsVisible });
+    
+    document.querySelectorAll('.cursor').forEach(cursor => {
+        cursor.style.display = cursorsVisible ? 'block' : 'none';
+    });
+  });
+
+  socket.on('toggleCursorsVisibility', (data) => {
+    document.querySelectorAll('.cursor').forEach(cursor => {
+      cursor.style.display = data.showCursors ? 'block' : 'none';
+    });
   });
 
   const inputDiv = document.createElement("div");

@@ -45,9 +45,13 @@ module.exports = (io) =>{
             socket.broadcast.emit('hideCursor', data);
           });
           
-          socket.on('showCursor', (data) => {
+        socket.on('showCursor', (data) => {
             socket.broadcast.emit('showCursor', data);
-          });
+        });
+
+        socket.on('toggleCursorsVisibility', (data) => {
+            socket.broadcast.emit('toggleCursorsVisibility', data);
+        });
       
         socket.on('disconnect', () => {
             if (mapLock === userId) {
