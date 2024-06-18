@@ -51,6 +51,28 @@ document.addEventListener('mousemove', (event) => {
   }
 });
 
+document.addEventListener('mouseout', () => {
+  socket.emit('hideCursor', { userId: userId });
+});
+
+document.addEventListener('mouseover', () => {
+  socket.emit('showCursor', { userId: userId });
+});
+
+socket.on('hideCursor', (data) => {
+  const cursor = document.getElementById(`cursor-${data.userId}`);
+  if (cursor) {
+    cursor.style.display = 'none';
+  }
+});
+
+socket.on('showCursor', (data) => {
+  const cursor = document.getElementById(`cursor-${data.userId}`);
+  if (cursor) {
+    cursor.style.display = 'block';
+  }
+});
+
 socket.on('mouseMove', (data) => {
   if (data.id !== activeWindowId) { // 只在不是活動視窗時同步
     let cursor = document.getElementById(`cursor-${data.id}`);
@@ -64,7 +86,9 @@ socket.on('mouseMove', (data) => {
     const centerY = window.innerHeight / 2;
     const x = centerX + data.xOffset;
     const y = centerY + data.yOffset;
-    cursor.style.transform = `translate(${x}px, ${y}px)`;
+    cursor.style.left = `${x}px`;
+    cursor.style.top = `${y}px`;
+    cursor.style.display = 'block';
   }
 });
 
@@ -100,7 +124,7 @@ async function initMap() {
   // });
 
   map.addListener("click", (e) => {
-    placeMarkerAndPanTo(e.latLng, map, true);
+    placeMarkerAndPanTo(e.latLng, map, false);
     socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng() });
   });
   socket.on('newEmptyMarker',(data) => {

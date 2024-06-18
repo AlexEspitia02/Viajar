@@ -40,6 +40,14 @@ module.exports = (io) =>{
         socket.on('newEmptyMarker', (data) => {
             socket.broadcast.emit('newEmptyMarker', data);
         });
+
+        socket.on('hideCursor', (data) => {
+            socket.broadcast.emit('hideCursor', data);
+          });
+          
+          socket.on('showCursor', (data) => {
+            socket.broadcast.emit('showCursor', data);
+          });
       
         socket.on('disconnect', () => {
             if (mapLock === userId) {
