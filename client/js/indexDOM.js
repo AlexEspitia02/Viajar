@@ -102,6 +102,11 @@ async function initMap() {
   map.addListener("click", (e) => {
     requestControl();
     placeMarkerAndPanTo(e.latLng, map);
+    socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng() });
+  });
+  socket.on('newEmptyMarker',(data) => {
+    const latLng = new google.maps.LatLng(data.lat, data.lng);
+    placeMarkerAndPanTo(latLng, map)
   });
 
   const inputDiv = document.createElement("div");
@@ -169,14 +174,6 @@ async function initMap() {
         inputTitleBox.value = "";
         inputImgBox.value = "";
 
-        socket.emit('newMarker', {
-          title: title,
-          lat: selectedLatLng.lat(),
-          lng: selectedLatLng.lng(),
-          imgSrc: `/uploads/${file.name}`,
-          src: "/post.html"
-        });
-
       } else {
         alert("數據上傳失敗");
       }
@@ -214,8 +211,62 @@ async function initMap() {
     imgElement.className = "landmarkImg";
     imgElementLink.appendChild(imgElement);
 
+    const buttonBox = document.createElement("div");
+    const markDeleteButton = document.createElement("button");
+    markDeleteButton.innerText = "刪除"
+    
+    markDeleteButton.addEventListener("click", async function () {
+      const userConfirmation = confirm('會同時刪除文章，你確定要繼續嗎？');
+      if(userConfirmation){
+        try {
+          const response = await fetch("/api/marks/delete", {
+            method: "delete",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              _id: imageData._id
+            })
+          });
+    
+          if (response.ok) {
+            marker.setMap(null);
+          } else {
+            alert("標記刪除失敗");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("發生錯誤");
+        }
+  
+        try {
+          const response = await fetch("/api/posts/delete", {
+            method: "delete",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              _id: imageData._id
+            })
+          });
+    
+          if (response.ok) {
+            alert("部落格也刪除了!");
+          } else {
+            alert("部落格刪除失敗");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("發生錯誤");
+        }
+      }
+    });
+
+    buttonBox.appendChild(markDeleteButton);
+
     infoDiv.appendChild(titleDiv);
     infoDiv.appendChild(imgElementLink);
+    infoDiv.appendChild(buttonBox);
 
     const infowindow = new google.maps.InfoWindow({
       content: infoDiv,
@@ -254,8 +305,62 @@ async function initMap() {
     imgElement.className = "landmarkImg";
     imgElementLink.appendChild(imgElement);
 
+    const buttonBox = document.createElement("div");
+    const markDeleteButton = document.createElement("button");
+    markDeleteButton.innerText = "刪除"
+    
+    markDeleteButton.addEventListener("click", async function () {
+      const userConfirmation = confirm('會同時刪除文章，你確定要繼續嗎？');
+      if(userConfirmation){
+        try {
+          const response = await fetch("/api/marks/delete", {
+            method: "delete",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              _id: data._id
+            })
+          });
+    
+          if (response.ok) {
+            marker.setMap(null);
+          } else {
+            alert("標記刪除失敗");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("發生錯誤");
+        }
+  
+        try {
+          const response = await fetch("/api/posts/delete", {
+            method: "delete",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              _id: data._id
+            })
+          });
+    
+          if (response.ok) {
+            alert("部落格也刪除了!");
+          } else {
+            alert("部落格刪除失敗");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("發生錯誤");
+        }
+      }
+    });
+
+    buttonBox.appendChild(markDeleteButton);
+
     infoDiv.appendChild(titleDiv);
     infoDiv.appendChild(imgElementLink);
+    infoDiv.appendChild(buttonBox);
 
     const infowindow = new google.maps.InfoWindow({
       content: infoDiv,

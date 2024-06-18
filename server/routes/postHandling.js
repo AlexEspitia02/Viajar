@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
+const { ObjectId } = require('mongodb');
 const { connectToDb, getDb } = require('../models/db');
 
 const router = express.Router();
@@ -94,6 +95,21 @@ router.post('/api/upload', upload.single('image'), async (req, res) => {
           url: fileUrl
       }
   });
+});
+
+router.delete('/api/posts/delete', async (req, res) => {
+  const { _id } = req.body;
+
+  db.collection('posts')
+    .deleteOne({ _id: _id })
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+      req.io.emit('deletePost', _id);//尚未使用到
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not delete the document' });
+    });
 });
 
 module.exports = router;

@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require('path');
+const { ObjectId } = require('mongodb');
 const { connectToDb, getDb } = require('../models/db');
 
 const router = express.Router();
@@ -77,6 +78,21 @@ router.post('/api/marks', upload.single('main_image'), async (req, res) => {
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not create a new document' });
+    });
+});
+
+router.delete('/api/marks/delete', async (req, res) => {
+  const { _id } = req.body;
+
+  db.collection('marks')
+    .deleteOne({ _id: new ObjectId(_id) })
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+      req.io.emit('deleteMarker', _id);//尚未使用到
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not delete the document' });
     });
 });
 
