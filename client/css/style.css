@@ -109,6 +109,15 @@ padding: 0;
     z-index: 1000;
   }
 
+  .controlButton{
+    position: absolute;
+    z-index: 1;
+    top: 45%;
+    width: 45px;
+    background-color: #ccc;
+    color:black;
+  }
+
   @media (max-width: 600px) {
     .inputDiv {
       width: 90%;

@@ -86,27 +86,32 @@ async function initMap() {
     const zoom = map.getZoom();
     socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: zoom });
     socket.emit('releaseMapControl');
-  }, 1000);
+  }, 100);
 
-  google.maps.event.addListener(map, 'center_changed', () => {
-    if (activeWindowId === userId) {
-      debounceEmitMapMove();
-    }
-  });
-  google.maps.event.addListener(map, 'zoom_changed', () => {
-    if (activeWindowId === userId) {
-      debounceEmitMapMove();
-    }
-  });
+  // google.maps.event.addListener(map, 'center_changed', () => {
+  //   if (activeWindowId === userId) {
+  //     debounceEmitMapMove();
+  //   }
+  // });
+  // google.maps.event.addListener(map, 'zoom_changed', () => {
+  //   if (activeWindowId === userId) {
+  //     debounceEmitMapMove();
+  //   }
+  // });
 
   map.addListener("click", (e) => {
-    requestControl();
-    placeMarkerAndPanTo(e.latLng, map);
+    placeMarkerAndPanTo(e.latLng, map, true);
     socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng() });
   });
   socket.on('newEmptyMarker',(data) => {
     const latLng = new google.maps.LatLng(data.lat, data.lng);
-    placeMarkerAndPanTo(latLng, map)
+    placeMarkerAndPanTo(latLng, map, false)
+  });
+
+  const controlButton  = document.getElementById('controlButton');
+  controlButton.addEventListener("click", () => {
+    debounceEmitMapMove();
+    requestControl();
   });
 
   const inputDiv = document.createElement("div");
@@ -132,7 +137,7 @@ async function initMap() {
     content: inputDiv,
   });
 
-  function placeMarkerAndPanTo(latLng, map) {
+  function placeMarkerAndPanTo(latLng, map, shouldPan = true) {
     const beachFlagImg = document.createElement("img");
     beachFlagImg.className = "icon"
     beachFlagImg.src ="./images/location.png";
@@ -142,7 +147,9 @@ async function initMap() {
       map: map,
       content: beachFlagImg,
     });
-    map.panTo(latLng);
+    if (shouldPan) {
+      map.panTo(latLng);
+    }
     marker.addListener("click", function () {
       infowindow.open(map, marker);
     });
