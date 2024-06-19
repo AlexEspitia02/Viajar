@@ -44,11 +44,14 @@ socket.on('mapMove', (data) => {
 document.addEventListener('mousemove', (event) => {
   if (userId) {
     updateActiveWindow(); // 更新活動視窗
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const xOffset = event.clientX - centerX;
-    const yOffset = event.clientY - centerY;
-    socket.emit('mouseMove', { id: userId, xOffset, yOffset });
+    const data = {
+      id: userId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight
+    };
+    socket.emit('mouseMove', data);
   }
 });
 
