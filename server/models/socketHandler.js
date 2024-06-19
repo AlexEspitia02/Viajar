@@ -24,7 +24,12 @@ module.exports = (io) =>{
       
         socket.on('mouseMove', (data) => {
             data.id = userId;
-            socket.broadcast.emit('mouseMove', data);
+            const { clientX, clientY, innerWidth, innerHeight } = data;
+            const centerX = innerWidth / 2;
+            const centerY = innerHeight / 2;
+            const xOffset = clientX - centerX;
+            const yOffset = clientY - centerY;
+            socket.broadcast.emit('mouseMove', { id: userId, xOffset, yOffset });
         });
       
         socket.on('mapMove', (data) => {
