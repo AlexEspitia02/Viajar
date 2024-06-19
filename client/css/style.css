@@ -1,128 +1,208 @@
 html,
 body {
-height: 100%;
-margin: 0;
-padding: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
 }
 
 #map {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 
 .landmarkImg{
-    height: 125px;
-    width:  125px;
-    object-fit: cover;
-    object-position: center center;
-    border-radius: 10px;
+  height: 125px;
+  width:  125px;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 10px;
 }
 
 .titleDiv{
-    font-size: 40px;
-    font-family: "Caveat", cursive;
-    padding: 0px 5px;
+  font-size: 40px;
+  font-family: "Caveat", cursive;
+  padding: 0px 5px;
 }
 
 .infoDiv{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .inputDiv {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    background-color: #e6feff;
-    width: 200px;
-    margin: 20px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .inputTitleBox {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #00b7a2;
-    border-radius: 3px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    background-color: #ffffff;
-  }
-  
-  .inputImgBox {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #00b7a2;
-    border-radius: 3px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    background-color: #ffffff;
-    width: 100%;
-  }
-  
-  button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 3px;
-    background-color: #00b7a2;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 100%;
-  }
-  
-  .inputTitleBox:focus,
-  .inputImgBox:focus,
-  button:focus {
-    border-color: #009382;
-    outline: none;
-  }
-  
-  .inputTitleBox:hover,
-  .inputImgBox:hover {
-    border-color: #009382;
-  }
-  
-  button:hover {
-    background-color: #009382;
-  }
-  
-  .icon{
-    height: 35px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #e6feff;
+  width: 200px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
 
-  .cursor {
-    width: 15px;
-    height: 15px;
-    background-color: rgb(184, 130, 255);
-    border-radius: 50%;
-    position: absolute;
-    pointer-events: none;
-    z-index: 1000;
-  }
+.inputTitleBox {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #00b7a2;
+  border-radius: 3px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  background-color: #ffffff;
+}
 
-  .buttonBox{
-    top: 30%;
-    z-index: 1;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-  }
+.inputImgBox {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #00b7a2;
+  border-radius: 3px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  background-color: #ffffff;
+  width: 100%;
+}
 
-  .toggleCursors, .controlButton{
-    width: 45px;
-    background-color: #ffffff;
-    color:black;
-    border: #ccc solid 0.5px;
-  }
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 3px;
+  background-color: #00b7a2;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.inputTitleBox:focus,
+.inputImgBox:focus,
+button:focus {
+  border-color: #009382;
+  outline: none;
+}
+
+.inputTitleBox:hover,
+.inputImgBox:hover {
+  border-color: #009382;
+}
+
+button:hover {
+  background-color: #009382;
+}
+
+.icon{
+  height: 35px;
+}
+
+.cursor {
+  width: 15px;
+  height: 15px;
+  background-color: rgb(184, 130, 255);
+  border-radius: 50%;
+  position: absolute;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.buttonBox{
+  top: 30%;
+  z-index: 1;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  right: 0px;
+}
+
+.toggleCursors, .controlButton{
+  width: 45px;
+  background-color: #ffffff;
+  color:black;
+  border: #ccc solid 0.5px;
+}
+
+.leftInfo {
+  position: fixed;
+  left: 0;
+  top: 100px;
+  height: 80%;
+  width: 320px;
+  background-color: #f9f9f9;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  /* transform: translateX(-99.95%); */
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  border-radius: 0 10px 10px 0;
+  overflow-y: auto;
+}
+
+.leftInfo:hover {
+  transform: translateX(0);
+}
+
+.leftInfoHeader {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.leftInfoHeader div {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.leftInfoHeader div:hover {
+  background-color: #e0e0e0;
+}
+
+.information {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+.logInInput {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.userPicture {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+p {
+  font-size: 16px;
+  color: #555;
+  margin: 10px 0;
+}
 
   @media (max-width: 600px) {
     .inputDiv {
