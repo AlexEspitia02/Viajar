@@ -137,7 +137,7 @@ button:hover {
   width: 320px;
   background-color: #f9f9f9;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  transform: translateX(-99.95%);
+  /* transform: translateX(-99.95%); */
   transition: transform 0.3s ease;
   z-index: 1000;
   border-radius: 0 10px 10px 0;
@@ -148,9 +148,17 @@ button:hover {
   transform: translateX(0);
 }
 
-.leftInfoHeader {
+.leftInfoHeader{
   display: flex;
   justify-content: space-around;
+  padding: 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.loginButtonBox{
+  display: none;
+  justify-content: start;
   padding: 20px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
@@ -163,7 +171,18 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
+.loginButtonBox div {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
 .leftInfoHeader div:hover {
+  background-color: #e0e0e0;
+}
+
+.loginButtonBox div:hover {
   background-color: #e0e0e0;
 }
 
@@ -182,6 +201,12 @@ button:hover {
   border-radius: 5px;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   font-size: 16px;
+}
+
+.welcomeInfo{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h2 {

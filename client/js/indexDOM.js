@@ -166,10 +166,93 @@ async function initMap() {
     }
   }
 
-  document.getElementById('signUp').addEventListener("click", () => {
+  document.getElementById('userInfo').addEventListener("click", () => {
+
+  const loginButtonBox = document.getElementById('loginButtonBox');
+  loginButtonBox.style.display = 'none'
+    
+  function updateUserInterface(user) {
+    const contentDiv = document.getElementById("information");
+    if (contentDiv) {
+      contentDiv.innerHTML = `
+        <div class="welcomeInfo">
+          <h2>Welcome, ${user.name}!</h2>
+          <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
+          <p>Email: ${user.email}</p>
+        </div>
+      `;
+      contentDiv.style.display = 'block';
+    }
+  }
+  
+  function clearJWT() {
+    localStorage.removeItem('jwtToken');
+    console.log('JWT cleared from LocalStorage');
+  }
+  
+  function fetchUserData() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (!jwtToken) {
+      console.log('No JWT token found, please log in.');
+      return;
+    }
+  
+    fetch('/user/profile', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('User data:', data);
+      updateUserInterface(data.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching user data:', error);
+      if (error.message === 'Failed to fetch user data') {
+        clearJWT();
+      }
+    });
+  }
+  
+  function checkLoginStatus() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      fetchUserData();
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', checkLoginStatus());
+  });
+
+  document.getElementById('Login').addEventListener("click", () => {
     const information = document.getElementById('information');
 
     information.innerHTML = '';
+
+    const loginButtonBox = document.getElementById('loginButtonBox');
+    loginButtonBox.style.display = 'flex'
+
+    loginButtonBox.innerHTML = '';
+
+    const signUpBtn = document.createElement("div");
+    signUpBtn.id = 'signUp';
+    signUpBtn.className = 'signUp';
+    signUpBtn.innerText = 'Sign UP'
+    loginButtonBox.appendChild(signUpBtn);
+
+    const signInBtn = document.createElement("div");
+    signInBtn.id = 'signIn';
+    signInBtn.className = 'signIn';
+    signInBtn.innerText = 'Sign In'
+    loginButtonBox.appendChild(signInBtn);
 
     const username = document.createElement("input");
     username.setAttribute("type", "text");
@@ -198,105 +281,145 @@ async function initMap() {
       submitSignupForm()
     };
     information.appendChild(loginButton);
-  });
 
-  function submitSignupForm() {
-    const name = document.getElementById('inputUsername').value;
-    const email = document.getElementById('inputEmail').value;
-    const password = document.getElementById('inputPassword').value;
-
-    fetch('/user/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Signup Success:', data);
+    document.getElementById('signUp').addEventListener("click", () => {
+      const information = document.getElementById('information');
+  
+      information.innerHTML = '';
+  
+      const username = document.createElement("input");
+      username.setAttribute("type", "text");
+      username.className = 'logInInput';
+      username.setAttribute("placeholder", "輸入用戶名");
+      username.id = 'inputUsername'
+      information.appendChild(username);
+  
+      const email = document.createElement("input");
+      email.setAttribute("type", "text");
+      email.className = 'logInInput';
+      email.setAttribute("placeholder", "輸入信箱");
+      email.id = 'inputEmail'
+      information.appendChild(email);
+  
+      const password = document.createElement("input");
+      password.setAttribute("type", "password");
+      password.className = 'logInInput';
+      password.setAttribute("placeholder", "輸入密碼");
+      password.id = 'inputPassword'
+      information.appendChild(password);
+      
+      const loginButton = document.createElement("button");
+      loginButton.innerText = "註冊";
+      loginButton.onclick = function() {
+        submitSignupForm()
+      };
+      information.appendChild(loginButton);
+    });
+  
+    function submitSignupForm() {
+      const name = document.getElementById('inputUsername').value;
+      const email = document.getElementById('inputEmail').value;
+      const password = document.getElementById('inputPassword').value;
+  
+      fetch('/user/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Signup Success:', data);
+          if (data.success && data.data.access_token) {
+            console.log('Access Token Received:', data.data.access_token);
+            storeJWT(data.data.access_token);
+            const contentDiv = document.getElementById("information");
+            contentDiv.innerHTML = `
+              <div class="welcomeInfo">
+                <h2>Welcome, ${data.data.user.name}!</h2>
+                <img src="${data.data.user.picture}" class="userPicture"/>
+                <p>Email: ${data.data.user.email}</p>
+              </div>
+            `;
+            contentDiv.style.display = 'block';
+          } else {
+            alert(data.message || 'No JWT token provided');
+          }
+      })
+      .catch(error => console.error('Signup Error:', error));
+    }
+  
+    document.getElementById('signIn').addEventListener("click", () => {
+      const information = document.getElementById('information');
+  
+      information.innerHTML = '';
+  
+      const email = document.createElement("input");
+      email.setAttribute("type", "text");
+      email.className = 'logInInput';
+      email.setAttribute("placeholder", "輸入信箱");
+      email.id = 'inputEmail'
+      information.appendChild(email);
+  
+      const password = document.createElement("input");
+      password.setAttribute("type", "password");
+      password.className = 'logInInput';
+      password.setAttribute("placeholder", "輸入密碼");
+      password.id = 'inputPassword'
+      information.appendChild(password);
+      
+      const loginButton = document.createElement("button");
+      loginButton.innerText = "登入";
+      loginButton.onclick = function() {
+        submitSignInForm()
+      };
+      information.appendChild(loginButton);
+    });
+  
+    function submitSignInForm() {
+      const email = document.getElementById('inputEmail').value;
+      const password = document.getElementById('inputPassword').value;
+  
+      fetch('/user/signIn', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('SignIn Success:', data);
         if (data.success && data.data.access_token) {
           console.log('Access Token Received:', data.data.access_token);
           storeJWT(data.data.access_token);
           const contentDiv = document.getElementById("information");
           contentDiv.innerHTML = `
-            <h2>Welcome, ${data.data.user.name}!</h2>
-            <img src="${data.data.user.picture}" class="userPicture"/>
-            <p>Email: ${data.data.user.email}</p>
+            <div class="welcomeInfo">
+              <h2>Welcome, ${data.data.user.name}!</h2>
+              <img src="${data.data.user.picture}" class="userPicture"/>
+              <p>Email: ${data.data.user.email}</p>
+            </div>
           `;
           contentDiv.style.display = 'block';
         } else {
           alert(data.message || 'No JWT token provided');
         }
-    })
-    .catch(error => console.error('Signup Error:', error));
-  }
-
-  document.getElementById('signIn').addEventListener("click", () => {
-    const information = document.getElementById('information');
-
-    information.innerHTML = '';
-
-    const email = document.createElement("input");
-    email.setAttribute("type", "text");
-    email.className = 'logInInput';
-    email.setAttribute("placeholder", "輸入信箱");
-    email.id = 'inputEmail'
-    information.appendChild(email);
-
-    const password = document.createElement("input");
-    password.setAttribute("type", "password");
-    password.className = 'logInInput';
-    password.setAttribute("placeholder", "輸入密碼");
-    password.id = 'inputPassword'
-    information.appendChild(password);
-    
-    const loginButton = document.createElement("button");
-    loginButton.innerText = "登入";
-    loginButton.onclick = function() {
-      submitSignInForm()
-    };
-    information.appendChild(loginButton);
+      })
+      .catch(error => console.error('Signup Error:', error));
+    }
   });
-
-  function submitSignInForm() {
-    const email = document.getElementById('inputEmail').value;
-    const password = document.getElementById('inputPassword').value;
-
-    fetch('/user/signIn', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('SignIn Success:', data);
-      if (data.success && data.data.access_token) {
-        console.log('Access Token Received:', data.data.access_token);
-        storeJWT(data.data.access_token);
-        const contentDiv = document.getElementById("information");
-        contentDiv.innerHTML = `
-          <h2>Welcome, ${data.data.user.name}!</h2>
-          <img src="${data.data.user.picture}" class="userPicture"/>
-          <p>Email: ${data.data.user.email}</p>
-        `;
-        contentDiv.style.display = 'block';
-      } else {
-        alert(data.message || 'No JWT token provided');
-      }
-    })
-    .catch(error => console.error('Signup Error:', error));
-  }
 
   function updateUserInterface(user) {
     const contentDiv = document.getElementById("information");
     if (contentDiv) {
       contentDiv.innerHTML = `
-        <h2>Welcome, ${user.name}!</h2>
-        <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
-        <p>Email: ${user.email}</p>
+        <div class="welcomeInfo">
+          <h2>Welcome, ${user.name}!</h2>
+          <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
+          <p>Email: ${user.email}</p>
+        </div>
       `;
       contentDiv.style.display = 'block';
     }
