@@ -174,7 +174,7 @@ async function initMap() {
   if (!loginUserId) {
     const contentDiv = document.getElementById("information");
     contentDiv.innerHTML = `登入後查看使用者資訊`;
-    contentDiv.style.display = 'block';
+    contentDiv.style.display = 'flex';
   }
 
   function updateUserInterface(user) {
@@ -187,7 +187,7 @@ async function initMap() {
         <p>Email: ${user.email}</p>
       </div>
     `;
-    contentDiv.style.display = 'block';
+    contentDiv.style.display = 'flex';
   }
   
   function clearJWT() {
@@ -356,7 +356,7 @@ async function initMap() {
             loginUserId = data.data.user.id;
             loginImg = data.data.user.picture;
             loginEmail = data.data.user.email;
-            contentDiv.style.display = 'block';
+            contentDiv.style.display = 'flex';
           } else {
             alert(data.message || 'No JWT token provided');
           }
@@ -420,7 +420,7 @@ async function initMap() {
           loginUserId = data.data.user.id;
           loginImg = data.data.user.picture;
           loginEmail = data.data.user.email;
-          contentDiv.style.display = 'block';
+          contentDiv.style.display = 'flex';
         } else {
           alert(data.message || 'No JWT token provided');
         }
@@ -445,13 +445,53 @@ async function initMap() {
           <p>Email: ${loginEmail}</p>
         </div>
       `;
-      contentDiv.style.display = 'block';
+      contentDiv.style.display = 'flex';
     }else{
       const contentDiv = document.getElementById("information");
       contentDiv.innerHTML = `登入後查看使用者資訊`;
-      contentDiv.style.display = 'block';
+      contentDiv.style.display = 'flex';
     }
   });
+
+  document.getElementById('articleList').addEventListener("click", () => {
+    fetch(`/api/blogList?loginUserId=${loginUserId}`)
+    .then((response) => response.json())
+    .then((data) => displayBlogList(data))
+    .catch((error) => console.error('Error fetching data:', error));
+  });
+
+  function displayBlogList(data) {
+    const blogListContainer = document.getElementById('information');
+    blogListContainer.innerHTML = '';
+    data.forEach((blog) => {
+      const blogBox = document.createElement('div');
+      blogBox.className = 'blogBox'
+      const blogContent = document.createElement('div');
+      blogContent.className = 'blogContent'
+  
+      const blogTitle = document.createElement('div');
+      blogTitle.className = 'blogTitle';
+      blogTitle.innerText = blog.title;
+  
+      blogContent.appendChild(blogTitle);
+      blogBox.appendChild(blogContent);
+  
+      const firstImageBlock = blog.blocks.find(block => block.type === 'image');
+      const imageUrl = firstImageBlock.data.file.url;
+  
+      const blogUrl = document.createElement('a');
+      blogUrl.className = 'blogUrl';
+      blogUrl.href = `/dist/blog.html?id=${blog._id}&title=${encodeURIComponent(blog.title)}`;
+  
+      const blogImg = document.createElement('img');
+      blogImg.src = imageUrl;
+      blogImg.className = 'blogImg';
+      blogUrl.appendChild(blogImg);
+      blogBox.appendChild(blogUrl);
+  
+      blogListContainer.appendChild(blogBox);
+    });
+  }
 
   const inputDiv = document.createElement("div");
   inputDiv.className = "inputDiv";

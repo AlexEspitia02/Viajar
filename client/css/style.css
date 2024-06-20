@@ -191,6 +191,7 @@ button:hover {
   flex-direction: column;
   align-items: center;
   padding: 30px;
+  gap:20px;
 }
 
 .logInInput {
@@ -227,6 +228,48 @@ p {
   font-size: 16px;
   color: #555;
   margin: 10px 0;
+}
+
+.blogBox {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  transition: transform 0.2s ease-in-out;
+}
+
+.blogBox:hover {
+  transform: translateY(-5px);
+}
+
+.blogContent {
+  padding: 15px;
+}
+
+.blogTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.blogUrl {
+  text-decoration: none;
+  color: inherit;
+}
+
+.blogUrl:hover {
+  text-decoration: underline;
+}
+
+.blogImg {
+  width: 100%;
+  height: 180px;
+  display: block;
+  border-bottom: 1px solid #ddd;
+  object-fit: cover;
+  object-position: center center;
 }
 
   @media (max-width: 600px) {
