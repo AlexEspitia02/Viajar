@@ -1,0 +1,24 @@
+{
+  "editor.formatOnSave": true,
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  "tailwindCSS.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+
+  "eslint.options": {
+    "overrideConfigFile": ".eslintrc.json"
+  },
+  "editor.tabSize": 2,
+  "javascript.preferences.quoteStyle": "double",
+  "prettier.configPath": ".prettierrc"
+}

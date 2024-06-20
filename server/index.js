@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -12,6 +13,7 @@ app.use((req, res, next) => {
 });
 
 const setupSocket = require('./models/socketHandler');
+
 setupSocket(io);
 
 app.use(express.json());
@@ -23,6 +25,7 @@ const markHandling = require('./routes/markHandling');
 const postHandling = require('./routes/postHandling');
 const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
+
 app.use(markHandling);
 app.use(postHandling);
 app.use(blogListHandling);

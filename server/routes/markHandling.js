@@ -12,23 +12,23 @@ router.use(express.json());
 let db;
 
 connectToDb((err) => {
-  if (!err){
+  if (!err) {
     db = getDb();
   }
 });
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination(req, file, cb) {
     const uploadsDir = path.join(__dirname, '../uploads');
     cb(null, uploadsDir);
   },
-  filename: function (req, file, cb) {
+  filename(req, file, cb) {
     const extension = file.originalname.split('.').pop();
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(8).toString('hex');
     const filename = `${timestamp}-${randomString}.${extension}`;
     cb(null, filename);
-  }
+  },
 });
 
 const fileFilter = (req, file, cb) => {
@@ -42,17 +42,17 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 router.get('/api/marks', async (req, res) => {
-  const loginUserId = req.query.loginUserId;
-  let marks = [];
-  
+  const { loginUserId } = req.query;
+  const marks = [];
+
   db.collection('marks')
-    .find({ loginUserId: loginUserId })
-    .forEach(mark => marks.push(mark))
+    .find({ loginUserId })
+    .forEach((mark) => marks.push(mark))
     .then(() => {
       res.status(200).json(marks);
     })
     .catch(() => {
-      res.status(500).json({error: 'Could not fetch the documents'});
+      res.status(500).json({ error: 'Could not fetch the documents' });
     });
 });
 
@@ -65,16 +65,16 @@ router.post('/api/marks', upload.single('main_image'), async (req, res) => {
 
   const newMark = {
     imgSrc: `/uploads/${mainImageFile.filename}`,
-    src: "/post.html",
+    src: '/post.html',
     title: req.body.title,
     lat: parseFloat(req.body.lat),
     lng: parseFloat(req.body.lng),
-    loginUserId: req.body.loginUserId
+    loginUserId: req.body.loginUserId,
   };
 
   db.collection('marks')
     .insertOne(newMark)
-    .then(result => {
+    .then((result) => {
       res.status(201).json(result);
       req.io.emit('newMarker', newMark);
     })
@@ -88,9 +88,9 @@ router.delete('/api/marks/delete', async (req, res) => {
 
   db.collection('marks')
     .deleteOne({ _id: new ObjectId(_id) })
-    .then(result => {
+    .then((result) => {
       res.status(200).json(result);
-      req.io.emit('deleteMarker', _id);//尚未使用到
+      req.io.emit('deleteMarker', _id); // 尚未使用到
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not delete the document' });
