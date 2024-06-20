@@ -1,3 +1,55 @@
+let loginUserId = null;
+
+
+function clearJWT() {
+  localStorage.removeItem('jwtToken');
+  console.log('JWT cleared from LocalStorage');
+}
+
+function fetchUserData() {
+const jwtToken = localStorage.getItem('jwtToken');
+if (!jwtToken) {
+    console.log('No JWT token found, please log in.');
+    return;
+}
+
+fetch('/user/profile', {
+    method: 'GET',
+    headers: {
+    Authorization: `Bearer ${jwtToken}`,
+    'Content-Type': 'application/json',
+    },
+})
+.then((response) => {
+    if (!response.ok) {
+    throw new Error('Failed to fetch user data');
+    }
+    return response.json();
+})
+.then((data) => {
+    console.log('User data:', data);
+    loginUserName = data.data.name;
+    loginUserId = data.data.id;
+    loginImg = data.data.picture;
+    loginEmail = data.data.email;
+})
+.catch((error) => {
+    console.error('Error fetching user data:', error);
+    if (error.message === 'Failed to fetch user data') {
+        clearJWT();
+    }
+});
+}
+
+function checkLoginStatus() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+        fetchUserData();
+    }
+}
+
+checkLoginStatus();
+
 function displayBlogList(data) {
   const blogListContainer = document.getElementById('blogList');
   blogListContainer.innerHTML = '';
@@ -43,7 +95,7 @@ function displayBlogList(data) {
 document.getElementById('submit').addEventListener('click', function() {
   const keyword = document.getElementById('search').value;
   if (keyword) {
-    fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}`)
+    fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}&loginUserId=${loginUserId}`)
       .then(response => response.json())
       .then(data => {
         const blogListContainer = document.getElementById('blogList');
@@ -96,7 +148,7 @@ document.getElementById('submit').addEventListener('click', function() {
 });
 
 window.onload = function () {
-  fetch('/api/blogList')
+  fetch(`/api/blogList?loginUserId=${loginUserId}`)
     .then((response) => response.json())
     .then((data) => displayBlogList(data))
     .catch((error) => console.error('Error fetching data:', error));

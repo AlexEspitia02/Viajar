@@ -42,10 +42,11 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 router.get('/api/marks', async (req, res) => {
+  const loginUserId = req.query.loginUserId;
   let marks = [];
   
   db.collection('marks')
-    .find()
+    .find({ loginUserId: loginUserId })
     .forEach(mark => marks.push(mark))
     .then(() => {
       res.status(200).json(marks);
@@ -68,6 +69,7 @@ router.post('/api/marks', upload.single('main_image'), async (req, res) => {
     title: req.body.title,
     lat: parseFloat(req.body.lat),
     lng: parseFloat(req.body.lng),
+    loginUserId: req.body.loginUserId
   };
 
   db.collection('marks')
@@ -87,7 +89,6 @@ router.delete('/api/marks/delete', async (req, res) => {
   db.collection('marks')
     .deleteOne({ _id: new ObjectId(_id) })
     .then(result => {
-      console.log(result);
       res.status(200).json(result);
       req.io.emit('deleteMarker', _id);//尚未使用到
     })

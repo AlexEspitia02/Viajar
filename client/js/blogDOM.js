@@ -9,9 +9,60 @@ import ColorPlugin from 'editorjs-text-color-plugin';
 
 // const socket = io();
 let editor;
+let loginUserId = null;
+
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('id');
 const title = urlParams.get('title');
+
+function clearJWT() {
+localStorage.removeItem('jwtToken');
+console.log('JWT cleared from LocalStorage');
+}
+
+function fetchUserData() {
+const jwtToken = localStorage.getItem('jwtToken');
+if (!jwtToken) {
+    console.log('No JWT token found, please log in.');
+    return;
+}
+
+fetch('/user/profile', {
+    method: 'GET',
+    headers: {
+    Authorization: `Bearer ${jwtToken}`,
+    'Content-Type': 'application/json',
+    },
+})
+.then((response) => {
+    if (!response.ok) {
+    throw new Error('Failed to fetch user data');
+    }
+    return response.json();
+})
+.then((data) => {
+    console.log('User data:', data);
+    loginUserName = data.data.name;
+    loginUserId = data.data.id;
+    loginImg = data.data.picture;
+    loginEmail = data.data.email;
+})
+.catch((error) => {
+    console.error('Error fetching user data:', error);
+    if (error.message === 'Failed to fetch user data') {
+        clearJWT();
+    }
+});
+}
+
+function checkLoginStatus() {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+        fetchUserData();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', checkLoginStatus);
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -98,6 +149,7 @@ saveBtn.addEventListener('click', function() {
     editor.save().then((outputData) => {
         outputData._id = postId;
         outputData.title = title;
+        outputData.loginUserId = loginUserId;
         const formData = new FormData();
         formData.append('data', JSON.stringify(outputData));
         const fileInput = document.querySelector('input[type="file"]');
@@ -133,5 +185,5 @@ saveBtn.addEventListener('click', function() {
 
 let blogListButton = document.getElementById('blogListButton');
 blogListButton.addEventListener('click', function() {
-    window.location.href = 'http://localhost:3000/blogList.html';
+    window.location.href = '/blogList.html';
 });

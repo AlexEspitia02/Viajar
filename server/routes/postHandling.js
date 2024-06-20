@@ -103,7 +103,6 @@ router.delete('/api/posts/delete', async (req, res) => {
   db.collection('posts')
     .deleteOne({ _id: _id })
     .then(result => {
-      console.log(result);
       res.status(200).json(result);
       req.io.emit('deletePost', _id);//尚未使用到
     })

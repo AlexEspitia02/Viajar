@@ -195,40 +195,42 @@ async function initMap() {
     console.log('JWT cleared from LocalStorage');
   }
   
-  function fetchUserData() {
+  async function fetchUserData() {
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
       console.log('No JWT token found, please log in.');
       return;
     }
   
-    fetch('/user/profile', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => {
+    try {
+      const response = await fetch('/user/profile', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
-      return response.json();
-    })
-    .then((data) => {
+  
+      const data = await response.json();
       console.log('User data:', data);
       updateUserInterface(data.data);
       loginUserName = data.data.name;
       loginUserId = data.data.id;
       loginImg = data.data.picture;
       loginEmail = data.data.email;
-    })
-    .catch((error) => {
+
+      const images = await fetchImages(loginUserId);
+      displayImages(images);
+    } catch (error) {
       console.error('Error fetching user data:', error);
       if (error.message === 'Failed to fetch user data') {
         clearJWT();
       }
-    });
+    }
   }
   
   function checkLoginStatus() {
@@ -238,7 +240,7 @@ async function initMap() {
     }
   }
   
-  document.addEventListener('DOMContentLoaded', checkLoginStatus());
+  checkLoginStatus();
 
   document.getElementById('Login').addEventListener("click", () => {
     const information = document.getElementById('information');
@@ -506,6 +508,7 @@ async function initMap() {
     formData.append('title', title);
     formData.append('lat', selectedLatLng.lat());
     formData.append('lng', selectedLatLng.lng());
+    formData.append('loginUserId', loginUserId);
   
     try {
       const response = await fetch("/api/marks", {
@@ -525,11 +528,11 @@ async function initMap() {
       console.error("Error:", error);
       alert("發生錯誤");
     }
-  });  
+  }); 
 
-  async function fetchImages() {
+  async function fetchImages(loginUserId) {
     try {
-      const response = await fetch("/api/marks");
+      const response = await fetch(`/api/marks?loginUserId=${loginUserId}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -537,101 +540,101 @@ async function initMap() {
     }
   }
 
-  const images = await fetchImages();
-
-  images.forEach((imageData) => {
-    const infoDiv = document.createElement("div");
-    infoDiv.className = "infoDiv";
-    const titleDiv = document.createElement("div");
-    titleDiv.className = "titleDiv";
-    titleDiv.innerText = imageData.title;
-
-    const imgElementLink = document.createElement("a");
-    imgElementLink.href = `/dist/blog.html?id=${imageData._id}&title=${encodeURIComponent(imageData.title)}`;
-    imgElementLink.target = "_blank";
-
-    const imgElement = document.createElement("img");
-    imgElement.src = imageData.imgSrc;
-    imgElement.className = "landmarkImg";
-    imgElementLink.appendChild(imgElement);
-
-    const buttonBox = document.createElement("div");
-    const markDeleteButton = document.createElement("button");
-    markDeleteButton.innerText = "刪除"
-    
-    markDeleteButton.addEventListener("click", async function () {
-      const userConfirmation = confirm('會同時刪除文章，你確定要繼續嗎？');
-      if(userConfirmation){
-        try {
-          const response = await fetch("/api/marks/delete", {
-            method: "delete",
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              _id: imageData._id
-            })
-          });
-    
-          if (response.ok) {
-            marker.setMap(null);
-          } else {
-            alert("標記刪除失敗");
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          alert("發生錯誤");
-        }
+  function displayImages(images) {
+    images.forEach((imageData) => {
+      const infoDiv = document.createElement("div");
+      infoDiv.className = "infoDiv";
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "titleDiv";
+      titleDiv.innerText = imageData.title;
   
-        try {
-          const response = await fetch("/api/posts/delete", {
-            method: "delete",
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              _id: imageData._id
-            })
-          });
-    
-          if (response.ok) {
-            alert("部落格也刪除了!");
-          } else {
-            alert("部落格刪除失敗");
+      const imgElementLink = document.createElement("a");
+      imgElementLink.href = `/dist/blog.html?id=${imageData._id}&title=${encodeURIComponent(imageData.title)}`;
+      imgElementLink.target = "_blank";
+  
+      const imgElement = document.createElement("img");
+      imgElement.src = imageData.imgSrc;
+      imgElement.className = "landmarkImg";
+      imgElementLink.appendChild(imgElement);
+  
+      const buttonBox = document.createElement("div");
+      const markDeleteButton = document.createElement("button");
+      markDeleteButton.innerText = "刪除";
+  
+      markDeleteButton.addEventListener("click", async function () {
+        const userConfirmation = confirm('會同時刪除文章，你確定要繼續嗎？');
+        if (userConfirmation) {
+          try {
+            const response = await fetch("/api/marks/delete", {
+              method: "delete",
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                _id: imageData._id,
+              }),
+            });
+  
+            if (response.ok) {
+              marker.setMap(null);
+            } else {
+              alert("標記刪除失敗");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("發生錯誤");
           }
-        } catch (error) {
-          console.error("Error:", error);
-          alert("發生錯誤");
+  
+          try {
+            const response = await fetch("/api/posts/delete", {
+              method: "delete",
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                _id: imageData._id,
+              }),
+            });
+  
+            if (response.ok) {
+              alert("部落格也刪除了!");
+            } else {
+              alert("部落格刪除失敗");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("發生錯誤");
+          }
         }
-      }
+      });
+  
+      buttonBox.appendChild(markDeleteButton);
+  
+      infoDiv.appendChild(titleDiv);
+      infoDiv.appendChild(imgElementLink);
+      infoDiv.appendChild(buttonBox);
+  
+      const infowindow = new google.maps.InfoWindow({
+        content: infoDiv,
+      });
+  
+      const beachFlagImg = document.createElement("img");
+      beachFlagImg.className = "icon";
+      beachFlagImg.src = "./images/location.png";
+  
+      const marker = new AdvancedMarkerElement({
+        map,
+        gmpClickable: true,
+        position: { lat: imageData.lat, lng: imageData.lng },
+        title: imageData.title,
+        content: beachFlagImg,
+      });
+  
+      marker.addListener("click", function () {
+        infowindow.open(map, marker);
+      });
     });
-
-    buttonBox.appendChild(markDeleteButton);
-
-    infoDiv.appendChild(titleDiv);
-    infoDiv.appendChild(imgElementLink);
-    infoDiv.appendChild(buttonBox);
-
-    const infowindow = new google.maps.InfoWindow({
-      content: infoDiv,
-    });
-
-    const beachFlagImg = document.createElement("img");
-    beachFlagImg.className = "icon"
-    beachFlagImg.src ="./images/location.png";
-
-    const marker = new AdvancedMarkerElement({
-      map,
-      gmpClickable: true,
-      position: { lat: imageData.lat, lng: imageData.lng },
-      title: imageData.title,
-      content: beachFlagImg,
-    });
-
-    marker.addListener("click", function () {
-      infowindow.open(map, marker);
-    });
-  });
+  }
 
   socket.on('newMarker', (data) => {
     const infoDiv = document.createElement("div");
