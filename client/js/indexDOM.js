@@ -2,6 +2,11 @@ const socket = io();
 let userId = null;
 let activeWindowId = null; 
 
+let loginUserName = null;
+let loginUserId = null;
+let loginImg = null;
+let loginEmail = null;
+
 socket.on('init', (data) => {
   userId = data.id;
   console.log(userId);
@@ -165,24 +170,24 @@ async function initMap() {
       console.error('No JWT token provided');
     }
   }
+  
+  if (!loginUserId) {
+    const contentDiv = document.getElementById("information");
+    contentDiv.innerHTML = `登入後查看使用者資訊`;
+    contentDiv.style.display = 'block';
+  }
 
-  document.getElementById('userInfo').addEventListener("click", () => {
-
-  const loginButtonBox = document.getElementById('loginButtonBox');
-  loginButtonBox.style.display = 'none'
-    
   function updateUserInterface(user) {
     const contentDiv = document.getElementById("information");
-    if (contentDiv) {
-      contentDiv.innerHTML = `
-        <div class="welcomeInfo">
-          <h2>Welcome, ${user.name}!</h2>
-          <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
-          <p>Email: ${user.email}</p>
-        </div>
-      `;
-      contentDiv.style.display = 'block';
-    }
+
+    contentDiv.innerHTML = `
+      <div class="welcomeInfo">
+        <h2>Welcome, ${user.name}!</h2>
+        <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
+        <p>Email: ${user.email}</p>
+      </div>
+    `;
+    contentDiv.style.display = 'block';
   }
   
   function clearJWT() {
@@ -213,6 +218,10 @@ async function initMap() {
     .then((data) => {
       console.log('User data:', data);
       updateUserInterface(data.data);
+      loginUserName = data.data.name;
+      loginUserId = data.data.id;
+      loginImg = data.data.picture;
+      loginEmail = data.data.email;
     })
     .catch((error) => {
       console.error('Error fetching user data:', error);
@@ -230,7 +239,6 @@ async function initMap() {
   }
   
   document.addEventListener('DOMContentLoaded', checkLoginStatus());
-  });
 
   document.getElementById('Login').addEventListener("click", () => {
     const information = document.getElementById('information');
@@ -342,6 +350,10 @@ async function initMap() {
                 <p>Email: ${data.data.user.email}</p>
               </div>
             `;
+            loginUserName = data.data.user.name;
+            loginUserId = data.data.user.id;
+            loginImg = data.data.user.picture;
+            loginEmail = data.data.user.email;
             contentDiv.style.display = 'block';
           } else {
             alert(data.message || 'No JWT token provided');
@@ -402,6 +414,10 @@ async function initMap() {
               <p>Email: ${data.data.user.email}</p>
             </div>
           `;
+          loginUserName = data.data.user.name;
+          loginUserId = data.data.user.id;
+          loginImg = data.data.user.picture;
+          loginEmail = data.data.user.email;
           contentDiv.style.display = 'block';
         } else {
           alert(data.message || 'No JWT token provided');
@@ -411,67 +427,30 @@ async function initMap() {
     }
   });
 
-  function updateUserInterface(user) {
-    const contentDiv = document.getElementById("information");
-    if (contentDiv) {
+  document.getElementById('userInfo').addEventListener("click", () => {
+    const information = document.getElementById('information');
+    information.innerHTML = '';
+    
+    const loginButtonBox = document.getElementById('loginButtonBox');
+    loginButtonBox.style.display = 'none'
+    
+    if (loginUserId) {
+      const contentDiv = document.getElementById("information");
       contentDiv.innerHTML = `
         <div class="welcomeInfo">
-          <h2>Welcome, ${user.name}!</h2>
-          <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
-          <p>Email: ${user.email}</p>
+          <h2>Welcome, ${loginUserName}!</h2>
+          <img src="${loginImg}" alt="Profile Picture" class="userPicture"/>
+          <p>Email: ${loginEmail}</p>
         </div>
       `;
       contentDiv.style.display = 'block';
+    }else{
+      const contentDiv = document.getElementById("information");
+      contentDiv.innerHTML = `登入後查看使用者資訊`;
+      contentDiv.style.display = 'block';
     }
-  }
-  
-  function clearJWT() {
-    localStorage.removeItem('jwtToken');
-    console.log('JWT cleared from LocalStorage');
-  }
-  
-  function fetchUserData() {
-    const jwtToken = localStorage.getItem('jwtToken');
-    if (!jwtToken) {
-      console.log('No JWT token found, please log in.');
-      return;
-    }
-  
-    fetch('/user/profile', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log('User data:', data);
-      updateUserInterface(data.data);
-    })
-    .catch((error) => {
-      console.error('Error fetching user data:', error);
-      if (error.message === 'Failed to fetch user data') {
-        clearJWT();
-      }
-    });
-  }
-  
-  function checkLoginStatus() {
-    const jwtToken = localStorage.getItem('jwtToken');
-    if (jwtToken) {
-      fetchUserData();
-    }
-  }
-  
-  document.addEventListener('DOMContentLoaded', checkLoginStatus());
+  });
 
-  
   const inputDiv = document.createElement("div");
   inputDiv.className = "inputDiv";
 
