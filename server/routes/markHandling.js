@@ -90,7 +90,7 @@ router.delete('/api/marks/delete', async (req, res) => {
     .deleteOne({ _id: new ObjectId(_id) })
     .then((result) => {
       res.status(200).json(result);
-      req.io.emit('deleteMarker', _id); // 尚未使用到
+      req.io.emit('deleteMarker', _id);
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not delete the document' });

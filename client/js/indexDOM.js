@@ -16,6 +16,8 @@ let map;
 let selectedLatLng;
 let cursorsVisible = true;
 
+let markers = [];
+
 function debounce(func, wait) {
   let timeout;
   return function(...args) {
@@ -588,6 +590,17 @@ async function initMap() {
     }
   }
 
+  socket.on('deleteMarker', (data) => {
+    const marker = findMarkerById(data._id);
+    if (marker) {
+      marker.setMap(null);
+    }
+  });
+
+  function findMarkerById(_id) {
+    return markers.find(marker => marker._id === _id);
+  }
+
   function displayImages(images) {
     images.forEach((imageData) => {
       const infoDiv = document.createElement("div");
@@ -625,6 +638,7 @@ async function initMap() {
   
             if (response.ok) {
               marker.setMap(null);
+              socket.emit('deleteMarker', { _id: imageData._id });
             } else {
               alert("標記刪除失敗");
             }
@@ -677,6 +691,9 @@ async function initMap() {
         title: imageData.title,
         content: beachFlagImg,
       });
+
+      marker._id = imageData._id;
+      markers.push(marker); 
   
       marker.addListener("click", function () {
         infowindow.open(map, marker);
@@ -720,6 +737,7 @@ async function initMap() {
     
           if (response.ok) {
             marker.setMap(null);
+            socket.emit('deleteMarker', { _id: data._id });
           } else {
             alert("標記刪除失敗");
           }
@@ -772,6 +790,9 @@ async function initMap() {
       title: data.title,
       content: beachFlagImg,
     });
+
+    marker._id = data._id;
+    markers.push(marker); 
 
     marker.addListener("click", function () {
       infowindow.open(map, marker);

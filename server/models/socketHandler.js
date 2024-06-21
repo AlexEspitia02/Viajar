@@ -57,6 +57,10 @@ module.exports = (io) => {
       socket.broadcast.emit('toggleCursorsVisibility', data);
     });
 
+    socket.on('deleteMarker', (data) => {
+      socket.broadcast.emit('deleteMarker', data);
+    });
+
     socket.on('disconnect', () => {
       if (mapLock === userId) {
         mapLock = null;
