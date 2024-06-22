@@ -42,11 +42,11 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 router.get('/api/marks', async (req, res) => {
-  const { loginUserId } = req.query;
+  const { mapId } = req.query;
   const marks = [];
 
   db.collection('marks')
-    .find({ loginUserId })
+    .find({ mapId })
     .forEach((mark) => marks.push(mark))
     .then(() => {
       res.status(200).json(marks);
@@ -70,6 +70,7 @@ router.post('/api/marks', upload.single('main_image'), async (req, res) => {
     lat: parseFloat(req.body.lat),
     lng: parseFloat(req.body.lng),
     loginUserId: req.body.loginUserId,
+    mapId: req.body.mapId,
   };
 
   db.collection('marks')

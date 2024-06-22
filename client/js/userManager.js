@@ -16,7 +16,7 @@ function clearJWT() {
     console.log('JWT cleared from LocalStorage');
 }
 
-async function fetchUserData(fetchImages, displayImages) {
+async function fetchUserData() {
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
         console.log('No JWT token found, please log in.');
@@ -43,8 +43,6 @@ async function fetchUserData(fetchImages, displayImages) {
         loginUserId = data.data.id;
         loginImg = data.data.picture;
         loginEmail = data.data.email;
-        const images = await fetchImages(loginUserId);
-        displayImages(images);
         return loginUserId;
     } catch (error) {
         console.error('Error fetching user data:', error);
@@ -55,9 +53,9 @@ async function fetchUserData(fetchImages, displayImages) {
     }
 }
 
-function checkLoginStatus(fetchUserData, fetchImages, displayImages) {
+function checkLoginStatus(fetchUserData) {
     const jwtToken = localStorage.getItem('jwtToken');
     if (jwtToken) {
-        fetchUserData(fetchImages, displayImages)
+        fetchUserData()
     }
 }

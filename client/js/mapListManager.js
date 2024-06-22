@@ -68,7 +68,8 @@ function createRoomBox(roomInfo) {
 
     roomBox.addEventListener("click", () => {
         mapId = roomInfo._id;
-        console.log(mapId);
+        localStorage.setItem('mapId', roomInfo._id);
+        location.reload();
     });
 
     return roomBox;

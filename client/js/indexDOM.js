@@ -140,12 +140,16 @@ async function initMap() {
   // });
 
   map.addListener("click", (e) => {
+    const mapId = localStorage.getItem('mapId');
     placeMarkerAndPanTo(e.latLng, map, false);
-    socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng() });
+    socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng(), mapId });
   });
   socket.on('newEmptyMarker',(data) => {
-    const latLng = new google.maps.LatLng(data.lat, data.lng);
-    placeMarkerAndPanTo(latLng, map, false)
+    const mapId = localStorage.getItem('mapId');
+    if ( mapId === data.mapId){
+      const latLng = new google.maps.LatLng(data.lat, data.lng);
+      placeMarkerAndPanTo(latLng, map, false)
+    }
   });
 
   const controlButton  = document.getElementById('controlButton');
@@ -175,7 +179,7 @@ async function initMap() {
     contentDiv.style.display = 'flex';
   }
   
-  checkLoginStatus(fetchUserData, fetchImages, displayImages);
+  checkLoginStatus(fetchUserData);
 
   document.getElementById('Login').addEventListener("click", () => {
     handleAuthForm(true);
@@ -270,6 +274,7 @@ async function initMap() {
     formData.append('lat', selectedLatLng.lat());
     formData.append('lng', selectedLatLng.lng());
     formData.append('loginUserId', loginUserId);
+    formData.append('mapId', mapId);
   
     try {
       const response = await fetch("/api/marks", {
@@ -291,9 +296,14 @@ async function initMap() {
     }
   }); 
 
-  async function fetchImages(loginUserId) {
+  mapId = localStorage.getItem('mapId');
+
+  const images = await fetchImages(mapId);
+  displayImages(images);
+
+  async function fetchImages(mapId) {
     try {
-      const response = await fetch(`/api/marks?loginUserId=${loginUserId}`);
+      const response = await fetch(`/api/marks?mapId=${mapId}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -319,7 +329,10 @@ async function initMap() {
   }
 
   socket.on('newMarker', (data) => {
-    createAndDisplayMarker(data, map, markers, socket, AdvancedMarkerElement);
+    const mapId = localStorage.getItem('mapId');
+    if ( mapId === data.mapId){
+      createAndDisplayMarker(data, map, markers, socket, AdvancedMarkerElement);
+    }
   });
 
   initializeDrawingManager(map);
