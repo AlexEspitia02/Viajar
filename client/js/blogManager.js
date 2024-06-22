@@ -34,7 +34,7 @@ function displayBlogList(data) {
         });
     } else {
         const contentDiv = document.getElementById("information");
-        contentDiv.innerHTML = `登入後查看使用者資訊`;
+        contentDiv.innerHTML = `登入後查看文章清單`;
         contentDiv.style.display = 'flex';
     }
 }

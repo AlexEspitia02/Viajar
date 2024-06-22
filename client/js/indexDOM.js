@@ -7,6 +7,8 @@ let loginUserId = null;
 let loginImg = null;
 let loginEmail = null;
 
+let mapId = null;
+
 socket.on('init', (data) => {
   userId = data.id;
   console.log(userId);
@@ -103,11 +105,9 @@ socket.on('mouseMove', (data) => {
   }
 });
 
-const mapId = 'map_' + Math.random().toString(36).substr(2, 9);
-localStorage.setItem('currentMapId', mapId);
-initMap(mapId);
+initMap();
 
-async function initMap(mapId) {
+async function initMap() {
   
   const { Map } = await google.maps.importLibrary("maps");
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
@@ -204,6 +204,8 @@ async function initMap(mapId) {
       contentDiv.style.display = 'flex';
     }
   });
+
+  document.getElementById('mapList').addEventListener("click", handleMapListClick);
 
   document.getElementById('articleList').addEventListener("click", () => {
     fetch(`/api/blogList?loginUserId=${loginUserId}`)

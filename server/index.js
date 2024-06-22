@@ -25,11 +25,13 @@ const markHandling = require('./routes/markHandling');
 const postHandling = require('./routes/postHandling');
 const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
+const mapRoomHandling = require('./routes/mapRoomHandling');
 
 app.use(markHandling);
 app.use(postHandling);
 app.use(blogListHandling);
 app.use(signInHandling);
+app.use(mapRoomHandling);
 
 server.listen(3000, () => {
   console.log('Server is running on port 3000');

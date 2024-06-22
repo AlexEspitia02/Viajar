@@ -14,7 +14,7 @@ body {
   width: 100%;
 }
 
-
+/*創建地標*/
 .landmarkImg{
   height: 125px;
   width:  125px;
@@ -99,10 +99,12 @@ button:hover {
   background-color: #009382;
 }
 
+/*地標圖片*/
 .icon{
   height: 35px;
 }
 
+/*鼠標*/
 .cursor {
   width: 15px;
   height: 15px;
@@ -113,6 +115,7 @@ button:hover {
   z-index: 1000;
 }
 
+/*右側按鈕*/
 .buttonBox{
   top: 30%;
   z-index: 1;
@@ -129,15 +132,16 @@ button:hover {
   border: #ccc solid 0.5px;
 }
 
+/*左側資訊欄*/
 .leftInfo {
   position: fixed;
   left: 0;
   top: 100px;
   height: 80%;
-  width: 320px;
+  width: 340px;
   background-color: #f9f9f9;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  transform: translateX(-99.95%);
+  /* transform: translateX(-99.95%); */
   transition: transform 0.3s ease;
   z-index: 1000;
   border-radius: 0 10px 10px 0;
@@ -148,17 +152,10 @@ button:hover {
   transform: translateX(0);
 }
 
+/*左側資訊欄標頭*/
 .leftInfoHeader{
   display: flex;
   justify-content: space-around;
-  padding: 20px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.loginButtonBox{
-  display: none;
-  justify-content: start;
   padding: 20px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
@@ -194,7 +191,17 @@ button:hover {
   gap:20px;
 }
 
-.logInInput {
+
+/*登入頁面*/
+.loginButtonBox{
+  display: none;
+  justify-content: start;
+  padding: 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.logInInput, .roomNameInput {
   width: 90%;
   padding: 10px;
   margin: 10px 0;
@@ -230,6 +237,7 @@ p {
   margin: 10px 0;
 }
 
+/*部落格清單頁面*/
 .blogBox {
   background: #fff;
   border-radius: 8px;
@@ -272,18 +280,43 @@ p {
   object-position: center center;
 }
 
-  @media (max-width: 600px) {
-    .inputDiv {
-      width: 90%;
-      padding: 10px;
-    }
-  
-    .inputTitleBox,
-    .inputImgBox,
-    button {
-      font-size: 14px;
-      padding: 8px;
-    }
-  }
-  
-  
+/*地圖清單頁面*/
+.mapRoom{
+  margin: 0px;
+  padding: 10px 20px;
+}
+
+.roomBox {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+.roomBox:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.roomName,
+.roomId,
+.roomOwner {
+  margin: 5px 0;
+}
+
+.roomName {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.roomId {
+  font-size: 14px;
+  color: #666;
+}
+
+.roomOwner {
+  font-size: 14px;
+  color: #666;
+}
