@@ -207,7 +207,7 @@ button:hover {
   max-height: 38px;
 }
 
-.logInInput, .roomNameInput, .blogListSearchInput {
+.logInInput, .roomNameInput, .blogListSearchInput, .roomIdInput, .inviteesIdInput {
   width: 90%;
   padding: 10px;
   margin: 10px 0;

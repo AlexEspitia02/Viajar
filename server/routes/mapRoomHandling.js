@@ -42,6 +42,32 @@ router.post('/api/maps', async (req, res) => {
     });
 });
 
+router.patch('/api/maps', async (req, res) => {
+  const { roomId, loginUserId, invitees } = req.body;
+
+  try {
+    const map = await db
+      .collection('maps')
+      .findOne({ _id: new ObjectId(roomId) });
+    if (!map) {
+      return res.status(404).json({ error: '未找到房間' });
+    }
+
+    if (map.loginUserId !== loginUserId) {
+      return res.status(403).json({
+        error: '您無權邀請使用者存取此地圖',
+      });
+    }
+
+    const result = await db
+      .collection('maps')
+      .updateOne({ _id: new ObjectId(roomId) }, { $addToSet: { invitees } });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: '無法更新文檔' });
+  }
+});
+
 // router.delete('/api/marks/delete', async (req, res) => {
 //   const { _id } = req.body;
 

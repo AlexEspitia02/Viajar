@@ -11,6 +11,7 @@ function handleMapListClick() {
 
     document.getElementById('mapListBtn').addEventListener("click", fetchMapList);
     document.getElementById('createMap').addEventListener("click", displayCreateMapForm);
+    document.getElementById('inviteesMapBtn').addEventListener("click", displayInviteForm);
 }
 
 function setupLoginButtonBox(loginButtonBox) {
@@ -19,9 +20,11 @@ function setupLoginButtonBox(loginButtonBox) {
 
     const mapListBtn = createButton('mapListBtn', 'mapListBtn', '地圖清單');
     const createMapBtn = createButton('createMap', 'createMap', '創建地圖');
+    const inviteesMapBtn = createButton('inviteesMapBtn', 'inviteesMapBtn', '邀請');
 
     loginButtonBox.appendChild(mapListBtn);
     loginButtonBox.appendChild(createMapBtn);
+    loginButtonBox.appendChild(inviteesMapBtn);
 }
 
 function createButton(id, className, text) {
@@ -126,4 +129,48 @@ function createMap() {
         }
     })
     .catch(error => console.error('Map Create Error:', error));
+}
+
+function displayInviteForm() {
+    const information = document.getElementById('information');
+    information.innerHTML = '';
+
+    const roomIdInput = document.createElement("input");
+    roomIdInput.setAttribute("type", "text");
+    roomIdInput.className = 'roomIdInput';
+    roomIdInput.setAttribute("placeholder", "輸入分享的地圖ID");
+    roomIdInput.id = 'roomIdInput';
+    information.appendChild(roomIdInput);
+
+    const inviteesIdInput = document.createElement("input");
+    inviteesIdInput.setAttribute("type", "text");
+    inviteesIdInput.className = 'inviteesIdInput';
+    inviteesIdInput.setAttribute("placeholder", "輸入受邀者的User ID");
+    inviteesIdInput.id = 'inviteesIdInput';
+    information.appendChild(inviteesIdInput);
+
+    const inviteUserBtn = document.createElement("button");
+    inviteUserBtn.innerText = '確定邀請';
+    inviteUserBtn.onclick = inviteUser;
+    information.appendChild(inviteUserBtn);
+}
+
+function inviteUser() {
+    const roomId = document.getElementById('roomIdInput').value;
+    const invitees = document.getElementById('inviteesIdInput').value;
+
+    fetch('/api/maps', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ roomId, loginUserId, invitees })
+    })
+    .then(response => {
+        if (response.ok) {
+            const information = document.getElementById('information');
+            information.innerHTML = '地圖分享成功!';
+        }
+    })
+    .catch(error => alert(error));
 }
