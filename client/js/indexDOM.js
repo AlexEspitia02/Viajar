@@ -139,6 +139,10 @@ async function initMap() {
   //   }
   // });
 
+  if (!localStorage.getItem('jwtToken')) {
+    localStorage.clear();
+  }
+
   map.addListener("click", (e) => {
     const mapId = localStorage.getItem('mapId');
     placeMarkerAndPanTo(e.latLng, map, false);
