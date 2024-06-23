@@ -14,11 +14,11 @@ connectToDb((err) => {
 });
 
 router.get('/api/blogList', async (req, res) => {
-  const { loginUserId } = req.query;
+  const { mapId } = req.query;
   const blogs = [];
 
   db.collection('posts')
-    .find({ loginUserId })
+    .find({ mapId })
     .forEach((blog) => blogs.push(blog))
     .then(() => {
       res.status(200).json(blogs);

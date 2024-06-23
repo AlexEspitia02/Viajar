@@ -212,7 +212,8 @@ async function initMap() {
   document.getElementById('mapList').addEventListener("click", handleMapListClick);
 
   document.getElementById('articleList').addEventListener("click", () => {
-    fetch(`/api/blogList?loginUserId=${loginUserId}`)
+    const mapId = localStorage.getItem('mapId');
+    fetch(`/api/blogList?mapId=${mapId}`)
     .then((response) => response.json())
     .then((data) => displayBlogList(data))
     .catch((error) => console.error('Error fetching data:', error));

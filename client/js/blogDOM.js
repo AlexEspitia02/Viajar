@@ -150,6 +150,7 @@ saveBtn.addEventListener('click', function() {
         outputData._id = postId;
         outputData.title = title;
         outputData.loginUserId = loginUserId;
+        outputData.mapId = localStorage.getItem('mapId');
         const formData = new FormData();
         formData.append('data', JSON.stringify(outputData));
         const fileInput = document.querySelector('input[type="file"]');
