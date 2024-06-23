@@ -19,7 +19,9 @@ router.get('/api/maps', async (req, res) => {
   const { loginUserId } = req.query;
 
   db.collection('maps')
-    .find({ loginUserId })
+    .find({
+      $or: [{ loginUserId }, { invitees: loginUserId }],
+    })
     .forEach((map) => maps.push(map))
     .then(() => {
       res.status(200).json(maps);
