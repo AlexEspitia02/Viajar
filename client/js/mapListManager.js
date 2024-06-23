@@ -10,6 +10,7 @@ function handleMapListClick() {
     }
 
     document.getElementById('mapListBtn').addEventListener("click", fetchMapList);
+    document.getElementById('mapSearchBtn').addEventListener("click", showSearch);
     document.getElementById('createMap').addEventListener("click", displayCreateMapForm);
     document.getElementById('inviteesMapBtn').addEventListener("click", displayInviteForm);
 }
@@ -19,10 +20,12 @@ function setupLoginButtonBox(loginButtonBox) {
     loginButtonBox.innerHTML = '';
 
     const mapListBtn = createButton('mapListBtn', 'mapListBtn', '地圖清單');
+    const mapSearchBtn = createButton('mapSearchBtn', 'mapSearchBtn', '搜尋地圖');
     const createMapBtn = createButton('createMap', 'createMap', '創建地圖');
     const inviteesMapBtn = createButton('inviteesMapBtn', 'inviteesMapBtn', '邀請');
 
     loginButtonBox.appendChild(mapListBtn);
+    loginButtonBox.appendChild(mapSearchBtn);
     loginButtonBox.appendChild(createMapBtn);
     loginButtonBox.appendChild(inviteesMapBtn);
 }
@@ -173,4 +176,73 @@ function inviteUser() {
         }
     })
     .catch(error => alert(error));
+}
+
+function showSearch() {
+    const loginButtonBox = document.getElementById('loginButtonBox');
+
+    let searchContainer = document.getElementById('searchContainer');
+    if (!searchContainer) {
+        searchContainer = document.createElement('nav');
+        searchContainer.id = 'searchContainer';
+        searchContainer.className = 'searchContainer';
+        loginButtonBox.appendChild(searchContainer);
+
+        const mapListSearchInput = document.createElement('input');
+        mapListSearchInput.setAttribute("placeholder", "搜尋地圖");
+        mapListSearchInput.className = 'mapListSearchInput';
+        mapListSearchInput.id = 'mapListSearchInput';
+        searchContainer.appendChild(mapListSearchInput);
+
+        const mapSearchDisplayButton = document.createElement('button');
+        mapSearchDisplayButton.textContent = '搜尋';
+        mapSearchDisplayButton.className = 'mapSearchDisplayButton';
+        mapSearchDisplayButton.id = 'mapSearchDisplayButton';
+        searchContainer.appendChild(mapSearchDisplayButton);
+
+        mapSearchDisplayButton.addEventListener('click', () => {
+            
+            const mapListContainer = document.getElementById('information');
+            mapListContainer.innerHTML = '';
+            const keyword = document.getElementById('mapListSearchInput').value;
+            if (keyword) {
+                fetch(`/api/maps/search?keyword=${encodeURIComponent(keyword)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0){
+                            mapListContainer.innerHTML=`
+                            查無地圖
+                            `
+                        }else{
+                            data.forEach(map => {
+                                const mapElement = createRoomBox(map);
+                                mapListContainer.appendChild(mapElement);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        document.getElementById('results').textContent = '搜索失敗';
+                    });
+            } else {
+                alert('請輸入搜索關鍵字');
+            }
+
+            mapListSearchInput.value = '';
+            searchContainer.classList.remove('expanded');
+        });
+
+        mapListSearchInput.addEventListener('blur', () => {
+            if (mapListSearchInput.value === '') {
+                searchContainer.classList.remove('expanded');
+            }
+        });
+    }
+
+    if (searchContainer.classList.contains('expanded')) {
+        searchContainer.classList.remove('expanded');
+    } else {
+        searchContainer.classList.add('expanded');
+        document.getElementById('mapListSearchInput').focus();
+    }
 }

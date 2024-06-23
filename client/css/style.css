@@ -138,10 +138,10 @@ button:hover {
   left: 0;
   top: 100px;
   height: 80%;
-  width: 340px;
+  width: 425px;
   background-color: #f9f9f9;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  /* transform: translateX(-99.95%); */
+  transform: translateX(-99.95%);
   transition: transform 0.3s ease;
   z-index: 1000;
   border-radius: 0 10px 10px 0;
@@ -207,7 +207,7 @@ button:hover {
   max-height: 38px;
 }
 
-.logInInput, .roomNameInput, .blogListSearchInput, .roomIdInput, .inviteesIdInput {
+.logInInput, .roomNameInput, .blogListSearchInput, .roomIdInput, .inviteesIdInput, .mapListSearchInput {
   width: 90%;
   padding: 10px;
   margin: 10px 0;
@@ -374,4 +374,27 @@ p {
   content: "●";
   margin-right: 8px;
   color: #009382;
+}
+
+.searchContainer {
+  display: none;
+  position: absolute;
+}
+
+.searchContainer.expanded {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: white;
+}
+
+.mapListSearchInput{
+  width: 55%;
+}
+
+.mapSearchDisplayButton{
+  width: 25%;
+  height: 40px;
+  margin-left: 20px;
 }

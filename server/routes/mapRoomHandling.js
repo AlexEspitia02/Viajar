@@ -70,6 +70,40 @@ router.patch('/api/maps', async (req, res) => {
   }
 });
 
+router.get('/api/maps/search', async (req, res) => {
+  try {
+    const { keyword } = req.query;
+
+    const regex = new RegExp(keyword, 'i');
+
+    const queryConditions = [];
+
+    if (ObjectId.isValid(keyword)) {
+      queryConditions.push({ _id: new ObjectId(keyword) });
+    }
+
+    queryConditions.push(
+      { roomName: { $regex: regex } },
+      { loginUserName: { $regex: regex } }
+    );
+
+    const maps = await db
+      .collection('maps')
+      .aggregate([
+        {
+          $match: {
+            $or: queryConditions,
+          },
+        },
+      ])
+      .toArray();
+
+    res.status(200).json(maps);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not fetch the documents' });
+  }
+});
+
 // router.delete('/api/marks/delete', async (req, res) => {
 //   const { _id } = req.body;
 
