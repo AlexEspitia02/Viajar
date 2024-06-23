@@ -145,7 +145,9 @@ button:hover {
   transition: transform 0.3s ease;
   z-index: 1000;
   border-radius: 0 10px 10px 0;
-  overflow-y: auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .leftInfo:hover {
@@ -189,6 +191,8 @@ button:hover {
   align-items: center;
   padding: 30px;
   gap:20px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 
@@ -200,6 +204,7 @@ button:hover {
   padding: 20px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
+  max-height: 38px;
 }
 
 .logInInput, .roomNameInput, .blogListSearchInput {
@@ -251,6 +256,7 @@ p {
   overflow: hidden;
   width: 100%;
   transition: transform 0.2s ease-in-out;
+  min-height: 243px;
 }
 
 .blogBox:hover {
