@@ -197,15 +197,13 @@ async function initMap() {
     loginButtonBox.style.display = 'none'
     
     if (loginUserId) {
-      const contentDiv = document.getElementById("information");
-      contentDiv.innerHTML = `
-        <div class="welcomeInfo">
-          <h2>Welcome, ${loginUserName}!</h2>
-          <img src="${loginImg}" alt="Profile Picture" class="userPicture"/>
-          <p>Email: ${loginEmail}</p>
-        </div>
-      `;
-      contentDiv.style.display = 'flex';
+      const user = {
+        name: loginUserName,
+        picture: loginImg,
+        email: loginEmail,
+        id: loginUserId
+    };
+    updateUserInterface(user);
     }else{
       const contentDiv = document.getElementById("information");
       contentDiv.innerHTML = `登入後查看使用者資訊`;

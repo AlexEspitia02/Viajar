@@ -30,7 +30,7 @@ router.get('/api/blogList', async (req, res) => {
 
 router.get('/api/blogList/search', async (req, res) => {
   try {
-    const { keyword, loginUserId } = req.query;
+    const { keyword, mapId } = req.query;
 
     const regex = new RegExp(keyword, 'i');
 
@@ -39,33 +39,12 @@ router.get('/api/blogList/search', async (req, res) => {
       .aggregate([
         {
           $match: {
-            loginUserId,
-          },
-        },
-        {
-          $addFields: {
-            filteredParagraphs: {
-              $filter: {
-                input: '$blocks',
-                as: 'block',
-                cond: {
-                  $and: [
-                    { $eq: ['$$block.type', 'paragraph'] },
-                    {
-                      $regexMatch: { input: '$$block.data.text', regex },
-                    },
-                  ],
-                },
-              },
-            },
+            mapId,
           },
         },
         {
           $match: {
-            $or: [
-              { title: { $regex: regex } },
-              { filteredParagraphs: { $ne: [] } },
-            ],
+            $or: [{ title: { $regex: regex } }],
           },
         },
       ])
@@ -76,6 +55,56 @@ router.get('/api/blogList/search', async (req, res) => {
     res.status(500).json({ error: 'Could not fetch the documents' });
   }
 });
+
+// 保留給userId search
+// router.get('/api/blogList/search', async (req, res) => {
+//   try {
+//     const { keyword, loginUserId } = req.query;
+
+//     const regex = new RegExp(keyword, 'i');
+
+//     const blogs = await db
+//       .collection('posts')
+//       .aggregate([
+//         {
+//           $match: {
+//             loginUserId,
+//           },
+//         },
+//         {
+//           $addFields: {
+//             filteredParagraphs: {
+//               $filter: {
+//                 input: '$blocks',
+//                 as: 'block',
+//                 cond: {
+//                   $and: [
+//                     { $eq: ['$$block.type', 'paragraph'] },
+//                     {
+//                       $regexMatch: { input: '$$block.data.text', regex },
+//                     },
+//                   ],
+//                 },
+//               },
+//             },
+//           },
+//         },
+//         {
+//           $match: {
+//             $or: [
+//               { title: { $regex: regex } },
+//               { filteredParagraphs: { $ne: [] } },
+//             ],
+//           },
+//         },
+//       ])
+//       .toArray();
+
+//     res.status(200).json(blogs);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Could not fetch the documents' });
+//   }
+// });
 
 // 保留給之後搜尋所有文章功能
 // router.get('/api/blogList/search', async (req, res) => {

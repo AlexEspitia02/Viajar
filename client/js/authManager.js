@@ -8,18 +8,6 @@ function storeJWT(jwtToken) {
     }
 }
 
-function updateUserInterface(user) {
-    const contentDiv = document.getElementById("information");
-    contentDiv.innerHTML = `
-      <div class="welcomeInfo">
-        <h2>Welcome, ${user.name}!</h2>
-        <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
-        <p>Email: ${user.email}</p>
-      </div>
-    `;
-    contentDiv.style.display = 'flex';
-  }
-
 function submitSignupForm() {
     const name = document.getElementById('inputUsername').value;
     const email = document.getElementById('inputEmail').value;

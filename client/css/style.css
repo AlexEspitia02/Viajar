@@ -196,12 +196,13 @@ button:hover {
 .loginButtonBox{
   display: none;
   justify-content: start;
+  align-items: center;
   padding: 20px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.logInInput, .roomNameInput {
+.logInInput, .roomNameInput, .blogListSearchInput {
   width: 90%;
   padding: 10px;
   margin: 10px 0;
@@ -212,9 +213,14 @@ button:hover {
 }
 
 .welcomeInfo{
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
 }
 
 h2 {
@@ -319,4 +325,47 @@ p {
 .roomOwner {
   font-size: 14px;
   color: #666;
+}
+
+/*地圖搜尋頁面*/
+.blogListSearchBtn{
+    width: 80px;
+    height: 40px;
+    margin-left: 20px;
+}
+
+.WithoutMapId {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.WithoutMapId div {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.WithoutMapId>div:first-child, .WithoutMapId>div:nth-child(3) {
+  font-weight: bold;
+  font-size: 18px;
+  color: #009382;
+}
+
+.WithoutMapId div:nth-child(2) {
+  color: #555;
+}
+
+.WithoutMapId div:nth-child(4) {
+  color: #555;
+}
+
+.WithoutMapId>div:nth-child(4)::before, .WithoutMapId>div:nth-child(2)::before {
+  content: "●";
+  margin-right: 8px;
+  color: #009382;
 }
