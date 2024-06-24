@@ -119,6 +119,32 @@ router.get('/api/maps/search', async (req, res) => {
   }
 });
 
+router.get('/api/maps/match', async (req, res) => {
+  const maps = [];
+  const { loginUserId, mapId } = req.query;
+
+  const validMapId = ObjectId.isValid(mapId)
+    ? mapId
+    : '000000000000000000000000';
+
+  db.collection('maps')
+    .find({
+      $and: [
+        {
+          $or: [{ loginUserId }, { invitees: loginUserId }],
+        },
+        { _id: new ObjectId(validMapId) },
+      ],
+    })
+    .forEach((map) => maps.push(map))
+    .then(() => {
+      res.status(200).json(maps);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not fetch the documents' });
+    });
+});
+
 // router.delete('/api/marks/delete', async (req, res) => {
 //   const { _id } = req.body;
 

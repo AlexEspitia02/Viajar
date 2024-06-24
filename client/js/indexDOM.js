@@ -139,25 +139,6 @@ async function initMap() {
   //   }
   // });
 
-  if (!localStorage.getItem('jwtToken')) {
-    localStorage.clear();
-  }
-
-  map.addListener("click", (e) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mapId = urlParams.get('mapId');
-    placeMarkerAndPanTo(e.latLng, map, false);
-    socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng(), mapId });
-  });
-  socket.on('newEmptyMarker',(data) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mapId = urlParams.get('mapId');
-    if ( mapId === data.mapId){
-      const latLng = new google.maps.LatLng(data.lat, data.lng);
-      placeMarkerAndPanTo(latLng, map, false)
-    }
-  });
-
   const controlButton  = document.getElementById('controlButton');
   controlButton.addEventListener("click", () => {
     debounceEmitMapMove();
@@ -186,6 +167,33 @@ async function initMap() {
   }
   
   checkLoginStatus(fetchUserData);
+
+  map.addListener("click", async (e) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+    const userAndMapMatch = await fetch(`/api/maps/match?loginUserId=${loginUserId}&mapId=${mapId}`)
+        .then(response => response.json())
+        .catch(error => showAlert(error));
+
+    if (!localStorage.getItem('jwtToken')) {
+      showAlert("請先<b>註冊</b>或<b>登入</b>");
+    } else if (!mapId) {
+      showAlert("您需要先<b>選擇地圖</b>或<b>創建地圖</b>再來進行這個操作");
+    } else if (userAndMapMatch.length === 0) {
+      showAlert("您無權使用此地圖或無此地圖");
+    } else {
+      placeMarkerAndPanTo(e.latLng, map, false);
+      socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng(), mapId });
+    }
+  });
+  socket.on('newEmptyMarker',(data) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+    if ( mapId === data.mapId){
+      const latLng = new google.maps.LatLng(data.lat, data.lng);
+      placeMarkerAndPanTo(latLng, map, false)
+    }
+  });
 
   document.getElementById('Login').addEventListener("click", () => {
     handleAuthForm(true);

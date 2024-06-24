@@ -31,6 +31,7 @@ function submitSignupForm() {
             loginUserName = data.data.user.name;
             loginImg = data.data.user.picture;
             loginEmail = data.data.user.email;
+            location.reload();
         } else {
             alert(data.message || 'No JWT token provided');
         }
@@ -60,6 +61,7 @@ function submitSignInForm() {
         loginUserName = data.data.user.name;
         loginImg = data.data.user.picture;
         loginEmail = data.data.user.email;
+        location.reload();
     } else {
         alert(data.message || 'No JWT token provided');
     }
