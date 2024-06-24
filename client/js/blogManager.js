@@ -52,7 +52,8 @@ function displayBlogList(data) {
         blogListContainer.innerHTML = '';
         const keyword = document.getElementById('blogListSearchInput').value;
         if (keyword) {
-            const mapId = localStorage.getItem('mapId');
+            const urlParams = new URLSearchParams(window.location.search);
+            const mapId = urlParams.get('mapId');
             fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}&mapId=${mapId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -71,7 +72,9 @@ function displayBlogList(data) {
     });
 
     if (loginUserId) {
-        if (!localStorage.getItem('mapId')){
+        const urlParams = new URLSearchParams(window.location.search);
+        const mapId = urlParams.get('mapId');
+        if (!mapId){
             loginButtonBox.style.display = 'none';
             const contentDiv = document.getElementById("information");
             contentDiv.innerHTML = `

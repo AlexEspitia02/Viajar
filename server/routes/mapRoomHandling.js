@@ -14,6 +14,21 @@ connectToDb((err) => {
   }
 });
 
+// 先留給如果之後需要fetch一個地圖，已經調整完
+// router.get('/api/maps/map', async (req, res) => {
+//   const { mapId } = req.query;
+
+//   try {
+//     const mapInfo = await db
+//       .collection('maps')
+//       .findOne({ _id: new ObjectId(mapId) });
+
+//     res.status(200).json(mapInfo);
+//   } catch (error) {
+//     res.status(500).json({ error: '無法獲取地圖資訊' });
+//   }
+// });
+
 router.get('/api/maps', async (req, res) => {
   const maps = [];
   const { loginUserId } = req.query;

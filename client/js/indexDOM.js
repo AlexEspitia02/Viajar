@@ -144,12 +144,14 @@ async function initMap() {
   }
 
   map.addListener("click", (e) => {
-    const mapId = localStorage.getItem('mapId');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
     placeMarkerAndPanTo(e.latLng, map, false);
     socket.emit('newEmptyMarker', { lat: e.latLng.lat(), lng: e.latLng.lng(), mapId });
   });
   socket.on('newEmptyMarker',(data) => {
-    const mapId = localStorage.getItem('mapId');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
     if ( mapId === data.mapId){
       const latLng = new google.maps.LatLng(data.lat, data.lng);
       placeMarkerAndPanTo(latLng, map, false)
@@ -214,7 +216,8 @@ async function initMap() {
   document.getElementById('mapList').addEventListener("click", handleMapListClick);
 
   document.getElementById('articleList').addEventListener("click", () => {
-    const mapId = localStorage.getItem('mapId');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
     fetch(`/api/blogList?mapId=${mapId}`)
     .then((response) => response.json())
     .then((data) => displayBlogList(data))
@@ -299,7 +302,8 @@ async function initMap() {
     }
   }); 
 
-  mapId = localStorage.getItem('mapId');
+  const urlParams = new URLSearchParams(window.location.search);
+  const mapId = urlParams.get('mapId');
 
   const images = await fetchImages(mapId);
   displayImages(images);
@@ -332,7 +336,8 @@ async function initMap() {
   }
 
   socket.on('newMarker', (data) => {
-    const mapId = localStorage.getItem('mapId');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
     if ( mapId === data.mapId){
       createAndDisplayMarker(data, map, markers, socket, AdvancedMarkerElement);
     }

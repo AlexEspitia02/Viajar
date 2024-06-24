@@ -74,8 +74,9 @@ function createRoomBox(roomInfo) {
 
     roomBox.addEventListener("click", () => {
         mapId = roomInfo._id;
-        localStorage.setItem('mapId', roomInfo._id);
-        location.reload();
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('mapId', mapId);
+        window.location.href = newUrl.href; 
     });
 
     return roomBox;

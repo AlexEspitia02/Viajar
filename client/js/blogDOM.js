@@ -14,6 +14,7 @@ let loginUserId = null;
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('id');
 const title = urlParams.get('title');
+const mapId = urlParams.get('mapId');
 
 function clearJWT() {
 localStorage.removeItem('jwtToken');
@@ -150,7 +151,7 @@ saveBtn.addEventListener('click', function() {
         outputData._id = postId;
         outputData.title = title;
         outputData.loginUserId = loginUserId;
-        outputData.mapId = localStorage.getItem('mapId');
+        outputData.mapId = mapId;
         const formData = new FormData();
         formData.append('data', JSON.stringify(outputData));
         const fileInput = document.querySelector('input[type="file"]');

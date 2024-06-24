@@ -4,9 +4,12 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
     const titleDiv = document.createElement("div");
     titleDiv.className = "titleDiv";
     titleDiv.innerText = imageData.title;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
   
     const imgElementLink = document.createElement("a");
-    imgElementLink.href = `/dist/blog.html?id=${imageData._id}&title=${encodeURIComponent(imageData.title)}`;
+    imgElementLink.href = `/dist/blog.html?id=${imageData._id}&title=${encodeURIComponent(imageData.title)}&mapId=${mapId}`;
     imgElementLink.target = "_blank";
   
     const imgElement = document.createElement("img");
