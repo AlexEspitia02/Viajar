@@ -32,10 +32,22 @@ async function findPlaces(placeText, map) {
       const organizedPlaces = [];
   
       places.forEach((place) => {
+        const searchFlagImg = document.createElement("img");
+        searchFlagImg.className = "icon"
+        searchFlagImg.src ="./images/search.png";
         const markerView = new AdvancedMarkerElement({
           map,
           position: place.location,
           title: place.displayName,
+          content: searchFlagImg,
+        });
+
+        const infowindow = new google.maps.InfoWindow({
+          content: place.displayName,
+        });
+
+        markerView.addListener("click", function () {
+          infowindow.open(map, markerView);
         });
   
         bounds.extend(place.location);
@@ -135,10 +147,22 @@ async function findPlaces(placeText, map) {
               const bounds = new LatLngBounds();
 
               data.forEach((place) => {
+                const searchFlagImg = document.createElement("img");
+                searchFlagImg.className = "icon"
+                searchFlagImg.src ="./images/search.png";
                 const markerView = new AdvancedMarkerElement({
                   map,
                   position: place.location,
                   title: place.displayName,
+                  content: searchFlagImg,
+                });
+
+                const infowindow = new google.maps.InfoWindow({
+                  content: place.displayName,
+                });
+
+                markerView.addListener("click", function () {
+                  infowindow.open(map, markerView);
                 });
           
                 bounds.extend(place.location);
