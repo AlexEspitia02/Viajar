@@ -95,7 +95,7 @@ function displayBlogList(data) {
 document.getElementById('submit').addEventListener('click', function() {
   const keyword = document.getElementById('search').value;
   if (keyword) {
-    fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}&loginUserId=${loginUserId}`)
+    fetch(`/api/blogList/global/search?keyword=${encodeURIComponent(keyword)}`)
       .then(response => response.json())
       .then(data => {
         const blogListContainer = document.getElementById('blogList');
@@ -148,7 +148,7 @@ document.getElementById('submit').addEventListener('click', function() {
 });
 
 window.onload = function () {
-  fetch(`/api/blogList?loginUserId=${loginUserId}`)
+  fetch(`/api/blogList/global/search`)
     .then((response) => response.json())
     .then((data) => displayBlogList(data))
     .catch((error) => console.error('Error fetching data:', error));
