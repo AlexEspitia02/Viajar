@@ -80,9 +80,9 @@ function displayBlogList(data) {
             contentDiv.innerHTML = `
                 <div class="WithoutMapId">
                     <div>請先選擇地圖：</div>
-                    <div>Map → 地圖清單</div>
+                    <div>地圖 → 地圖清單</div>
                     <div>若無地圖，請先創建地圖：</div>
-                    <div>Map → 創建地圖 → 輸入地圖名稱 → 確定創建 → 地圖清單</div>
+                    <div>地圖 → 創建地圖 → 輸入地圖名稱 → 確定創建 → 地圖清單</div>
                 </div>
             `;
         } else {

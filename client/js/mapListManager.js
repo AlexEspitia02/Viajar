@@ -6,7 +6,7 @@ function handleMapListClick() {
     if (loginUserId) {
         fetchMapList();
     } else {
-        displayLoginPrompt(information);
+        displayLoginPrompt(information, loginButtonBox);
     }
 
     document.getElementById('mapListBtn').addEventListener("click", fetchMapList);
@@ -89,9 +89,10 @@ function createRoomDetail(className, text) {
     return detail;
 }
 
-function displayLoginPrompt(information) {
+function displayLoginPrompt(information, loginButtonBox) {
     information.innerHTML = '登入後查看地圖清單';
     information.style.display = 'flex';
+    loginButtonBox.style.display = 'none'; 
 }
 
 function displayCreateMapForm() {

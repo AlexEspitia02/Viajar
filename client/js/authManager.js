@@ -117,13 +117,13 @@ function handleAuthForm(isSignUp) {
     const signUpBtn = document.createElement("div");
     signUpBtn.id = 'signUp';
     signUpBtn.className = 'signUp';
-    signUpBtn.innerText = 'Sign UP';
+    signUpBtn.innerText = '註冊';
     loginButtonBox.appendChild(signUpBtn);
   
     const signInBtn = document.createElement("div");
     signInBtn.id = 'signIn';
     signInBtn.className = 'signIn';
-    signInBtn.innerText = 'Sign In';
+    signInBtn.innerText = '登入';
     loginButtonBox.appendChild(signInBtn);
   
     document.getElementById('signUp').addEventListener("click", () => createForm(true));

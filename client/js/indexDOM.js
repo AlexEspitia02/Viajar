@@ -232,6 +232,10 @@ async function initMap() {
     .catch((error) => console.error('Error fetching data:', error));
   });
 
+  document.getElementById('placeSearchList').addEventListener("click", () => {
+    handlePlaceListClick(map)
+  });
+
   const inputDiv = document.createElement("div");
   inputDiv.className = "inputDiv";
 
