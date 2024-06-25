@@ -141,7 +141,7 @@ button:hover {
   width: 425px;
   background-color: #f9f9f9;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  /* transform: translateX(-99.95%); */
+  transform: translateX(-99.95%);
   transition: transform 0.3s ease;
   z-index: 1000;
   border-radius: 0 10px 10px 0;
@@ -453,6 +453,7 @@ p {
 
 .locationContent {
   display: flex;
+  justify-content: space-between;
   align-items: start;
   gap:5px;
   background-color: #ffffff;

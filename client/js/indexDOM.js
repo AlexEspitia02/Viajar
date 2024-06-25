@@ -233,7 +233,7 @@ async function initMap() {
   });
 
   document.getElementById('placeSearchList').addEventListener("click", () => {
-    handlePlaceListClick(map)
+    handlePlaceListClick(map, AdvancedMarkerElement)
   });
 
   const inputDiv = document.createElement("div");

@@ -3,4 +3,7 @@ node_modules
 uploads/*
 !uploads/.gitkeep 
 
+placeImg/*
+!placeImg/.gitkeep 
+
 .env
