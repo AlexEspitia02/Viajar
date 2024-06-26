@@ -64,6 +64,7 @@ function createRoomBox(roomInfo) {
     roomBox.className = 'roomBox';
     roomBox.id = `roomBox-${roomInfo._id}`;
 
+    createDeleteBtn(roomBox, roomInfo._id);
     const roomName = createRoomDetail('roomName', `地圖名稱: ${roomInfo.roomName}`);
     const roomId = createRoomDetail('roomId', `地圖 ID: ${roomInfo._id}`);
     const roomOwner = createRoomDetail('roomOwner', `創建人: ${roomInfo.loginUserName}`);
@@ -246,5 +247,40 @@ function showSearch() {
     } else {
         searchContainer.classList.add('expanded');
         document.getElementById('mapListSearchInput').focus();
+    }
+}
+
+function createDeleteBtn (content, id) {
+    const deleteBtn = document.createElement("span");
+    deleteBtn.innerHTML = '&times;';
+    deleteBtn.className = 'alertClosure';
+    deleteBtn.onclick = function() {
+        deleteMap(id);
+      }
+
+    content.appendChild(deleteBtn);
+}
+
+async function deleteMap(mapId) {
+    try {
+        const response = await fetch("/api/maps", {
+            method: "delete",
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+            _id: mapId,
+            }),
+        });
+
+        if (response.ok) {
+            marker.setMap(null);
+            socket.emit('deleteMarker', { _id: imageData._id }); // 尚未用到
+        } else {
+            alert("地圖刪除失敗");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("發生錯誤");
     }
 }

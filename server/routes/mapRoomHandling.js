@@ -145,18 +145,18 @@ router.get('/api/maps/match', async (req, res) => {
     });
 });
 
-// router.delete('/api/marks/delete', async (req, res) => {
-//   const { _id } = req.body;
+router.delete('/api/maps', async (req, res) => {
+  const { _id } = req.body;
 
-//   db.collection('marks')
-//     .deleteOne({ _id: new ObjectId(_id) })
-//     .then((result) => {
-//       res.status(200).json(result);
-//       req.io.emit('deleteMarker', _id);
-//     })
-//     .catch(() => {
-//       res.status(500).json({ error: 'Could not delete the document' });
-//     });
-// });
+  db.collection('maps')
+    .deleteOne({ _id: new ObjectId(_id) })
+    .then((result) => {
+      res.status(200).json(result);
+      req.io.emit('deleteMap', _id); // 尚未用到
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not delete the document' });
+    });
+});
 
 module.exports = router;
