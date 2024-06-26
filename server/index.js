@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,6 +12,15 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
 const setupSocket = require('./models/socketHandler');
 
@@ -28,6 +38,7 @@ const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
 const mapRoomHandling = require('./routes/mapRoomHandling');
 const placeHandling = require('./routes/placeHandling');
+const authRouter = require('./routes/auth');
 
 app.use(markHandling);
 app.use(postHandling);
@@ -35,6 +46,7 @@ app.use(blogListHandling);
 app.use(signInHandling);
 app.use(mapRoomHandling);
 app.use(placeHandling);
+app.use('/auth', authRouter);
 
 server.listen(3000, () => {
   console.log('Server is running on port 3000');

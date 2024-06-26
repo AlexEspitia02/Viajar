@@ -1,6 +1,10 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
 const { connectToDb, getDb } = require('../models/db');
+
+dotenv.config();
 
 const router = express.Router();
 
@@ -28,6 +32,39 @@ connectToDb((err) => {
 //     res.status(500).json({ error: '無法獲取地圖資訊' });
 //   }
 // });
+
+async function sendInvitationEmail(
+  inviteesEmail,
+  confirmationLink,
+  inviteesName,
+  user
+) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
+    },
+  });
+
+  await transporter.verify();
+
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: inviteesEmail,
+    subject: `您好${inviteesName},歡迎來到 My Travel, 您受到${user}的邀請共同編輯地圖!`,
+    html: `
+      <h2>您好${inviteesName},歡迎來到 <span style="color:#00b7a2;">My Travel</span>。</h2>
+      <div>請點以下連結獲取地圖編輯權：</div>
+      <a href="${confirmationLink}">${confirmationLink}</a>
+      <br>
+      <br>
+      <div><span style="color:#00b7a2;">My Travel</span>歡迎您~</div>
+      `,
+  };
+
+  await transporter.sendMail(mailOptions);
+}
 
 router.get('/api/maps', async (req, res) => {
   const maps = [];
@@ -67,19 +104,45 @@ router.patch('/api/maps', async (req, res) => {
       .collection('maps')
       .findOne({ _id: new ObjectId(roomId) });
     if (!map) {
-      return res.status(404).json({ error: '未找到房間' });
+      res.status(404).json({ error: '未找到房間' });
     }
 
     if (map.loginUserId !== loginUserId) {
-      return res.status(403).json({
+      res.status(403).json({
         error: '您無權邀請使用者存取此地圖',
       });
     }
+    const confirmationLink = `http://localhost:3000/api/maps/confirm?roomId=${roomId}&invitees=${invitees}`;
 
-    const result = await db
+    const newInvitees = await db
+      .collection('users')
+      .findOne({ _id: new ObjectId(invitees) });
+
+    const newUserInfo = await db
+      .collection('users')
+      .findOne({ _id: new ObjectId(loginUserId) });
+
+    await sendInvitationEmail(
+      newInvitees.email,
+      confirmationLink,
+      newInvitees.name,
+      newUserInfo.name
+    );
+
+    res.status(200).json({ message: '邀請已發送' });
+  } catch (error) {
+    res.status(500).json({ error: '無法發送邀請' });
+  }
+});
+
+router.get('/api/maps/confirm', async (req, res) => {
+  const { roomId, invitees } = req.query;
+
+  try {
+    await db
       .collection('maps')
       .updateOne({ _id: new ObjectId(roomId) }, { $addToSet: { invitees } });
-    res.status(200).json(result);
+    res.status(200).redirect(`http://localhost:3000/?mapId=${roomId}`);
   } catch (error) {
     res.status(500).json({ error: '無法更新文檔' });
   }
