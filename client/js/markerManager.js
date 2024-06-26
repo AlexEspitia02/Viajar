@@ -17,9 +17,11 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
     imgElement.className = "landmarkImg";
     imgElementLink.appendChild(imgElement);
   
-    const buttonBox = document.createElement("div");
-    const markDeleteButton = document.createElement("button");
-    markDeleteButton.innerText = "刪除";
+    const markDeleteButtonBox = document.createElement("div");
+    markDeleteButtonBox.className = 'markDeleteButtonBox';
+    
+    const markDeleteButton = document.createElement("div");
+    markDeleteButton.className = 'markDeleteButton'
   
     markDeleteButton.addEventListener("click", async function () {
         const userConfirmation = confirm('會同時刪除文章，你確定要繼續嗎？');
@@ -69,11 +71,11 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
         }
     });
   
-    buttonBox.appendChild(markDeleteButton);
-  
+    markDeleteButtonBox.appendChild(markDeleteButton);
+
     infoDiv.appendChild(titleDiv);
     infoDiv.appendChild(imgElementLink);
-    infoDiv.appendChild(buttonBox);
+    infoDiv.appendChild(markDeleteButtonBox);
   
     const infowindow = new google.maps.InfoWindow({
         content: infoDiv,

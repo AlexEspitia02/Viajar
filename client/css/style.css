@@ -99,6 +99,26 @@ button:hover {
   background-color: #009382;
 }
 
+.markDeleteButton{
+  width: 20px;
+  height: 20px;
+  background-image: url('../images/delete.png');
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.2s;
+  cursor: pointer;
+}
+
+.markDeleteButton:hover{
+  background-image: url('../images/deleteHover.png');
+}
+
+.markDeleteButtonBox{
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
 /*地標圖片*/
 .icon{
   height: 35px;
