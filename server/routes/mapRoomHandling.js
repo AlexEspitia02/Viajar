@@ -112,7 +112,7 @@ router.patch('/api/maps', async (req, res) => {
         error: '您無權邀請使用者存取此地圖',
       });
     }
-    const confirmationLink = `http://localhost:3000/api/maps/confirm?roomId=${roomId}&invitees=${invitees}`;
+    const confirmationLink = `${process.env.HOST}/api/maps/confirm?roomId=${roomId}&invitees=${invitees}`;
 
     const newInvitees = await db
       .collection('users')
@@ -142,7 +142,7 @@ router.get('/api/maps/confirm', async (req, res) => {
     await db
       .collection('maps')
       .updateOne({ _id: new ObjectId(roomId) }, { $addToSet: { invitees } });
-    res.status(200).redirect(`http://localhost:3000/?mapId=${roomId}`);
+    res.status(200).redirect(`${process.env.HOST}/?mapId=${roomId}`);
   } catch (error) {
     res.status(500).json({ error: '無法更新文檔' });
   }
