@@ -175,6 +175,18 @@ button:hover {
 }
 
 /*左側資訊欄標頭*/
+
+.nav-link {
+  background-color: #f8f9fa;
+  color: #009382;
+  font-weight: 1000;
+}
+
+.nav-link:hover {
+  background-color: #009382;
+  color: rgb(255, 255, 255);
+}
+
 .leftInfoHeader{
   display: flex;
   justify-content: space-around;
@@ -224,7 +236,7 @@ button:hover {
   padding: 20px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
-  max-height: 38px;
+  height: 70px;
 }
 
 .logInInput,
