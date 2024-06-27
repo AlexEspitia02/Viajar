@@ -29,14 +29,16 @@ module.exports = (io) => {
       const xOffset = clientX - centerX;
       const yOffset = clientY - centerY;
 
-      socket.broadcast.emit('mouseMove', {
-        id: userId,
-        mapId: data.mapId,
-        loginUserId: data.loginUserId,
-        loginUserName: data.loginUserName,
-        xOffset,
-        yOffset,
-      });
+      if(data.loginUserId) {
+        socket.broadcast.emit('mouseMove', {
+          id: userId,
+          mapId: data.mapId,
+          loginUserId: data.loginUserId,
+          loginUserName: data.loginUserName,
+          xOffset,
+          yOffset,
+        });
+      }
     });
 
     socket.on('mapMove', (data) => {
