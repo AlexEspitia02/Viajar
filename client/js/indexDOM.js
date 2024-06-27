@@ -35,9 +35,9 @@ function updateActiveWindow() {
 function requestControl() {
   socket.emit('requestMapControl', (response) => {
     if (response.granted) {
-      console.log('控制权获得，现在可以移动地图');
+      console.log('獲取控制權');
     } else {
-      console.log('控制权未获得');
+      console.log('未獲取控制權');
     }
   });
 }
@@ -190,7 +190,6 @@ async function initMap() {
   });
   
   socket.on('mouseMove', (data) => {
-    console.log(data.loginUserName);
     const urlParams = new URLSearchParams(window.location.search);
     const mapId = urlParams.get('mapId');
     if (data.mapId === mapId) {
