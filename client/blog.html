@@ -11,11 +11,36 @@
     <script src="./js/blogDOM.js" type="module" defer></script>
 </head>
 <body>
-    <div id="titleDiv"></div>
-    <div id="editorjs"></div>
-    <div style="display: flex;">
-    <button id="saveButton">Save</button>
-    <button id="blogListButton">Go to article list</button>
+    <header>
+        <div class="container">
+            <a class="logoLink" href="/"><img class="logo" src="./images/favicon.png"/></a>
+            <img class="logoWord" src="./images/logoWord.png"/>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">首頁</a></li>
+                    <li><a href="#about">關於我們</a></li>
+                    <li><a href="#services">服務</a></li>
+                    <li><a href="#contact">聯絡我們</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="content">
+        <div id="editorjs"></div>
+        <div style="display: flex;">
+            <button id="saveButton">儲存</button>
+            <button id="blogListButton">所有文章</button>
+        </div>
     </div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 版權所有</p>
+            <ul class="footer-links">
+                <li><a href="#privacy">隱私政策</a></li>
+                <li><a href="#terms">使用條款</a></li>
+                <li><a href="#support">支援</a></li>
+            </ul>
+        </div>
+    </footer>
 </body>
 </html>

@@ -2,15 +2,10 @@
 
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #e6feff;
+    background-color: #f4f4f4;
     color: #333;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
 }
 
 h1 {
@@ -21,6 +16,12 @@ h1 {
     text-transform: uppercase;
     letter-spacing: 2px;
     text-align: center;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #editorjs {
@@ -57,8 +58,88 @@ button:active {
     transform: translateY(0);
 }
 
-.titleDiv{
-    font-size: 52px;
-    padding: 20px;
-    font-family: "Caveat", cursive;
+header {
+    background-color: #00b7a2;
+    color: #fff;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    margin: 0 20px;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo, .logoLink {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.logoWord{
+    max-width: 300px;
+}
+
+nav {
+    display: flex;
+    margin-left: auto;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    max-height: 50px;
+}
+
+.nav-links a:hover {
+    color: #ffd700;
+}
+
+footer {
+    background-color: #00b7a2;
+    color: #fff;
+    padding: 20px 0;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links li {
+    margin: 0 15px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    max-height: 50px;
+}
+
+.footer-links a:hover {
+    color: #ffd700;
 }

@@ -67,10 +67,6 @@ document.addEventListener('DOMContentLoaded', checkLoginStatus);
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const titleDiv = document.getElementById('titleDiv');
-    titleDiv.className = "titleDiv";
-    titleDiv.innerHTML = `Blog Title: <b>${title}</b>`;
-
     editor = new EditorJs({
         holder: 'editorjs',
         
