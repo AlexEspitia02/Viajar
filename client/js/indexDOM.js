@@ -87,25 +87,6 @@ async function initMap() {
 
   map = new Map(document.getElementById("map"), mapOptions);
 
-  const debounceEmitMapMove = debounce(() => {
-    updateActiveWindow(); // 更新活動視窗
-    const center = map.getCenter();
-    const zoom = map.getZoom();
-    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: zoom });
-    socket.emit('releaseMapControl');
-  }, 100);
-
-  // google.maps.event.addListener(map, 'center_changed', () => {
-  //   if (activeWindowId === userId) {
-  //     debounceEmitMapMove();
-  //   }
-  // });
-  // google.maps.event.addListener(map, 'zoom_changed', () => {
-  //   if (activeWindowId === userId) {
-  //     debounceEmitMapMove();
-  //   }
-  // });
-
   document.getElementById('toggleControl').addEventListener('click', function() {
     const leftInfo = document.querySelector('.leftInfo');
     if (leftInfo.style.transform === "translateX(0px)") {
@@ -123,10 +104,37 @@ async function initMap() {
     }
 });
 
+  const debounceEmitMapMove = debounce(() => {
+    updateActiveWindow(); // 更新活動視窗
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: zoom });
+  }, 100);
+
+  google.maps.event.addListener(map, 'center_changed', () => {
+    if (activeWindowId === userId) {
+      debounceEmitMapMove();
+    }
+  });
+  google.maps.event.addListener(map, 'zoom_changed', () => {
+    if (activeWindowId === userId) {
+      debounceEmitMapMove();
+    }
+  });
+
+  let controlActive = false;
+
   const controlButton  = document.getElementById('controlButton');
   controlButton.addEventListener("click", () => {
-    debounceEmitMapMove();
-    requestControl();
+    if (!controlActive) {
+      controlButton.innerHTML=`<b style="color:#009382;">釋放</b>控制`;
+      debounceEmitMapMove();
+      requestControl();
+    } else {
+      controlButton.innerHTML=`<b style="color:#009382;">獲取</b>控制`;
+      socket.emit('releaseMapControl');
+    }
+    controlActive = !controlActive;
   });
 
   document.getElementById('toggleCursors').addEventListener('click', () => {
@@ -135,7 +143,11 @@ async function initMap() {
     
     document.querySelectorAll('.cursor').forEach(cursor => {
         cursor.style.display = cursorsVisible ? 'block' : 'none';
-    });
+
+
+    const toggleButton = document.getElementById('toggleCursors');
+    toggleButton.innerHTML = cursorsVisible ? `<b style="color:#009382;">隱藏</b>鼠標` : `<b style="color:#009382;">顯示</b>鼠標`;
+      });
   });
 
   socket.on('toggleCursorsVisibility', (data) => {
