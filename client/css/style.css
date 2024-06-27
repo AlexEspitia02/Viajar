@@ -153,6 +153,12 @@ button:hover {
 }
 
 /*左側資訊欄*/
+.leftInfoContainer {
+  position: relative;
+  height: 80%;
+  top: 100px;
+}
+
 .leftInfo {
   position: fixed;
   left: 0;
@@ -161,17 +167,51 @@ button:hover {
   width: 425px;
   background-color: #f9f9f9;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  /* transform: translateX(-99.95%); */
   transition: transform 0.3s ease;
   z-index: 1000;
   border-radius: 0 10px 10px 0;
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
+  transform: translateX(-100%);
 }
 
-.leftInfo:hover {
-  transform: translateX(0);
+.toggleControl {
+  position: fixed;
+  top: 50%; 
+  left: 0;
+  transform: translateY(-50%) translateX(0%);
+  z-index: 1005;
+  background-color: #ffffff;
+  color:black;
+  padding: 8px 16px;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  width: 10px;
+  padding: 15px 15px 15px 0px;
+}
+
+.toggleControl:hover {
+  background: #00b7a2;
+  box-shadow: 0px 2px 10px 5px #ffffff;
+  color: #ffffff;
+}
+
+.toggleControl:after {
+  content: "";
+  display: block;
+  position: absolute;
+  background: #1abc9c;
+  opacity: 0;
+  transition: all 0.8s
+}
+
+.toggleControl:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  transition: 0s;
 }
 
 /*左側資訊欄標頭*/

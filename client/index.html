@@ -24,26 +24,29 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI&libraries=drawing"></script>
   </head>
   <body>
-    <div class="leftInfo">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button id="userInfo" class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">用戶</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button id="Login" class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">登入</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button id="mapList" class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">地圖</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button id="articleList" class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">文章</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button id="placeSearchList" class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">地點</button>
-        </li>
-      </ul>
-      <div class="loginButtonBox" id="loginButtonBox"></div>
-      <div class="information" id="information"></div>
+    <div class="leftInfoContainer">
+      <div class="leftInfo">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button id="userInfo" class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">用戶</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button id="Login" class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">登入</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button id="mapList" class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">地圖</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button id="articleList" class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">文章</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button id="placeSearchList" class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">地點</button>
+          </li>
+        </ul>
+        <div class="loginButtonBox" id="loginButtonBox"></div>
+        <div class="information" id="information"></div>
+      </div>
+      <div class="toggleControl" id="toggleControl">></div>
     </div>
     <div class="buttonBox">    
       <button id="controlButton" class="controlButton">獲取控制權</button>

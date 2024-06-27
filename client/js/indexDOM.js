@@ -139,6 +139,23 @@ async function initMap() {
   //   }
   // });
 
+  document.getElementById('toggleControl').addEventListener('click', function() {
+    const leftInfo = document.querySelector('.leftInfo');
+    if (leftInfo.style.transform === "translateX(0px)") {
+        const toggleControl = document.getElementById('toggleControl');
+        toggleControl.innerHTML = '';
+        toggleControl.innerHTML = '>';
+        leftInfo.style.transform = "translateX(-100%)";
+        this.style.transform = "translateY(-50%) translateX(0%)";
+    } else {
+        leftInfo.style.transform = "translateX(0px)";
+        this.style.transform = "translateY(-50%) translateX(425px)";
+        const toggleControl = document.getElementById('toggleControl');
+        toggleControl.innerHTML = '';
+        toggleControl.innerHTML = '<';
+    }
+});
+
   const controlButton  = document.getElementById('controlButton');
   controlButton.addEventListener("click", () => {
     debounceEmitMapMove();
