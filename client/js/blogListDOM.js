@@ -75,7 +75,6 @@ function displayBlogList(data) {
 
     blogContent.appendChild(blogTitle);
     blogContent.appendChild(paragraph);
-    blogBox.appendChild(blogContent);
 
     const firstImageBlock = blog.blocks.find(block => block.type === 'image');
     const imageUrl = firstImageBlock.data.file.url;
@@ -88,6 +87,7 @@ function displayBlogList(data) {
     blogUrl.appendChild(blogImg);
     blogBox.appendChild(blogUrl);
 
+    blogBox.appendChild(blogContent);
     blogListContainer.appendChild(blogBox);
   });
 }
@@ -122,7 +122,6 @@ document.getElementById('submit').addEventListener('click', function() {
   
           blogContent.appendChild(blogTitle);
           blogContent.appendChild(paragraph);
-          blogBox.appendChild(blogContent);
   
           const firstImageBlock = blog.blocks.find(block => block.type === 'image');
           const imageUrl = firstImageBlock.data.file.url;
@@ -134,7 +133,8 @@ document.getElementById('submit').addEventListener('click', function() {
           blogImg.src = imageUrl;
           blogUrl.appendChild(blogImg);
           blogBox.appendChild(blogUrl);
-  
+
+          blogBox.appendChild(blogContent);
           blogListContainer.appendChild(blogBox);
         });
       })

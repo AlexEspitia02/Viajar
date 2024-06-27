@@ -1,8 +1,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f9f8;
-    margin: 0;
-    padding: 20px;
+    background-color: #f4f4f4;
+    margin: 0px;
+    padding: 0px;
     color: #333;
 }
 
@@ -17,12 +17,12 @@ input#search {
 }
 
 input#search:focus {
-    border-color: #0abab5; /* Tiffany green accent */
+    border-color: #0abab5; 
     box-shadow: 0 2px 5px rgba(10, 186, 181, 0.3);
 }
 
 button#submit {
-    background-color: #0abab5; /* Tiffany green */
+    background-color: #0abab5;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -32,15 +32,15 @@ button#submit {
 }
 
 button#submit:hover {
-    background-color: #099a9e; /* Darker Tiffany green for hover effect */
+    background-color: #099a9e;
 }
 
 .blogList {
     margin-top: 20px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .blogBox {
@@ -48,11 +48,13 @@ button#submit:hover {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     border-radius: 10px;
     display: flex;
-    justify-content: space-between;
-    align-items: start;
+    flex-direction: column;
+    justify-content: start;
+    align-items: space-between;
     overflow: hidden;
     transition: transform 0.3s ease;
-    width: 40%;
+    width: 400px;
+    height: 500px;
 }
 
 .blogBox:hover {
@@ -65,11 +67,11 @@ button#submit:hover {
     align-items: start;
     padding: 20px;
     flex: 1;
-    order: 1; /* Ensures text is on the left */
+    height: 200px;
 }
 
 .blogTitle {
-    font-size: 20px;
+    font-size: 32px;
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
@@ -79,20 +81,28 @@ button#submit:hover {
     font-size: 16px;
     color: #666;
     line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
 }
 
 a {
-    flex: 0 0 40%; /* Adjust size as needed, keeps images on the right */
-    order: 2; /* Ensures image is on the right */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
     overflow: hidden;
-    border-radius: 0 10px 10px 0;
+    border-radius: 10px 10px 0 0;
 }
 
 img {
     width: 100%;
     height: auto;
     display: block;
-    object-fit: cover; /* Ensures images cover the a tag area */
+    object-fit: cover;
+    object-position: center center
 }
 
 .blogListSearch{
@@ -102,22 +112,88 @@ img {
     margin-bottom: 30px;
 }
 
-@media (max-width: 768px) {
-    .blogBox {
-        flex-direction: column;
-    }
+header {
+    background-color: #00b7a2;
+    color: #fff;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
 
-    input#search {
-        width: calc(100% - 80px);
-    }
+.container {
+    width: 100%;
+    margin: 0 20px;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    a {
-        order: 1; /* Image on top for mobile */
-        width: 100%;
-    }
+.logo, .logoLink {
+    max-width: 100px;
+    max-height: 100px;
+}
 
-    .blogContent {
-        order: 2;
-        padding: 10px;
-    }
+.logoWord{
+    max-width: 300px;
+}
+
+nav {
+    display: flex;
+    margin-left: auto;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    max-height: 50px;
+}
+
+.nav-links a:hover {
+    color: #ffd700;
+}
+
+footer {
+    background-color: #00b7a2;
+    color: #fff;
+    padding: 20px 0;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links li {
+    margin: 0 15px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    max-height: 50px;
+}
+
+.footer-links a:hover {
+    color: #ffd700;
 }
