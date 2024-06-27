@@ -161,10 +161,19 @@ button:hover {
 }
 
 .toggleCursors, .controlButton{
+  padding: 10px;
   width: 45px;
+  height: 120px;
   background-color: #ffffff;
   color:black;
   border: #ccc solid 0.5px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.toggleCursors:hover, .controlButton:hover{
+  background-color: #e0e0e0;
 }
 
 /*左側資訊欄*/
