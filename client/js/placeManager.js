@@ -31,7 +31,7 @@ async function findPlaces(placeText, map) {
       const organizedPlaces = [];
 
       places.forEach((place) => {
-          const markerView = createMarker(map, place, AdvancedMarkerElement);
+          const markerView = createMarker(map, place, AdvancedMarkerElement, true);
           bounds.extend(place.location);
 
           const locationContent = createLocationContent(place, map, true);
@@ -68,7 +68,7 @@ async function findPlaces(placeText, map) {
   }
 }
 
-function createMarker(map, place, AdvancedMarkerElement) {
+function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = false) {
   const searchFlagImg = document.createElement("img");
   searchFlagImg.className = "icon";
   searchFlagImg.src = "./images/search.png";
@@ -80,8 +80,54 @@ function createMarker(map, place, AdvancedMarkerElement) {
       content: searchFlagImg,
   });
 
+  const landmarkSearchContent = document.createElement('div');
+  landmarkSearchContent.className = 'landmarkSearchContent';
+
+  const landmarkSearchContentTitle = document.createElement('div');
+  landmarkSearchContentTitle.className = 'landmarkSearchContentTitle'
+  landmarkSearchContentTitle.innerText = place.displayName;
+
+  const landmarkSearchContentImg = document.createElement('img');
+  landmarkSearchContentImg.className = 'landmarkSearchContentImg';
+  landmarkSearchContentImg.src = isFromFindPlaces
+  ? `https://places.googleapis.com/v1/${place.photos[0].Fg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
+  : `placeImg/${place.imgUrl}`;
+
+  const landmarkSearchContentBtn = document.createElement('div');
+  landmarkSearchContentBtn.id = 'landmarkSearchContentBtn';
+  landmarkSearchContentBtn.className = 'landmarkSearchContentBtn';
+  landmarkSearchContentBtn.addEventListener('click',()=>{
+    // fetch(`/api/places/location?lat=${place.location.lat}&lng=${place.location.lng}`)
+    //     .then(response => response.json())
+    //     .then(async (data) => {
+    //         if (data.length > 0) {
+    //             const { LatLngBounds } = await google.maps.importLibrary("core");
+    //             const bounds = new LatLngBounds();
+
+    //             data.forEach((place) => {
+    //                 const markerView = createMarker(map, place, AdvancedMarkerElement, false);
+    //                 bounds.extend(place.location);
+
+    //                 const locationContent = createLocationContent(place, map, false);
+    //                 information.appendChild(locationContent);
+    //             });
+
+    //             map.fitBounds(bounds, { padding: 50 });
+
+    //         } else {
+                
+                nearbySearch(place.location);
+        //     }
+        // })
+        // .catch(error => console.error('Place Search Error:', error));
+  });
+  
+  landmarkSearchContent.appendChild(landmarkSearchContentTitle);
+  landmarkSearchContent.appendChild(landmarkSearchContentImg);
+  landmarkSearchContent.appendChild(landmarkSearchContentBtn);
+
   const infowindow = new google.maps.InfoWindow({
-      content: place.displayName,
+      content: landmarkSearchContent,
   });
 
   markerView.addListener("click", function () {
@@ -161,7 +207,7 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
                       const bounds = new LatLngBounds();
 
                       data.forEach((place) => {
-                          const markerView = createMarker(map, place, AdvancedMarkerElement);
+                          const markerView = createMarker(map, place, AdvancedMarkerElement, false);
                           bounds.extend(place.location);
 
                           const locationContent = createLocationContent(place, map, false);
@@ -183,3 +229,82 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
       information.innerHTML = '登入後查詢地點';
   }
 }
+
+async function nearbySearch(location) {
+    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary(
+      "places",
+    );
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+    const request = {
+        fields: [
+            "displayName",
+            "location",
+            "rating",
+            "photos",
+            "formattedAddress",
+            "websiteURI",
+        ],
+        locationRestriction: {
+            center: location,
+            radius: 500,
+        },
+        includedPrimaryTypes: ["restaurant"],
+        maxResultCount: 10,
+        rankPreference: SearchNearbyRankPreference.POPULARITY,
+        language: "zh-TW",
+        region: "TW",
+    };
+    const { places } = await Place.searchNearby(request);
+  
+    if (places.length) {
+      const organizedPlaces = [];
+  
+      const { LatLngBounds } = await google.maps.importLibrary("core");
+      const bounds = new LatLngBounds();
+  
+      places.forEach((place) => {
+        const searchFlagImg = document.createElement("img");
+        searchFlagImg.className = "icon";
+        searchFlagImg.src = "./images/restaurant.png";
+
+        const markerView = new AdvancedMarkerElement({
+          map,
+          position: place.location,
+          title: place.displayName,
+          content:searchFlagImg,
+        });
+  
+        bounds.extend(place.location);
+
+        const locationContent = createLocationContent(place, map, true);
+        information.appendChild(locationContent);
+
+        const imgUrl = `https://places.googleapis.com/v1/${place.photos[0].Fg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`;
+
+        const newPlace = {
+            displayName: place.displayName,
+            formattedAddress: place.formattedAddress,
+            placeId: place.id,
+            location: place.location,
+            imgUrl,
+            rating: place.rating,
+            websiteURI: place.websiteURI,
+        };
+        organizedPlaces.push(newPlace);
+      });
+      map.fitBounds(bounds);
+
+    //   fetch('/api/places', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(organizedPlaces),
+    //     })
+    //     .catch(error => console.error('輸入資料錯誤:', error));
+
+    } else {
+      console.log("No results");
+    }
+  }

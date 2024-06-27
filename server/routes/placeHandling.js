@@ -40,6 +40,25 @@ router.get('/api/places', async (req, res) => {
   }
 });
 
+// router.get('/api/places/location', async (req, res) => {
+//   const { lat, lng } = req.query;
+//   if (!lat || !lng) {
+//     res.status(400).json({ error: 'Location is required' });
+//   }
+//   const location = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+//   try {
+//     const places = await db.collection('places').find({ location }).toArray();
+
+//     console.log(places);
+
+//     res.status(200).json(places);
+//   } catch (error) {
+//     console.error('Error fetching places:', error);
+//     res.status(500).json({ error: 'Could not fetch the documents' });
+//   }
+// });
+
 function downloadImage(url, filename) {
   const fullPath = path.join(__dirname, '../placeImg', filename);
   return new Promise((resolve, reject) => {
