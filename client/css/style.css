@@ -126,13 +126,28 @@ button:hover {
 
 /*鼠標*/
 .cursor {
-  width: 15px;
-  height: 15px;
-  background-color: rgb(184, 130, 255);
+  width: 30px;
+  height: 30px;
+  background-image: url('../images/mouse.png');
+  background-size: cover; 
   border-radius: 50%;
   position: absolute;
   pointer-events: none;
   z-index: 1000;
+}
+
+.username {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 /*右側按鈕*/

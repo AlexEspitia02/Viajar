@@ -50,20 +50,6 @@ socket.on('mapMove', (data) => {
   }
 });
 
-document.addEventListener('mousemove', (event) => {
-  if (userId) {
-    updateActiveWindow(); // 更新活動視窗
-    const data = {
-      id: userId,
-      clientX: event.clientX,
-      clientY: event.clientY,
-      innerWidth: window.innerWidth,
-      innerHeight: window.innerHeight
-    };
-    socket.emit('mouseMove', data);
-  }
-});
-
 document.addEventListener('mouseout', () => {
   socket.emit('hideCursor', { userId: userId });
 });
@@ -83,25 +69,6 @@ socket.on('showCursor', (data) => {
   const cursor = document.getElementById(`cursor-${data.userId}`);
   if (cursor) {
     cursor.style.display = 'block';
-  }
-});
-
-socket.on('mouseMove', (data) => {
-  if (data.id !== activeWindowId) { // 只在不是活動視窗時同步
-    let cursor = document.getElementById(`cursor-${data.id}`);
-    if (!cursor) {
-      cursor = document.createElement('div');
-      cursor.id = `cursor-${data.id}`;
-      cursor.classList.add('cursor');
-      document.getElementById('map').appendChild(cursor);
-    }
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const x = centerX + data.xOffset;
-    const y = centerY + data.yOffset;
-    cursor.style.left = `${x}px`;
-    cursor.style.top = `${y}px`;
-    cursor.style.display = cursorsVisible ? 'block' : 'none';
   }
 });
 
@@ -177,13 +144,63 @@ async function initMap() {
     });
   });
   
+  checkLoginStatus(fetchUserData);
+
   if (!loginUserId) {
     const contentDiv = document.getElementById("information");
     contentDiv.innerHTML = `登入後查看使用者資訊`;
     contentDiv.style.display = 'flex';
   }
+
+  document.addEventListener('mousemove', (event) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+    if (userId) {
+      updateActiveWindow(); // 更新活動視窗
+      const data = {
+        loginUserId,
+        loginUserName,
+        id: userId,
+        mapId: mapId,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight
+      };
+      socket.emit('mouseMove', data);
+    }
+  });
   
-  checkLoginStatus(fetchUserData);
+  socket.on('mouseMove', (data) => {
+    console.log(data.loginUserName);
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+    if (data.mapId === mapId) {
+      if (data.id !== activeWindowId) { // 只在不是活動視窗時同步
+        let cursor = document.getElementById(`cursor-${data.id}`);
+        if (!cursor) {
+          cursor = document.createElement('div');
+          cursor.id = `cursor-${data.id}`;
+          cursor.classList.add('cursor');
+          const userNameElement = document.createElement('div');
+          userNameElement.classList.add('username');
+          const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+          userNameElement.style.backgroundColor = randomColor;
+          userNameElement.innerText = data.loginUserName;
+          cursor.appendChild(userNameElement);
+          document.getElementById('map').appendChild(cursor);
+        }
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const x = centerX + data.xOffset;
+        const y = centerY + data.yOffset;
+        cursor.style.left = `${x}px`;
+        cursor.style.top = `${y}px`;
+        cursor.style.display = cursorsVisible ? 'block' : 'none';
+      }
+    }
+  });
+  
 
   map.addListener("click", async (e) => {
     const urlParams = new URLSearchParams(window.location.search);
