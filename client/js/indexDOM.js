@@ -42,14 +42,6 @@ function requestControl() {
   });
 }
 
-socket.on('mapMove', (data) => {
-  if (map && data.id !== activeWindowId) { // 只在不是活動視窗時同步
-    const center = new google.maps.LatLng(data.lat, data.lng);
-    map.setCenter(center);
-    map.setZoom(data.zoom);
-  }
-});
-
 document.addEventListener('mouseout', () => {
   socket.emit('hideCursor', { userId: userId });
 });
@@ -104,12 +96,28 @@ async function initMap() {
     }
 });
 
+  checkLoginStatus(fetchUserData);
+
   const debounceEmitMapMove = debounce(() => {
     updateActiveWindow(); // 更新活動視窗
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
     const center = map.getCenter();
     const zoom = map.getZoom();
-    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: zoom });
+    socket.emit('mapMove', { id: userId, lat: center.lat(), lng: center.lng(), zoom: zoom , mapId: mapId});
   }, 100);
+
+  socket.on('mapMove', (data) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+    if (data.mapId === mapId){
+      if (map && data.id !== activeWindowId) { // 只在不是活動視窗時同步
+        const center = new google.maps.LatLng(data.lat, data.lng);
+        map.setCenter(center);
+        map.setZoom(data.zoom);
+      }
+    }
+  });
 
   google.maps.event.addListener(map, 'center_changed', () => {
     if (activeWindowId === userId) {
@@ -155,8 +163,6 @@ async function initMap() {
       cursor.style.display = data.showCursors ? 'block' : 'none';
     });
   });
-  
-  checkLoginStatus(fetchUserData);
 
   if (!loginUserId) {
     const contentDiv = document.getElementById("information");
