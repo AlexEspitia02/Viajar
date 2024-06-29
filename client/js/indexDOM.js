@@ -218,6 +218,15 @@ async function initMap() {
       }
     }
   });
+
+  const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
+  const hasLocalStorageToken = localStorage.getItem('jwtToken');
+  if (hasCookieToken && hasLocalStorageToken){
+    alert("重複登入，請重新登入");
+    clearCookieJWT();
+    clearJWT();
+    location.reload();
+  }
   
 
   map.addListener("click", async (e) => {
