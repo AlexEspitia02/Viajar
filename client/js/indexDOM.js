@@ -167,8 +167,7 @@ async function initMap() {
 
   if (!loginUserId) {
     const contentDiv = document.getElementById("information");
-    contentDiv.innerHTML = `登入後查看使用者資訊`;
-    contentDiv.style.display = 'flex';
+    handleAuthForm(true);
   }
 
   document.addEventListener('mousemove', (event) => {
@@ -257,10 +256,6 @@ async function initMap() {
     }
   });
 
-  document.getElementById('Login').addEventListener("click", () => {
-    handleAuthForm(true);
-  });
-
   document.getElementById('userInfo').addEventListener("click", () => {
     const information = document.getElementById('information');
     information.innerHTML = '';
@@ -274,12 +269,10 @@ async function initMap() {
         picture: loginImg,
         email: loginEmail,
         id: loginUserId
-    };
-    updateUserInterface(user);
-    }else{
-      const contentDiv = document.getElementById("information");
-      contentDiv.innerHTML = `登入後查看使用者資訊`;
-      contentDiv.style.display = 'flex';
+      };
+      updateUserInterface(user);
+    } else {
+      handleAuthForm(true);
     }
   });
 

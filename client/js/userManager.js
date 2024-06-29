@@ -1,4 +1,11 @@
 function updateUserInterface(user) {
+    const information = document.getElementById('information');
+    information.innerHTML = '';
+  
+    const loginButtonBox = document.getElementById('loginButtonBox');
+    loginButtonBox.style.display = 'none';
+    loginButtonBox.innerHTML = '';
+
     const contentDiv = document.getElementById("information");
     contentDiv.innerHTML = `
         <div class="welcomeInfo">
@@ -9,6 +16,15 @@ function updateUserInterface(user) {
         </div>
     `;
     contentDiv.style.display = 'flex';
+
+    const logoutBtn =  document.createElement('button');
+    logoutBtn.innerText = '登出';
+    logoutBtn.addEventListener('click',() => {
+        clearCookieJWT();
+        clearJWT();
+        location.reload();
+    })
+    information.appendChild(logoutBtn);
 }
   
 function clearJWT() {
