@@ -23,12 +23,6 @@ body {
   border-radius: 10px;
 }
 
-.titleDiv, .landmarkSearchContentTitle{
-  font-size: 40px;
-  font-family: "Noto Sans TC", "Roboto", sans-serif;
-  padding: 0px 5px;
-}
-
 .infoDiv ,.landmarkSearchContent{
   display: flex;
   flex-direction: column;
@@ -387,13 +381,6 @@ form{
   padding: 15px;
 }
 
-.blogTitle {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #333;
-}
-
 .blogUrl {
   text-decoration: none;
   color: inherit;
@@ -424,6 +411,7 @@ form{
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
+  width: 80%;
 }
 
 .roomBox:hover {
@@ -435,12 +423,6 @@ form{
 .roomId,
 .roomOwner {
   margin: 5px 0;
-}
-
-.roomName {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
 }
 
 .roomId {
@@ -591,10 +573,12 @@ form{
   margin-bottom: 10px;
 }
 
-.locationLeftContent>h2 {
+.locationLeftContentTitle, .blogTitle, .titleDiv, .roomName, .landmarkSearchContentTitle {
+  overflow-wrap: break-word;
+  font-family: "Noto Sans TC", "Roboto", sans-serif;
+  font-weight: 350;
   color: #2a2a2a;
   font-size: 24px;
-  margin: 10px 0px;
 }
 
 .locationLeftContent>p {

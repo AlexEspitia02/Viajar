@@ -152,8 +152,9 @@ function createLocationContent(place, map, isFromFindPlaces = false) {
   locationLeftContent.className = 'locationLeftContent';
   locationContent.appendChild(locationLeftContent);
 
-  const displayName = document.createElement('h2');
+  const displayName = document.createElement('div');
   displayName.innerText = place.displayName;
+  displayName.className = 'locationLeftContentTitle';
   locationLeftContent.appendChild(displayName);
 
   const formattedAddress = document.createElement('p');

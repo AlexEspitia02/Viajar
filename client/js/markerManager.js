@@ -9,7 +9,7 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
     const mapId = urlParams.get('mapId');
   
     const imgElementLink = document.createElement("a");
-    imgElementLink.href = `/dist/blog.html?id=${imageData._id}&mapId=${mapId}`;
+    imgElementLink.href = `/dist/blog.html?id=${imageData._id}&mapId=${mapId}&title=${imageData.title}`;
     imgElementLink.target = "_blank";
   
     const imgElement = document.createElement("img");
