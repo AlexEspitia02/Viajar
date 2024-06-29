@@ -65,9 +65,9 @@ function createRoomBox(roomInfo) {
     roomBox.id = `roomBox-${roomInfo._id}`;
 
     createDeleteBtn(roomBox, roomInfo._id);
-    const roomName = createRoomDetail('roomName', `地圖名稱: ${roomInfo.roomName}`);
+    const roomName = createRoomDetail('roomName', roomInfo.roomName);
     const roomId = createRoomDetail('roomId', `地圖 ID: ${roomInfo._id}`);
-    const roomOwner = createRoomDetail('roomOwner', `創建人: ${roomInfo.loginUserName}`);
+    const roomOwner = createRoomDetail('roomOwner', roomInfo.loginUserName);
 
     roomBox.appendChild(roomName);
     roomBox.appendChild(roomId);
