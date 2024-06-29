@@ -11,8 +11,7 @@ function updateUserInterface(user) {
         <div class="welcomeInfo">
             <h2>Welcome, ${user.name}!</h2>
             <img src="${user.picture}" alt="Profile Picture" class="userPicture"/>
-            <p>Email: ${user.email}</p>
-            <p>User ID: ${user.id}</p>
+            <p>${user.email}</p>
         </div>
     `;
     contentDiv.style.display = 'flex';
