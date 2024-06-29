@@ -1,4 +1,3 @@
-
 function storeJWT(jwtToken) {
     if (jwtToken) {
       localStorage.setItem('jwtToken', jwtToken);
@@ -104,6 +103,28 @@ function createForm(isSignUp) {
         isSignUp ? submitSignupForm() : submitSignInForm();
     };
     information.appendChild(loginButton);
+
+    const googleLoginForm = document.createElement("form");
+    googleLoginForm.action = '/login';
+    googleLoginForm.method = "POST";
+    information.appendChild(googleLoginForm);
+
+    const googleLoginButton = document.createElement("button");
+    googleLoginButton.type = "submit";
+    googleLoginButton.className = 'googleLoginButton'
+
+    const googleLoginButtonIcon = document.createElement("img");
+    googleLoginButtonIcon.className = 'icon';
+    googleLoginButtonIcon.src = '../images/Google_Icon.png';
+
+    const googleLoginButtonInnerText = document.createElement("span");
+    googleLoginButtonInnerText.innerText = 'Google 登入'
+
+
+    googleLoginButton.appendChild(googleLoginButtonInnerText);
+    googleLoginButton.appendChild(googleLoginButtonIcon);
+
+    googleLoginForm.appendChild(googleLoginButton);
 }
   
 function handleAuthForm(isSignUp) {
@@ -131,4 +152,54 @@ function handleAuthForm(isSignUp) {
   
     createForm(isSignUp);
 }
-  
+
+async function fetchGoogleUserData() {
+  const token = document.cookie
+      ?.split('; ')
+      ?.find((row) => row.startsWith('token='))
+      ?.split('=')[1];
+
+  if (!token) {
+      console.error('Token not found');
+      return null;
+  }
+
+  try {
+      const response = await fetch('/user', {
+          method: 'GET',
+          headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+      }
+
+      const data = await response.json();
+      updateUserInterface(data);
+      loginUserName = data.name;
+      loginUserId = data._id;
+      loginImg = data.picture;
+      loginEmail = data.email;
+      return loginUserId;
+  } catch (error) {
+      console.error('Error fetching user data:', error);
+      if (error.message === 'Failed to fetch user data') {
+          clearCookieJWT();
+      }
+      return null;
+  }
+}
+
+function clearCookieJWT() {
+  document.cookie = 'token=; Max-Age=0';
+}
+
+function checkGoogleLoginStatus(fetchGoogleUserData) {
+  const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
+  if (hasCookieToken) {
+    fetchGoogleUserData();
+  }
+}

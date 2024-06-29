@@ -37,7 +37,7 @@ async function findPlaces(placeText, map) {
           const locationContent = createLocationContent(place, map, true);
           information.appendChild(locationContent);
 
-          const imgUrl = `https://places.googleapis.com/v1/${place.photos[0].Fg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`;
+          const imgUrl = `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`;
 
           const newPlace = {
               displayName: place.displayName,
@@ -90,7 +90,7 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
   const landmarkSearchContentImg = document.createElement('img');
   landmarkSearchContentImg.className = 'landmarkSearchContentImg';
   landmarkSearchContentImg.src = isFromFindPlaces
-  ? `https://places.googleapis.com/v1/${place.photos[0].Fg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
+  ? `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
   : `placeImg/${place.imgUrl}`;
 
   const landmarkSearchContentBtn = document.createElement('div');
@@ -167,7 +167,7 @@ function createLocationContent(place, map, isFromFindPlaces = false) {
 
   const photos = document.createElement('img');
   const imgUrl = isFromFindPlaces
-      ? `https://places.googleapis.com/v1/${place.photos[0].Fg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
+      ? `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
       : `placeImg/${place.imgUrl}`;
   photos.src = imgUrl;
   locationContent.appendChild(photos);
@@ -280,7 +280,7 @@ async function nearbySearch(location) {
         const locationContent = createLocationContent(place, map, true);
         information.appendChild(locationContent);
 
-        const imgUrl = `https://places.googleapis.com/v1/${place.photos[0].Fg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`;
+        const imgUrl = `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`;
 
         const newPlace = {
             displayName: place.displayName,
