@@ -39,6 +39,7 @@ const signInHandling = require('./routes/signInHandling');
 const mapRoomHandling = require('./routes/mapRoomHandling');
 const placeHandling = require('./routes/placeHandling');
 const authRouter = require('./routes/auth');
+const index = require('./routes/index');
 
 app.use(markHandling);
 app.use(postHandling);
@@ -47,6 +48,7 @@ app.use(signInHandling);
 app.use(mapRoomHandling);
 app.use(placeHandling);
 app.use('/auth', authRouter);
+app.use(index);
 
 server.listen(3000, () => {
   console.log('Server is running on port 3000');
