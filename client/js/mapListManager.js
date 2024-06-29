@@ -141,19 +141,12 @@ function displayInviteForm() {
     const information = document.getElementById('information');
     information.innerHTML = '';
 
-    const roomIdInput = document.createElement("input");
-    roomIdInput.setAttribute("type", "text");
-    roomIdInput.className = 'roomIdInput';
-    roomIdInput.setAttribute("placeholder", "輸入分享的地圖ID");
-    roomIdInput.id = 'roomIdInput';
-    information.appendChild(roomIdInput);
-
-    const inviteesIdInput = document.createElement("input");
-    inviteesIdInput.setAttribute("type", "text");
-    inviteesIdInput.className = 'inviteesIdInput';
-    inviteesIdInput.setAttribute("placeholder", "輸入受邀者的User ID");
-    inviteesIdInput.id = 'inviteesIdInput';
-    information.appendChild(inviteesIdInput);
+    const inviteesMailInput = document.createElement("input");
+    inviteesMailInput.setAttribute("type", "text");
+    inviteesMailInput.className = 'inviteesMailInput';
+    inviteesMailInput.setAttribute("placeholder", "輸入受邀者的Email");
+    inviteesMailInput.id = 'inviteesMailInput';
+    information.appendChild(inviteesMailInput);
 
     const inviteUserBtn = document.createElement("button");
     inviteUserBtn.innerText = '確定邀請';
@@ -162,15 +155,16 @@ function displayInviteForm() {
 }
 
 function inviteUser() {
-    const roomId = document.getElementById('roomIdInput').value;
-    const invitees = document.getElementById('inviteesIdInput').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+    const inviteesMail = document.getElementById('inviteesMailInput').value;
 
     fetch('/api/maps', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ roomId, loginUserId, invitees })
+        body: JSON.stringify({ mapId, loginUserId, inviteesMail })
     })
     .then(response => {
         if (response.ok) {

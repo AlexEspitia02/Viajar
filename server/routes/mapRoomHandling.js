@@ -97,12 +97,11 @@ router.post('/api/maps', async (req, res) => {
 });
 
 router.patch('/api/maps', async (req, res) => {
-  const { roomId, loginUserId, invitees } = req.body;
-
+  const { mapId, loginUserId, inviteesMail } = req.body;
   try {
     const map = await db
       .collection('maps')
-      .findOne({ _id: new ObjectId(roomId) });
+      .findOne({ _id: new ObjectId(mapId) });
     if (!map) {
       res.status(404).json({ error: '未找到房間' });
     }
@@ -112,11 +111,11 @@ router.patch('/api/maps', async (req, res) => {
         error: '您無權邀請使用者存取此地圖',
       });
     }
-    const confirmationLink = `${process.env.HOST}/api/maps/confirm?roomId=${roomId}&invitees=${invitees}`;
-
     const newInvitees = await db
       .collection('users')
-      .findOne({ _id: new ObjectId(invitees) });
+      .findOne({ email: inviteesMail });
+
+    const confirmationLink = `${process.env.HOST}/api/maps/confirm?roomId=${mapId}&invitees=${newInvitees._id}`;
 
     const newUserInfo = await db
       .collection('users')
