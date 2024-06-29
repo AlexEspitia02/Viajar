@@ -30,40 +30,97 @@ body {
   gap: 10px;
 }
 
-.inputDiv {
+.inputDiv{
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 15px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  background-color: #e6feff;
-  width: 200px;
-  margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+  width: 150px;
 }
 
-.inputTitleBox {
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  margin-top: 10px;
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #00b7a2;
-  border-radius: 3px;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.3rem;
+  color: #009382;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+.form__field::placeholder {
+  color: transparent;
+}
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 1.3rem;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #9b9b9b;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #11998e, #38ef7d);
+  border-image-slice: 1;
+}
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #11998e;
+  font-weight: 700;
+}
+
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
+}
+
+.inputImgDiv{
+  display: block;
+  color: #fff;
+  font-weight: bold;
   font-size: 16px;
-  transition: border-color 0.3s;
-  background-color: #ffffff;
+  background-color: #dadada; 
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 3px;
+  border: none;
+  text-align: center;
+  cursor:pointer; 
+  margin: 10px 0px 20px;
+}
+
+.inputImgLabel{
+  width: 100%;
+}
+
+.inputImgDiv:hover {
+  background: linear-gradient(to right, #11998e, #38ef7d);
 }
 
 .inputImgBox {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #00b7a2;
-  border-radius: 3px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-  background-color: #ffffff;
-  width: 100%;
+display: none;
 }
 
 button {

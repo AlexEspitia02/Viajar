@@ -294,20 +294,48 @@ async function initMap() {
   const inputDiv = document.createElement("div");
   inputDiv.className = "inputDiv";
 
+  const inputContent = document.createElement("div");
+  inputContent.className = "form__group";
+  inputContent.classList.add("field");
+
   const inputTitleBox = document.createElement("input");
   inputTitleBox.setAttribute("type", "text");
-  inputTitleBox.className = "inputTitleBox";
+  inputTitleBox.className = "form__field";
   inputTitleBox.setAttribute("placeholder", "Title");
+  inputTitleBox.setAttribute("tabindex", "-1");
+
+  const inputLabel = document.createElement("label");
+  inputLabel.className = 'form__label';
+  inputLabel.innerText = 'Title';
+
+  const inputImgLabel = document.createElement("label");
+  inputImgLabel.setAttribute("for", "id_img");
+  inputImgLabel.className = 'inputImgLabel';
+
+  const inputImgDiv = document.createElement("div");
+  inputImgDiv.className = 'inputImgDiv';
+  inputImgLabel.appendChild(inputImgDiv);
+
+  const inputImgDivImg = document.createElement("img");
+  inputImgDivImg.src = "../images/imgUpload.png";
+  inputImgDivImg.alt = "Upload Icon";
+  inputImgDivImg.className = 'icon'
+  inputImgDiv.appendChild(inputImgDivImg);
 
   const inputImgBox = document.createElement("input");
   inputImgBox.setAttribute("type", "file");
   inputImgBox.className = "inputImgBox";
+  inputImgBox.id = "id_img";
+  inputImgLabel.appendChild(inputImgBox);
 
   const inputButton = document.createElement("button");
   inputButton.innerText = "上傳資料";
+  
+  inputContent.appendChild(inputTitleBox);
+  inputContent.appendChild(inputLabel);
 
-  inputDiv.appendChild(inputTitleBox);
-  inputDiv.appendChild(inputImgBox);
+  inputDiv.appendChild(inputContent);
+  inputDiv.appendChild(inputImgLabel);
   inputDiv.appendChild(inputButton);
 
   const infowindow = new google.maps.InfoWindow({
