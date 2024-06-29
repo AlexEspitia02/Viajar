@@ -182,14 +182,15 @@ function inviteUser() {
 }
 
 function showSearch() {
-    const loginButtonBox = document.getElementById('loginButtonBox');
+    const information = document.getElementById('information');
+    information.innerHTML='';
 
     let searchContainer = document.getElementById('searchContainer');
     if (!searchContainer) {
         searchContainer = document.createElement('nav');
         searchContainer.id = 'searchContainer';
         searchContainer.className = 'searchContainer';
-        loginButtonBox.appendChild(searchContainer);
+        information.prepend(searchContainer);
 
         const mapListSearchInput = document.createElement('input');
         mapListSearchInput.setAttribute("placeholder", "搜尋地圖");
@@ -204,10 +205,9 @@ function showSearch() {
         searchContainer.appendChild(mapSearchDisplayButton);
 
         mapSearchDisplayButton.addEventListener('click', () => {
-            
             const mapListContainer = document.getElementById('information');
             mapListContainer.innerHTML = '';
-            const keyword = document.getElementById('mapListSearchInput').value;
+            const keyword = mapListSearchInput.value;
             if (keyword) {
                 fetch(`/api/maps/search?keyword=${encodeURIComponent(keyword)}`)
                     .then(response => response.json())

@@ -296,6 +296,8 @@ button:hover {
   background-color: #f8f9fa;
   color: #009382;
   font-weight: 1000;
+  width: 106px;
+  height: 50px;
 }
 
 .nav-link:hover {
@@ -537,7 +539,6 @@ form{
 
 .searchContainer {
   display: none;
-  position: absolute;
 }
 
 .searchContainer.expanded {
@@ -545,11 +546,6 @@ form{
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background-color: white;
-}
-
-.mapListSearchInput{
-  width: 55%;
 }
 
 .mapSearchDisplayButton{
