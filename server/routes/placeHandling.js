@@ -22,7 +22,7 @@ connectToDb((err) => {
 router.get('/api/places', async (req, res) => {
   const { keyword } = req.query;
   if (!keyword) {
-    res.status(400).json({ error: 'Keyword is required' });
+    return res.status(400).json({ error: 'Keyword is required' });
   }
 
   const regex = new RegExp(keyword, 'i');
