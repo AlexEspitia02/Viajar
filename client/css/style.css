@@ -372,7 +372,7 @@ button:hover {
   font-size: 16px;
 }
 
-.welcomeInfo{
+.welcomeInfo, .currentMap{
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -491,6 +491,12 @@ form{
 .roomOwner {
   font-size: 14px;
   color: #666;
+}
+
+.currentMap{
+  margin-bottom: 20px;
+  width: 80%;
+  padding: 15px 15px;
 }
 
 /*地圖搜尋頁面*/
@@ -625,12 +631,21 @@ form{
   margin-bottom: 10px;
 }
 
-.locationLeftContentTitle, .blogTitle, .titleDiv, .roomName, .landmarkSearchContentTitle {
+.locationLeftContentTitle, 
+.blogTitle, 
+.titleDiv, 
+.roomName, 
+.landmarkSearchContentTitle, 
+.currentMapTitle {
   overflow-wrap: break-word;
   font-family: "Noto Sans TC", "Roboto", sans-serif;
   font-weight: 350;
   color: #2a2a2a;
   font-size: 24px;
+}
+
+.currentMapTitle{
+  color:#009382;
 }
 
 .locationLeftContent>p {
