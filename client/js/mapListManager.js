@@ -51,6 +51,7 @@ function fetchMapList() {
             const information = document.getElementById('information');
             information.innerHTML = '';
 
+            findMap();
             data.forEach(roomInfo => {
                 const roomBox = createRoomBox(roomInfo);
                 information.appendChild(roomBox);
@@ -138,6 +139,8 @@ function createMap() {
 function displayInviteForm() {
     const information = document.getElementById('information');
     information.innerHTML = '';
+
+    findMap();
 
     const inviteesMailInput = document.createElement("input");
     inviteesMailInput.setAttribute("type", "text");
@@ -274,5 +277,42 @@ async function deleteMap(mapId) {
     } catch (error) {
         console.error("Error:", error);
         alert("發生錯誤");
+    }
+}
+
+function findMap(){
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+
+    const mapListContainer = document.getElementById('information');
+    if (!mapId){
+        const currentMap = document.createElement('div');
+        currentMap.className = 'currentMap';
+
+        const currentMapTitle = document.createElement('div');
+        currentMapTitle.className = 'currentMapTitle';
+        currentMapTitle.innerText = '目前尚未選擇任何地圖'
+        currentMap.appendChild(currentMapTitle);
+
+        mapListContainer.prepend(currentMap);
+    } else {
+        fetch(`/api/maps/map?mapId=${mapId}`)
+        .then(response => response.json())
+        .then(data => {
+            const currentMap = document.createElement('div');
+            currentMap.className = 'currentMap';
+
+            const currentMapTitle = document.createElement('div');
+            currentMapTitle.className = 'currentMapContent';
+            currentMapTitle.innerText = '當前地圖：'
+            currentMap.appendChild(currentMapTitle);
+
+            const currentMapContent = document.createElement('p');
+            currentMapContent.className = 'currentMapTitle';
+            currentMapContent.innerText = `${data.roomName}`
+            currentMap.appendChild(currentMapContent);
+
+            mapListContainer.prepend(currentMap);
+        })
     }
 }
