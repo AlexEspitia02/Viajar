@@ -198,6 +198,9 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
 
       placeListSearchButton.addEventListener("click", () => {
           const placeResult = document.getElementById('placeListSearchInput').value.trim();
+          if( !placeResult ){
+            showAlert('請輸入地點，內容不得為空')
+          }
 
           fetch(`/api/places?keyword=${placeResult}`)
               .then(response => response.json())
