@@ -31,7 +31,7 @@ function clearJWT() {
     console.log('JWT cleared from LocalStorage');
 }
 
-async function fetchUserData() {
+async function fetchUserData(isHomepage) {
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
         console.log('No JWT token found, please log in.');
@@ -53,7 +53,7 @@ async function fetchUserData() {
     
         const data = await response.json();
         console.log('User data:', data);
-        updateUserInterface(data.data);
+        isHomepage ? updateUserInterface(data.data) : null;
         loginUserName = data.data.name;
         loginUserId = data.data.id;
         loginImg = data.data.picture;
@@ -68,9 +68,9 @@ async function fetchUserData() {
     }
 }
 
-function checkLoginStatus(fetchUserData) {
+function checkLoginStatus(fetchUserData, isHomepage) {
     const jwtToken = localStorage.getItem('jwtToken');
     if (jwtToken) {
-        fetchUserData()
+        return fetchUserData(isHomepage);
     }
 }

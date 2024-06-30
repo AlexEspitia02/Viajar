@@ -153,7 +153,7 @@ function handleAuthForm(isSignUp) {
     createForm(isSignUp);
 }
 
-async function fetchGoogleUserData() {
+async function fetchGoogleUserData(isHomepage) {
   const token = document.cookie
       ?.split('; ')
       ?.find((row) => row.startsWith('token='))
@@ -178,7 +178,8 @@ async function fetchGoogleUserData() {
       }
 
       const data = await response.json();
-      updateUserInterface(data);
+
+      isHomepage? updateUserInterface(data) : null;
       loginUserName = data.name;
       loginUserId = data._id;
       loginImg = data.picture;
@@ -197,9 +198,9 @@ function clearCookieJWT() {
   document.cookie = 'token=; Max-Age=0';
 }
 
-function checkGoogleLoginStatus(fetchGoogleUserData) {
+function checkGoogleLoginStatus(fetchGoogleUserData, isHomepage) {
   const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
   if (hasCookieToken) {
-    fetchGoogleUserData();
+    return fetchGoogleUserData(isHomepage);
   }
 }
