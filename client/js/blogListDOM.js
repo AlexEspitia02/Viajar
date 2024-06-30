@@ -1,54 +1,13 @@
-let loginUserId = null;
+async function initializeUser() {
+  const isHomepage = false;
+  let loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
 
-
-function clearJWT() {
-  localStorage.removeItem('jwtToken');
-  console.log('JWT cleared from LocalStorage');
+  if (!loginUserId) {
+      loginUserId = await checkLoginStatus(fetchUserData, isHomepage);
+  }
 }
 
-function fetchUserData() {
-const jwtToken = localStorage.getItem('jwtToken');
-if (!jwtToken) {
-    console.log('No JWT token found, please log in.');
-    return;
-}
-
-fetch('/user/profile', {
-    method: 'GET',
-    headers: {
-    Authorization: `Bearer ${jwtToken}`,
-    'Content-Type': 'application/json',
-    },
-})
-.then((response) => {
-    if (!response.ok) {
-    throw new Error('Failed to fetch user data');
-    }
-    return response.json();
-})
-.then((data) => {
-    console.log('User data:', data);
-    loginUserName = data.data.name;
-    loginUserId = data.data.id;
-    loginImg = data.data.picture;
-    loginEmail = data.data.email;
-})
-.catch((error) => {
-    console.error('Error fetching user data:', error);
-    if (error.message === 'Failed to fetch user data') {
-        clearJWT();
-    }
-});
-}
-
-function checkLoginStatus() {
-    const jwtToken = localStorage.getItem('jwtToken');
-    if (jwtToken) {
-        fetchUserData();
-    }
-}
-
-checkLoginStatus();
+initializeUser();
 
 function displayBlogList(data) {
   const blogListContainer = document.getElementById('blogList');

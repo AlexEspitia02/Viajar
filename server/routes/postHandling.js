@@ -108,4 +108,17 @@ router.delete('/api/posts/delete', async (req, res) => {
     });
 });
 
+router.get('/api/post/user', async (req, res) => {
+  const { loginUserId } = req.query;
+
+  db.collection('posts')
+    .findOne({ loginUserId })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not delete the document' });
+    });
+});
+
 module.exports = router;

@@ -9,61 +9,25 @@ import ColorPlugin from 'editorjs-text-color-plugin';
 
 // const socket = io();
 let editor;
-let loginUserId = null;
 
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('id');
 const title = urlParams.get('title');
 const mapId = urlParams.get('mapId');
 
-function clearJWT() {
-localStorage.removeItem('jwtToken');
-console.log('JWT cleared from LocalStorage');
-}
+async function initializeUser() {
+    const isHomepage = false;
+    let loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
 
-function fetchUserData() {
-const jwtToken = localStorage.getItem('jwtToken');
-if (!jwtToken) {
-    console.log('No JWT token found, please log in.');
-    return;
-}
-
-fetch('/user/profile', {
-    method: 'GET',
-    headers: {
-    Authorization: `Bearer ${jwtToken}`,
-    'Content-Type': 'application/json',
-    },
-})
-.then((response) => {
-    if (!response.ok) {
-    throw new Error('Failed to fetch user data');
+    if (!loginUserId) {
+        loginUserId = await checkLoginStatus(fetchUserData, isHomepage);
     }
-    return response.json();
-})
-.then((data) => {
-    console.log('User data:', data);
-    loginUserName = data.data.name;
-    loginUserId = data.data.id;
-    loginImg = data.data.picture;
-    loginEmail = data.data.email;
-})
-.catch((error) => {
-    console.error('Error fetching user data:', error);
-    if (error.message === 'Failed to fetch user data') {
-        clearJWT();
-    }
-});
+
+    const saveBtn = document.getElementById('saveButton');
+    findUser(loginUserId, saveBtn);
 }
 
-function checkLoginStatus() {
-    const jwtToken = localStorage.getItem('jwtToken');
-    if (jwtToken) {
-        fetchUserData();
-    }
-}
-
-document.addEventListener('DOMContentLoaded', checkLoginStatus);
+initializeUser();
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -141,43 +105,45 @@ function loadEditorData() {
     // });
 }
 
-let saveBtn = document.getElementById('saveButton');
-saveBtn.addEventListener('click', function() {
-    editor.save().then((outputData) => {
-        outputData._id = postId;
-        outputData.title = title;
-        outputData.loginUserId = loginUserId;
-        outputData.mapId = mapId;
-        const formData = new FormData();
-        formData.append('data', JSON.stringify(outputData));
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput.files[0]) {
-            formData.append('main_image', fileInput.files[0]);
-        }
-        
-        // socket.emit('newPost', formData);
-
-        fetch("/api/posts", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Something went wrong on api server!');
+document.addEventListener('DOMContentLoaded', function() {
+    const saveBtn = document.getElementById('saveButton');
+    saveBtn.addEventListener('click', function() {
+        editor.save().then((outputData) => {
+            outputData._id = postId;
+            outputData.title = title;
+            outputData.loginUserId = loginUserId;
+            outputData.mapId = mapId;
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(outputData));
+            const fileInput = document.querySelector('input[type="file"]');
+            if (fileInput.files[0]) {
+                formData.append('main_image', fileInput.files[0]);
             }
-        })
-        .then(data => {
-            alert("數據上傳成功");
-            console.log('Success:', data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("數據上傳失敗");
+            
+            // socket.emit('newPost', formData);
+
+            fetch("/api/posts", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(data => {
+                alert("數據上傳成功");
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("數據上傳失敗");
+            });
+        }).catch((error) => {
+            console.log('Saving failed', error);
         });
-    }).catch((error) => {
-        console.log('Saving failed', error);
     });
 });
 
@@ -185,3 +151,20 @@ let blogListButton = document.getElementById('blogListButton');
 blogListButton.addEventListener('click', function() {
     window.location.href = '/blogList.html';
 });
+
+function findUser(loginUserId, saveBtn) {
+    fetch(`/api/post/user?loginUserId=${loginUserId}`, {
+        method: "GET"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data) {
+            saveBtn.style.display = 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        saveBtn.style.display = 'none';
+        alert("查找文章失敗!");
+    });
+}

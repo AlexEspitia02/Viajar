@@ -96,8 +96,16 @@ async function initMap() {
     }
 });
 
-  checkGoogleLoginStatus(fetchGoogleUserData);
-  checkLoginStatus(fetchUserData);
+  async function initializeUser() {
+    const isHomepage = true;
+    let loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
+  
+    if (!loginUserId) {
+        loginUserId = await checkLoginStatus(fetchUserData, isHomepage);
+    }
+  }
+  
+  initializeUser();
 
   const debounceEmitMapMove = debounce(() => {
     updateActiveWindow(); // 更新活動視窗
