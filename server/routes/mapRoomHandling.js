@@ -98,15 +98,20 @@ router.post('/api/maps', async (req, res) => {
 router.patch('/api/maps', async (req, res) => {
   const { mapId, loginUserId, inviteesMail } = req.body;
   try {
+    if (!mapId) {
+      return res.status(404).json({ error: '請先選擇地圖!!' });
+    }
+
     const map = await db
       .collection('maps')
       .findOne({ _id: new ObjectId(mapId) });
+
     if (!map) {
-      res.status(404).json({ error: '未找到房間' });
+      return res.status(404).json({ error: '未找到房間' });
     }
 
     if (map.loginUserId !== loginUserId) {
-      res.status(403).json({
+      return res.status(403).json({
         error: '您無權邀請使用者存取此地圖',
       });
     }
