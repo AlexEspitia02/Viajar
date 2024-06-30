@@ -158,6 +158,9 @@ function displayInviteForm() {
 function inviteUser() {
     const urlParams = new URLSearchParams(window.location.search);
     const mapId = urlParams.get('mapId');
+    if(!mapId){
+        showAlert('請先選擇地圖後邀請')
+    }
     const inviteesMail = document.getElementById('inviteesMailInput').value;
 
     fetch('/api/maps', {
