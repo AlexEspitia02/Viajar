@@ -31,7 +31,7 @@ async function findPlaces(placeText, map) {
       const organizedPlaces = [];
 
       places.forEach((place) => {
-          const markerView = createMarker(map, place, AdvancedMarkerElement, true);
+          const markerView = createMarker(map, place, AdvancedMarkerElement, true, false);
           bounds.extend(place.location);
 
           const locationContent = createLocationContent(place, map, true);
@@ -68,10 +68,10 @@ async function findPlaces(placeText, map) {
   }
 }
 
-function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = false) {
+function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = false, isRestaurant = false) {
   const searchFlagImg = document.createElement("img");
   searchFlagImg.className = "icon";
-  searchFlagImg.src = "./images/search.png";
+  searchFlagImg.src = isRestaurant ? "./images/restaurant.png":"./images/search.png";
 
   const markerView = new AdvancedMarkerElement({
       map,
@@ -97,29 +97,28 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
   landmarkSearchContentBtn.id = 'landmarkSearchContentBtn';
   landmarkSearchContentBtn.className = 'landmarkSearchContentBtn';
   landmarkSearchContentBtn.addEventListener('click',()=>{
-    // fetch(`/api/places/location?lat=${place.location.lat}&lng=${place.location.lng}`)
-    //     .then(response => response.json())
-    //     .then(async (data) => {
-    //         if (data.length > 0) {
-    //             const { LatLngBounds } = await google.maps.importLibrary("core");
-    //             const bounds = new LatLngBounds();
+    fetch(`/api/places/location?lat=${place.location.lat}&lng=${place.location.lng}`)
+        .then(response => response.json())
+        .then(async (data) => {
+            // const moreRestaurant = 10 - data.length;
+            if (data.length > 0 ){
+                const { LatLngBounds } = await google.maps.importLibrary("core");
+                const bounds = new LatLngBounds();
 
-    //             data.forEach((place) => {
-    //                 const markerView = createMarker(map, place, AdvancedMarkerElement, false);
-    //                 bounds.extend(place.location);
+                data.forEach((place) => {
+                    const markerView = createMarker(map, place, AdvancedMarkerElement, false, true);
+                    bounds.extend(place.location);
 
-    //                 const locationContent = createLocationContent(place, map, false);
-    //                 information.appendChild(locationContent);
-    //             });
+                    const locationContent = createLocationContent(place, map, false);
+                    information.appendChild(locationContent);
+                });
 
-    //             map.fitBounds(bounds, { padding: 50 });
-
-    //         } else {
-                
+                map.fitBounds(bounds, { padding: 50 });
+            } else {
                 nearbySearch(place.location);
-        //     }
-        // })
-        // .catch(error => console.error('Place Search Error:', error));
+            }
+        })
+        .catch(error => console.error('Place Search Error:', error));
   });
   
   landmarkSearchContent.appendChild(landmarkSearchContentTitle);
@@ -208,7 +207,7 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
                       const bounds = new LatLngBounds();
 
                       data.forEach((place) => {
-                          const markerView = createMarker(map, place, AdvancedMarkerElement, false);
+                          const markerView = createMarker(map, place, AdvancedMarkerElement, false, false);
                           bounds.extend(place.location);
 
                           const locationContent = createLocationContent(place, map, false);
@@ -265,17 +264,8 @@ async function nearbySearch(location) {
       const bounds = new LatLngBounds();
   
       places.forEach((place) => {
-        const searchFlagImg = document.createElement("img");
-        searchFlagImg.className = "icon";
-        searchFlagImg.src = "./images/restaurant.png";
-
-        const markerView = new AdvancedMarkerElement({
-          map,
-          position: place.location,
-          title: place.displayName,
-          content:searchFlagImg,
-        });
-  
+        console.log(place);
+        const markerView = createMarker(map, place, AdvancedMarkerElement, false, true);
         bounds.extend(place.location);
 
         const locationContent = createLocationContent(place, map, true);
@@ -291,19 +281,20 @@ async function nearbySearch(location) {
             imgUrl,
             rating: place.rating,
             websiteURI: place.websiteURI,
+            type:'restaurant'
         };
         organizedPlaces.push(newPlace);
       });
       map.fitBounds(bounds);
 
-    //   fetch('/api/places', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(organizedPlaces),
-    //     })
-    //     .catch(error => console.error('輸入資料錯誤:', error));
+      fetch('/api/places', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(organizedPlaces),
+        })
+        .catch(error => console.error('輸入資料錯誤:', error));
 
     } else {
       console.log("No results");
