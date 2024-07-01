@@ -159,7 +159,13 @@ function findUser(loginUserId, saveBtn) {
     .then(response => response.json())
     .then(data => {
         if (!data) {
-            saveBtn.style.display = 'none';
+            if( !loginUserId){
+                saveBtn.style.display = 'none';
+            }
+        }else{
+            if( loginUserId !== data.loginUserId){
+                saveBtn.style.display = 'none';
+            }
         }
     })
     .catch(error => {
