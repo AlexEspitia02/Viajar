@@ -73,8 +73,8 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
   
     markDeleteButtonBox.appendChild(markDeleteButton);
 
-    infoDiv.appendChild(titleDiv);
     infoDiv.appendChild(imgElementLink);
+    infoDiv.appendChild(titleDiv);
     infoDiv.appendChild(markDeleteButtonBox);
   
     const infowindow = new google.maps.InfoWindow({
@@ -97,6 +97,61 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
     markers.push(marker); 
   
     marker.addListener("click", function () {
+        deleteMarkerPadding();
         infowindow.open(map, marker);
     });
 }
+
+function deleteMarkerPadding() {
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                const markScrollElements = document.querySelectorAll('.gm-style-iw-d');
+                if (markScrollElements.length > 0) {
+                    markScrollElements.forEach(element => {
+                        element.style.overflow = 'auto';
+                        element.style.padding = '0';
+                    });
+                    const childPaddingElements = document.querySelectorAll('.gm-style-iw-c');
+                    if (childPaddingElements.length > 0) {
+                        childPaddingElements.forEach(element => {
+                            element.style.padding = '0';
+                        });
+                    }
+                    const childCloseIconElements = document.querySelectorAll('button.gm-ui-hover-effect[aria-label="關閉"]');
+                    if (childCloseIconElements.length > 0) {
+                        childCloseIconElements.forEach(element => {
+                            element.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                            element.style.borderRadius = '50%';
+                            element.style.height = '32px';
+                            element.style.width = '32px';
+                            element.style.margin = '5px';
+
+                            element.addEventListener('mouseover', () => {
+                                element.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+                            });
+                            element.addEventListener('mouseout', () => {
+                                element.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                            });
+                        });
+                    }
+                    const childCloseIconChildElements = document.querySelectorAll('button.gm-ui-hover-effect[aria-label="關閉"] span');
+                    if (childCloseIconChildElements.length > 0) {
+                        childCloseIconChildElements.forEach(element => {
+                            element.style.margin = '0px 0px 0px 4px';
+                        });
+                    }
+                    observer.disconnect();
+                    break;
+                }
+            }
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
+deleteMarkerPadding();
