@@ -15,12 +15,36 @@ body {
 }
 
 /*創建地標*/
-.landmarkImg,.landmarkSearchContentImg{
-  height: 125px;
-  width:  125px;
+.landmarkImg, .landmarkSearchContentImg{
+  height: 150px;
+  width:  100%;
+  border: none;
   object-fit: cover;
   object-position: center center;
-  border-radius: 10px;
+}
+
+.landmarkSearchContentTitle , .titleDiv{
+  overflow-wrap: break-word;
+  font-family: "Noto Sans TC", "Roboto", sans-serif;
+  font-weight: 350;
+  color: #2a2a2a;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.gm-style-iw-ch{
+  display: none;
+}
+
+.gm-style-iw-chr{
+  position:fixed;
+  right: 0;
+}
+
+.gm-style-iw-d{
+  padding: 0px;
+  margin: 0px;
+  overflow:hidden;
 }
 
 .infoDiv ,.landmarkSearchContent{
@@ -28,6 +52,11 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 200px;
+}
+
+.infoDiv>a{
+  width: 100%;
 }
 
 .inputDiv{
@@ -159,6 +188,7 @@ button:hover {
   background-position: center;
   transition: background-image 0.2s;
   cursor: pointer;
+  margin: 5px;
 }
 
 .markDeleteButton:hover{
@@ -171,9 +201,17 @@ button:hover {
   justify-content: end;
 }
 
+.gm-ui-hover-effect{
+  background-color: white;
+}
+
 /*地標圖片*/
 .icon{
   height: 35px;
+  transition: height 0.2s ease;
+}
+.icon:hover{
+  height: 38px;
 }
 
 /*鼠標*/
@@ -633,9 +671,7 @@ form{
 
 .locationLeftContentTitle, 
 .blogTitle, 
-.titleDiv, 
 .roomName, 
-.landmarkSearchContentTitle, 
 .currentMapTitle {
   overflow-wrap: break-word;
   font-family: "Noto Sans TC", "Roboto", sans-serif;
@@ -682,6 +718,7 @@ form{
   background-position: center;
   transition: background-image 0.2s;
   cursor: pointer;
+  margin: 5px;
 }
 
 .landmarkSearchContentBtn:hover{

@@ -121,8 +121,8 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
         .catch(error => console.error('Place Search Error:', error));
   });
   
-  landmarkSearchContent.appendChild(landmarkSearchContentTitle);
   landmarkSearchContent.appendChild(landmarkSearchContentImg);
+  landmarkSearchContent.appendChild(landmarkSearchContentTitle);
   landmarkSearchContent.appendChild(landmarkSearchContentBtn);
 
   const infowindow = new google.maps.InfoWindow({
@@ -130,7 +130,8 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
   });
 
   markerView.addListener("click", function () {
-      infowindow.open(map, markerView);
+    deleteMarkerPadding();
+    infowindow.open(map, markerView);
   });
 
   return markerView;
