@@ -1,8 +1,8 @@
 const express = require('express');
 const multer = require('multer');
 const crypto = require('crypto');
-const path = require('path');
 const { ObjectId } = require('mongodb');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { connectToDb, getDb } = require('../models/db');
 
 const router = express.Router();
@@ -17,19 +17,22 @@ connectToDb((err) => {
   }
 });
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    const uploadsDir = path.join(__dirname, '../uploads');
-    cb(null, uploadsDir);
-  },
-  filename(req, file, cb) {
-    const extension = file.originalname.split('.').pop();
-    const timestamp = Date.now();
-    const randomString = crypto.randomBytes(8).toString('hex');
-    const filename = `${timestamp}-${randomString}.${extension}`;
-    cb(null, filename);
+const {
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET_REGION,
+  BUCKET_NAME,
+} = process.env;
+
+const s3Client = new S3Client({
+  region: S3_BUCKET_REGION,
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
 });
+
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/')) {
@@ -84,7 +87,21 @@ router.post('/api/upload', upload.single('image'), async (req, res) => {
     return res.status(400).json({ error: 'No file uploaded' });
   }
 
-  const fileUrl = `/uploads/${req.file.filename}`;
+  const mainImageFile = req.file;
+  const extension = mainImageFile.originalname.split('.').pop();
+  const timestamp = Date.now();
+  const randomString = crypto.randomBytes(8).toString('hex');
+  const mainImageKey = `${timestamp}-${randomString}.${extension}`;
+
+  const mainImageCommand = new PutObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: `posts/${mainImageKey}`,
+    Body: mainImageFile.buffer,
+    ContentType: mainImageFile.mimetype,
+  });
+  await s3Client.send(mainImageCommand);
+
+  const fileUrl = `https://d327wy5d585ux5.cloudfront.net/posts/${mainImageKey}`;
 
   res.status(200).json({
     success: 1,

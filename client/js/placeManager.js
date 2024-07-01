@@ -91,7 +91,7 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
   landmarkSearchContentImg.className = 'landmarkSearchContentImg';
   landmarkSearchContentImg.src = isFromFindPlaces
   ? `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
-  : `placeImg/${place.imgUrl}`;
+  : `${place.imgUrl}`;
 
   const landmarkSearchContentBtn = document.createElement('div');
   landmarkSearchContentBtn.id = 'landmarkSearchContentBtn';
@@ -169,7 +169,7 @@ function createLocationContent(place, map, isFromFindPlaces = false) {
   const photos = document.createElement('img');
   const imgUrl = isFromFindPlaces
       ? `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
-      : `placeImg/${place.imgUrl}`;
+      : `${place.imgUrl}`;
   photos.src = imgUrl;
   locationContent.appendChild(photos);
 
@@ -269,7 +269,7 @@ async function nearbySearch(location) {
   
       places.forEach((place) => {
         console.log(place);
-        const markerView = createMarker(map, place, AdvancedMarkerElement, false, true);
+        const markerView = createMarker(map, place, AdvancedMarkerElement, true, true);
         bounds.extend(place.location);
 
         const locationContent = createLocationContent(place, map, true);

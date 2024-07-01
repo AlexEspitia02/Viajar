@@ -1,10 +1,8 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const request = require('request');
-const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
-
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { connectToDb, getDb } = require('../models/db');
 
 const router = express.Router();
@@ -17,6 +15,21 @@ connectToDb((err) => {
   if (!err) {
     db = getDb();
   }
+});
+
+const {
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET_REGION,
+  BUCKET_NAME,
+} = process.env;
+
+const s3Client = new S3Client({
+  region: S3_BUCKET_REGION,
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
 });
 
 router.get('/api/places', async (req, res) => {
@@ -78,25 +91,27 @@ router.get('/api/places/location', async (req, res) => {
   }
 });
 
-function downloadImage(url, filename) {
-  const fullPath = path.join(__dirname, '../placeImg', filename);
+async function downloadImage(url, filename) {
   return new Promise((resolve, reject) => {
-    request.head(url, (err) => {
+    request({ url, encoding: null }, async (err, res, body) => {
       if (err) {
-        console.log('Failed to retrieve image headers:', err);
-        reject(err);
-        return;
+        console.log('Failed to download image:', err);
+        return reject(err);
       }
-      request(url)
-        .pipe(fs.createWriteStream(fullPath))
-        .on('close', () => {
-          console.log('Image successfully downloaded and saved.');
-          resolve();
-        })
-        .on('error', (downloadErr) => {
-          console.log('Failed to download image:', downloadErr);
-          reject(downloadErr);
+      try {
+        const mainImageCommand = new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: `placeImg/${filename}`,
+          Body: body,
+          ContentType: res.headers['content-type'],
         });
+        await s3Client.send(mainImageCommand);
+        console.log('Image successfully uploaded to S3.');
+        resolve();
+      } catch (uploadErr) {
+        console.log('Failed to upload image to S3:', uploadErr);
+        reject(uploadErr);
+      }
     });
   });
 }
@@ -109,7 +124,10 @@ router.post('/api/places', async (req, res) => {
     const randomString = crypto.randomBytes(8).toString('hex');
     const filename = `${timestamp}-${randomString}.jpg`;
     await downloadImage(place.imgUrl, filename);
-    return { ...place, imgUrl: filename };
+    return {
+      ...place,
+      imgUrl: `https://d327wy5d585ux5.cloudfront.net/placeImg/${filename}`,
+    };
   });
 
   const placesWithImages = await Promise.all(downloadPromises);

@@ -13,7 +13,7 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
     imgElementLink.target = "_blank";
   
     const imgElement = document.createElement("img");
-    imgElement.src = imageData.imgSrc;
+    imgElement.src = `https://d327wy5d585ux5.cloudfront.net/${imageData.imgSrc}`;
     imgElement.className = "landmarkImg";
     imgElementLink.appendChild(imgElement);
   
