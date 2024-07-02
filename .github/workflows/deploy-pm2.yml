@@ -1,0 +1,22 @@
+name: 部屬PM2專案
+
+on:
+    push:
+        branches:
+            - alex_develop
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v1
+
+            - name: Install Node.js
+              uses: actions/setup-node@v1
+              with:
+                node-version: 20
+
+            - name: npm install
+              run:
+                npm install
