@@ -24,7 +24,9 @@ jobs:
                   cd ~/MyTravel
                   git switch main
                   git pull
-                  cd server
+                  cd client
+                  parcel serve blog.html
+                  cd ../server
                   export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
                   which npm
                   which pm2
