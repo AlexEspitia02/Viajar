@@ -25,7 +25,7 @@ jobs:
                   git switch main
                   git pull
                   cd client
-                  npm install
+                  parcel serve blog.html
                   cd ../server
                   npm install
                   pm2 restart index
