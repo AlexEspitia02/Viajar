@@ -21,14 +21,11 @@ jobs:
               run: |
                 ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_IP }} << 'EOF'
                   echo "Hello from github action, start deploy main to ec2"
-                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
                   cd ~/MyTravel
                   git switch main
                   git pull
-                  cd client
-                  which parcel || echo "Parcel not found in PATH"
-                  npx parcel serve blog.html
-                  cd ../server
+                  cd server
+                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
                   which npm
                   which pm2
                   npm install
