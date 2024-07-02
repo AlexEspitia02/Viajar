@@ -25,6 +25,10 @@ jobs:
                   git switch main
                   git pull
                   cd server
+                  echo "Checking PATH and npm/pm2 location"
+                  echo $PATH
+                  which npm
+                  which pm2
                   npm install
                   pm2 restart index
                 EOF
