@@ -26,6 +26,7 @@ jobs:
                   git switch main
                   git pull
                   cd client
+                  which parcel || echo "Parcel not found in PATH"
                   npx parcel serve blog.html
                   cd ../server
                   which npm
