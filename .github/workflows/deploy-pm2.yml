@@ -26,6 +26,11 @@ jobs:
                   git pull
                   cd ~
                   cd MyTravel/server/
+                  # 安裝 Node.js 和 npm
+                  curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+                  sudo apt-get install -y nodejs
+                  # 全域安裝 pm2
+                  sudo npm install -g pm2
                   npm install
                   pm2 restart index
                 EOF
