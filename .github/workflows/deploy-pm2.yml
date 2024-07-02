@@ -24,7 +24,8 @@ jobs:
                   cd MyTravel/
                   git switch main
                   git pull
-                  cd server/
+                  cd ~
+                  cd MyTravel/server/
                   npm install
                   pm2 restart index
                 EOF
