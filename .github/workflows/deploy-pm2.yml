@@ -22,6 +22,10 @@ jobs:
                 mkdir -p ~/.ssh
                 ssh-keyscan ${{ secrets.HOST_IP }} >> ~/.ssh/known_hosts
 
+            - name: 測試 SSH 連接
+              run: |
+                ssh -vvv root@${{ secrets.HOST_IP }} 'echo "SSH 連接成功"'
+
             - name: deploy to ec2
               run: |
                 ssh root@${{ secrets.HOST_IP }} << 'EOF'
