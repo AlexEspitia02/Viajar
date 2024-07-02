@@ -25,8 +25,7 @@ jobs:
                   git switch main
                   git pull
                   cd server
-                  echo "Checking PATH and npm/pm2 location"
-                  echo $PATH
+                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
                   which npm
                   which pm2
                   npm install
