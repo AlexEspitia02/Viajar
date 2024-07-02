@@ -28,5 +28,5 @@ jobs:
                   npm install
                   cd ../server
                   npm install
-                  pm2 restart index.js
+                  pm2 restart index
                 EOF
