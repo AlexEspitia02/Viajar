@@ -25,7 +25,7 @@ jobs:
                   git switch main
                   git pull
                   cd client
-                  parcel serve blog.html
+                  npx parcel serve blog.html
                   cd ../server
                   export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
                   which npm
