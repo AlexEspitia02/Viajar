@@ -12,23 +12,14 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v2
 
-            - name: Add SSH key
-              run: |
-                mkdir -p ~/.ssh
-                echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
-                chmod 600 ~/.ssh/id_rsa
-
-            - name: 更新 known_hosts 文件
-              run: |
-                ssh-keyscan ${{ secrets.HOST_IP }} >> ~/.ssh/known_hosts
-
-            - name: 測試 SSH 連接
-              run: |
-                ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -vvv root@${{ secrets.HOST_IP }} 'echo "SSH 連接成功"'
+            - name: Install SSH key
+              uses: webfactory/ssh-agent@v0.6.0
+              with:
+                ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
             - name: deploy to ec2
               run: |
-                ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST_IP }} << 'EOF'
+                ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_IP }} << 'EOF'
                   echo "Hello from github action, start deploy main to ec2"
                   cd ~/MyTravel
                   git switch main
