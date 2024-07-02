@@ -21,10 +21,10 @@ jobs:
               run: |
                 ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_IP }} << 'EOF'
                   echo "Hello from github action, start deploy main to ec2"
-                  cd ~/MyTravel
+                  cd MyTravel/
                   git switch main
                   git pull
-                  cd /server
+                  cd server/
                   npm install
                   pm2 restart index
                 EOF
