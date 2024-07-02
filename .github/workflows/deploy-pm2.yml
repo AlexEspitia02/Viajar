@@ -3,7 +3,7 @@ name: 部屬PM2專案
 on:
     push:
         branches:
-            - alex_develop
+            - main
 
 jobs:
     deploy:
@@ -15,8 +15,14 @@ jobs:
             - name: Install Node.js
               uses: actions/setup-node@v1
               with:
-                node-version: 20
+                node-version: "20"
 
-            - name: npm install
-              run:
+            - name: Install dependencies for client
+              run: |
+                cd client
+                npm install
+
+            - name: Install dependencies for server
+              run: |
+                cd server
                 npm install
