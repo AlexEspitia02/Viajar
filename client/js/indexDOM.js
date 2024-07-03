@@ -283,21 +283,7 @@ async function initMap() {
 
   document.getElementById('mapList').addEventListener("click", handleMapListClick);
 
-  document.getElementById('articleList').addEventListener("click", () => {
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    loadingIndicator.style.display = 'flex';
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const mapId = urlParams.get('mapId');
-
-    fetch(`/api/blogList?mapId=${mapId}`)
-    .then((response) => response.json())
-    .then((data) => {
-      loadingIndicator.style.display = 'none';
-      displayBlogList(data);
-    })
-    .catch((error) => console.error('Error fetching data:', error));
-  });
+  document.getElementById('articleList').addEventListener("click", handleArticleListClick);
 
   document.getElementById('placeSearchList').addEventListener("click", () => {
     handlePlaceListClick(map, AdvancedMarkerElement)

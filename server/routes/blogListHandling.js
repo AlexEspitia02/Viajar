@@ -32,8 +32,13 @@ router.get('/api/blogList/search', async (req, res) => {
   try {
     const { keyword, mapId } = req.query;
 
-    const regex = new RegExp(keyword, 'i');
+    if (!keyword) {
+      return res
+        .status(400)
+        .json({ success: false, error: '請輸入搜索關鍵字' });
+    }
 
+    const regex = new RegExp(keyword, 'i');
     const blogs = await db
       .collection('posts')
       .aggregate([
@@ -50,9 +55,15 @@ router.get('/api/blogList/search', async (req, res) => {
       ])
       .toArray();
 
+    if (blogs.length === 0) {
+      return res.status(400).json({ success: false, error: '查無文章' });
+    }
+
     res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({ error: 'Could not fetch the documents' });
+    res
+      .status(500)
+      .json({ success: false, error: 'Could not fetch the documents' });
   }
 });
 
