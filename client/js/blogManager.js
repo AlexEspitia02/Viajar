@@ -54,6 +54,9 @@ function displayBlogList(data) {
         if (keyword) {
             const urlParams = new URLSearchParams(window.location.search);
             const mapId = urlParams.get('mapId');
+
+            document.querySelector('.loadingIndicator').style.display = 'flex';
+            
             fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}&mapId=${mapId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -61,6 +64,7 @@ function displayBlogList(data) {
                         const blogElement = createBlogElement(blog);
                         blogListContainer.appendChild(blogElement);
                     });
+                    document.querySelector('.loadingIndicator').style.display = 'none';
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
