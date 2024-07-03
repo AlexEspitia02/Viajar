@@ -44,35 +44,37 @@ function displayBlogList(data) {
     const blogListSearchBtn = document.createElement('button');
     blogListSearchBtn.className = 'blogListSearchBtn';
     blogListSearchBtn.id = 'blogListSearchBtn';
-    blogListSearchBtn.innerText = 'Search';
+    blogListSearchBtn.innerText = '搜尋';
     loginButtonBox.appendChild(blogListSearchBtn);
 
     document.getElementById('blogListSearchBtn').addEventListener('click', function() {
         const blogListContainer = document.getElementById('information');
         blogListContainer.innerHTML = '';
         const keyword = document.getElementById('blogListSearchInput').value;
-        if (keyword) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const mapId = urlParams.get('mapId');
 
-            document.querySelector('.loadingIndicator').style.display = 'flex';
-            
-            fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}&mapId=${mapId}`)
-                .then(response => response.json())
-                .then(data => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mapId = urlParams.get('mapId');
+
+        document.querySelector('.loadingIndicator').style.display = 'flex';
+        
+        fetch(`/api/blogList/search?keyword=${encodeURIComponent(keyword)}&mapId=${mapId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success === false) {
+                    showAlert(data.error);
+                    document.querySelector('.loadingIndicator').style.display = 'none';
+                } else {
                     data.forEach(blog => {
                         const blogElement = createBlogElement(blog);
                         blogListContainer.appendChild(blogElement);
                     });
                     document.querySelector('.loadingIndicator').style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    document.getElementById('results').textContent = '搜索失敗';
-                });
-        } else {
-            alert('請輸入搜索關鍵字');
-        }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('results').textContent = '搜索失敗';
+            });
     });
 
     if (loginUserId) {
@@ -101,4 +103,19 @@ function displayBlogList(data) {
         contentDiv.innerHTML = `登入後查看文章清單`;
         contentDiv.style.display = 'flex';
     }
+}
+
+function handleArticleListClick() {
+    document.querySelector('.loadingIndicator').style.display = 'flex';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
+
+    fetch(`/api/blogList?mapId=${mapId}`)
+    .then((response) => response.json())
+    .then((data) => {
+        displayBlogList(data);
+        document.querySelector('.loadingIndicator').style.display = 'none';
+    })
+    .catch((error) => console.error('Error fetching data:', error));
 }

@@ -131,11 +131,15 @@ function createMap() {
         },
         body: JSON.stringify({ roomName, loginUserId, loginUserName })
     })
-    .then(response => {
-        if (response.ok) {
-            const information = document.getElementById('information');
-            information.innerHTML = '上傳地圖成功! 請點擊地圖清單';
+    .then(response => response.json())
+    .then(data => {
+        if(data.success === false){
+            showAlert(data.error);
             document.querySelector('.loadingIndicator').style.display = 'none';
+        } else {
+        const information = document.getElementById('information');
+        information.innerHTML = data.message;
+        document.querySelector('.loadingIndicator').style.display = 'none';
         }
     })
     .catch(error => console.error('Map Create Error:', error));
@@ -161,12 +165,11 @@ function displayInviteForm() {
 }
 
 function inviteUser() {
+    const inviteesMailInput = document.getElementById('inviteesMailInput');
+    const inviteesMail = inviteesMailInput.value.trim();
+
     const urlParams = new URLSearchParams(window.location.search);
     const mapId = urlParams.get('mapId');
-    if(!mapId){
-        showAlert('請先選擇地圖後邀請')
-    }
-    const inviteesMail = document.getElementById('inviteesMailInput').value;
 
     document.querySelector('.loadingIndicator').style.display = 'flex';
 
@@ -177,10 +180,14 @@ function inviteUser() {
         },
         body: JSON.stringify({ mapId, loginUserId, inviteesMail })
     })
-    .then(response => {
-        if (response.ok) {
+    .then(response => response.json())
+    .then(data => {
+        if (data.success=== false) {
+            showAlert(data.error);
+            document.querySelector('.loadingIndicator').style.display = 'none';
+        } else {
             const information = document.getElementById('information');
-            information.innerHTML = '地圖分享成功!';
+            information.innerHTML = data.message;
             document.querySelector('.loadingIndicator').style.display = 'none';
         }
     })
@@ -220,10 +227,9 @@ function showSearch() {
                 fetch(`/api/maps/search?keyword=${encodeURIComponent(keyword)}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.length === 0){
-                            mapListContainer.innerHTML=`
-                            查無地圖
-                            `
+                        if (data.success === false){
+                            showAlert(data.error);
+                            document.querySelector('.loadingIndicator').style.display = 'none';
                         }else{
                             data.forEach(map => {
                                 const mapElement = createRoomBox(map);
@@ -263,37 +269,31 @@ function createDeleteBtn (content, id) {
     const deleteBtn = document.createElement("span");
     deleteBtn.innerHTML = '&times;';
     deleteBtn.className = 'alertClosure';
-    deleteBtn.onclick = function() {
+    deleteBtn.onclick = function(event) {
         deleteMap(id);
+        event.stopPropagation();
       }
 
     content.appendChild(deleteBtn);
 }
 
 async function deleteMap(mapId) {
-    try {
-        document.querySelector('.loadingIndicator').style.display = 'flex';
-        const response = await fetch("/api/maps", {
-            method: "delete",
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            _id: mapId,
-            }),
-        });
-
-        if (response.ok) {
-            marker.setMap(null);
-            //socket.emit('deleteMarker', { _id: imageData._id }); 尚未用到
-            document.querySelector('.loadingIndicator').style.display = 'none';
-        } else {
-            alert("地圖刪除失敗");
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("發生錯誤");
-    }
+    document.querySelector('.loadingIndicator').style.display = 'flex';
+    const response = await fetch("/api/maps", {
+        method: "delete",
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        _id: mapId,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        showAlert(data.message);
+        document.querySelector('.loadingIndicator').style.display = 'none';
+        window.location.href = '/';
+    })
 }
 
 function findMap(){
@@ -331,7 +331,6 @@ function findMap(){
 
             mapListContainer.prepend(currentMap);
             document.querySelector('.loadingIndicator').style.display = 'none';
-
         })
     }
 }

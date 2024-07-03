@@ -18,20 +18,6 @@ connectToDb((err) => {
   }
 });
 
-router.get('/api/maps/map', async (req, res) => {
-  const { mapId } = req.query;
-
-  try {
-    const mapInfo = await db
-      .collection('maps')
-      .findOne({ _id: new ObjectId(mapId) });
-
-    res.status(200).json(mapInfo);
-  } catch (error) {
-    res.status(500).json({ error: '無法獲取地圖資訊' });
-  }
-});
-
 async function sendInvitationEmail(
   inviteesEmail,
   confirmationLink,
@@ -65,6 +51,20 @@ async function sendInvitationEmail(
   await transporter.sendMail(mailOptions);
 }
 
+router.get('/api/maps/map', async (req, res) => {
+  const { mapId } = req.query;
+
+  try {
+    const mapInfo = await db
+      .collection('maps')
+      .findOne({ _id: new ObjectId(mapId) });
+
+    res.status(200).json(mapInfo);
+  } catch (error) {
+    res.status(500).json({ success: false, error: '無法獲取地圖資訊' });
+  }
+});
+
 router.get('/api/maps', async (req, res) => {
   const maps = [];
   const { loginUserId } = req.query;
@@ -78,28 +78,49 @@ router.get('/api/maps', async (req, res) => {
       res.status(200).json(maps);
     })
     .catch(() => {
-      res.status(500).json({ error: 'Could not fetch the documents' });
+      res
+        .status(500)
+        .json({ success: false, error: 'Could not fetch the documents' });
     });
 });
 
 router.post('/api/maps', async (req, res) => {
   const mapRoomInfo = req.body;
 
+  if (mapRoomInfo.roomName === '') {
+    return res.status(404).json({ success: false, error: '地圖名稱不能為空' });
+  }
+
   db.collection('maps')
     .insertOne(mapRoomInfo)
     .then((result) => {
-      res.status(201).json(result);
+      res.status(201).json({
+        result,
+        success: true,
+        message: '上傳地圖成功! 請點擊地圖清單',
+      });
     })
     .catch(() => {
-      res.status(500).json({ error: 'Could not create a new document' });
+      res
+        .status(500)
+        .json({ success: false, error: 'Could not create a new document' });
     });
 });
 
 router.patch('/api/maps', async (req, res) => {
   const { mapId, loginUserId, inviteesMail } = req.body;
+
   try {
-    if (!mapId) {
-      return res.status(404).json({ error: '請先選擇地圖!!' });
+    if (mapId === null) {
+      return res
+        .status(404)
+        .json({ success: false, error: '請先選擇地圖後邀請' });
+    }
+
+    if (inviteesMail === '') {
+      return res
+        .status(404)
+        .json({ success: false, error: '請輸入受邀者的Email地址' });
     }
 
     const map = await db
@@ -107,17 +128,24 @@ router.patch('/api/maps', async (req, res) => {
       .findOne({ _id: new ObjectId(mapId) });
 
     if (!map) {
-      return res.status(404).json({ error: '未找到房間' });
+      return res.status(404).json({ success: false, error: '未找到房間' });
     }
 
     if (map.loginUserId !== loginUserId) {
-      return res.status(403).json({
-        error: '您無權邀請使用者存取此地圖',
-      });
+      return res
+        .status(403)
+        .json({ success: false, error: '您無權邀請使用者存取此地圖' });
     }
     const newInvitees = await db
       .collection('users')
       .findOne({ email: inviteesMail });
+
+    if (!newInvitees) {
+      return res.status(403).json({
+        success: false,
+        error: '找不到信箱，或是信箱輸入錯誤',
+      });
+    }
 
     const confirmationLink = `${process.env.HOST}/api/maps/confirm?roomId=${mapId}&invitees=${newInvitees._id}`;
 
@@ -132,9 +160,9 @@ router.patch('/api/maps', async (req, res) => {
       newUserInfo.name
     );
 
-    res.status(200).json({ message: '邀請已發送' });
+    res.status(200).json({ success: true, message: '地圖分享成功!' });
   } catch (error) {
-    res.status(500).json({ error: '無法發送邀請' });
+    res.status(500).json({ success: false, error: '無法發送邀請' });
   }
 });
 
@@ -155,8 +183,13 @@ router.get('/api/maps/search', async (req, res) => {
   try {
     const { keyword } = req.query;
 
-    const regex = new RegExp(keyword, 'i');
+    if (keyword === '') {
+      return res
+        .status(400)
+        .json({ success: false, error: '請輸入搜尋關鍵字' });
+    }
 
+    const regex = new RegExp(keyword, 'i');
     const queryConditions = [];
 
     if (ObjectId.isValid(keyword)) {
@@ -179,9 +212,15 @@ router.get('/api/maps/search', async (req, res) => {
       ])
       .toArray();
 
+    if (maps.length === 0) {
+      return res.status(400).json({ success: false, error: '查無地圖' });
+    }
+
     res.status(200).json(maps);
   } catch (error) {
-    res.status(500).json({ error: 'Could not fetch the documents' });
+    res
+      .status(500)
+      .json({ success: false, error: 'Could not fetch the documents' });
   }
 });
 
@@ -217,8 +256,8 @@ router.delete('/api/maps', async (req, res) => {
   db.collection('maps')
     .deleteOne({ _id: new ObjectId(_id) })
     .then((result) => {
-      res.status(200).json(result);
-      req.io.emit('deleteMap', _id); // 尚未用到
+      res.status(200).json({ result, success: true, message: '地圖已刪除' });
+      //  req.io.emit('deleteMap', _id);尚未用到
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not delete the document' });
