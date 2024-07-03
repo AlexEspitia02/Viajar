@@ -11,6 +11,8 @@ function submitSignupForm() {
     const name = document.getElementById('inputUsername').value;
     const email = document.getElementById('inputEmail').value;
     const password = document.getElementById('inputPassword').value;
+
+    document.querySelector('.loadingIndicator').style.display = 'flex';
   
     fetch('/user/signup', {
       method: 'POST',
@@ -30,9 +32,11 @@ function submitSignupForm() {
             loginUserName = data.data.user.name;
             loginImg = data.data.user.picture;
             loginEmail = data.data.user.email;
+            document.querySelector('.loadingIndicator').style.display = 'none';
             location.reload();
         } else {
-            alert(data.message || 'No JWT token provided');
+            showAlert(data.error || 'No JWT token provided');
+            document.querySelector('.loadingIndicator').style.display = 'none';
         }
     })
     .catch(error => console.error('Signup Error:', error));
@@ -41,6 +45,8 @@ function submitSignupForm() {
 function submitSignInForm() {
     const email = document.getElementById('inputEmail').value;
     const password = document.getElementById('inputPassword').value;
+
+    document.querySelector('.loadingIndicator').style.display = 'flex';
 
     fetch('/user/signIn', {
     method: 'POST',
@@ -60,9 +66,11 @@ function submitSignInForm() {
         loginUserName = data.data.user.name;
         loginImg = data.data.user.picture;
         loginEmail = data.data.user.email;
+        document.querySelector('.loadingIndicator').style.display = 'none';
         location.reload();
     } else {
-        alert(data.message || 'No JWT token provided');
+        showAlert(data.error || 'No JWT token provided');
+        document.querySelector('.loadingIndicator').style.display = 'none';
     }
     })
     .catch(error => console.error('Signup Error:', error));
@@ -165,26 +173,29 @@ async function fetchGoogleUserData(isHomepage) {
   }
 
   try {
-      const response = await fetch('/user', {
-          method: 'GET',
-          headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-          },
-      });
+    document.querySelector('.loadingIndicator').style.display = 'flex';
 
-      if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-      }
+    const response = await fetch('/user', {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
 
-      const data = await response.json();
+    if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+    }
 
-      isHomepage? updateUserInterface(data) : null;
-      loginUserName = data.name;
-      loginUserId = data._id;
-      loginImg = data.picture;
-      loginEmail = data.email;
-      return loginUserId;
+    const data = await response.json();
+
+    isHomepage? updateUserInterface(data) : null;
+    loginUserName = data.name;
+    loginUserId = data._id;
+    loginImg = data.picture;
+    loginEmail = data.email;
+    document.querySelector('.loadingIndicator').style.display = 'none';
+    return loginUserId;
   } catch (error) {
       console.error('Error fetching user data:', error);
       if (error.message === 'Failed to fetch user data') {

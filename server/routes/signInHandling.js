@@ -50,23 +50,19 @@ router.post('/user/signup', async (req, res) => {
     if (!name || !email || !password) {
       return res
         .status(400)
-        .json({ success: false, message: '所有的空格都是必填的!!!' });
+        .json({ success: false, error: '所有空格都是必填的' });
     }
 
     const hasEmail = await db.collection('users').findOne({ email });
 
     if (hasEmail) {
-      return res
-        .status(403)
-        .json({ success: false, message: '這個信箱有人使用過了!!!' });
+      return res.status(403).json({ success: false, error: '信箱已被使用' });
     }
 
     const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const checkValidateEmail = re.test(String(email).toLowerCase());
     if (!checkValidateEmail) {
-      return res
-        .status(400)
-        .json({ success: false, message: '信箱格式錯誤!!!' });
+      return res.status(400).json({ success: false, error: '信箱格式錯誤' });
     }
 
     const saltRounds = 10;
@@ -118,7 +114,7 @@ router.post('/user/signup', async (req, res) => {
     });
   } catch (error) {
     console.error('Error handling request:', error);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, error: 'Server Error' });
   }
 });
 
@@ -128,7 +124,7 @@ router.post('/user/signIn', async (req, res) => {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ success: false, message: 'email和password是必填的!！' });
+        .json({ success: false, error: '所有空格都是必填的' });
     }
 
     const userMatch = await db.collection('users').findOne({ email });
@@ -136,7 +132,7 @@ router.post('/user/signIn', async (req, res) => {
     if (!userMatch) {
       return res
         .status(404)
-        .json({ success: false, message: '信箱錯誤，無此使用者!!' });
+        .json({ success: false, error: '信箱錯誤，無此使用者' });
     }
 
     const match = await bcrypt.compare(password, userMatch.password);
@@ -181,13 +177,11 @@ router.post('/user/signIn', async (req, res) => {
         },
       });
     } else {
-      res
-        .status(403)
-        .json({ success: false, message: '信箱或密碼錯誤，請再試一次!!' });
+      res.status(403).json({ success: false, error: '密碼錯誤，請再試一次' });
     }
   } catch (error) {
     console.error('Error handling request:', error);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, error: 'Server Error' });
   }
 });
 
