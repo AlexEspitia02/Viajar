@@ -287,18 +287,16 @@ button:hover {
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
-  transform: translateX(-100%);
 }
 
 .toggleControl {
   position: fixed;
   top: 50%; 
-  left: 0;
+  left: 425px;
   transform: translateY(-50%) translateX(0%);
   z-index: 1005;
   background-color: #ffffff;
   color:black;
-  padding: 8px 16px;
   border-radius: 0 10px 10px 0;
   cursor: pointer;
   transition: transform 0.3s ease;
