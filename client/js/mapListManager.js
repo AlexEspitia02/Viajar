@@ -44,7 +44,8 @@ function fetchMapList() {
         information.innerText = '登入後查看地圖清單';
         return;
     }
-    
+    document.querySelector('.loadingIndicator').style.display = 'flex';
+
     fetch(`/api/maps?loginUserId=${loginUserId}`)
         .then(response => response.json())
         .then(data => {
@@ -56,6 +57,7 @@ function fetchMapList() {
                 const roomBox = createRoomBox(roomInfo);
                 information.appendChild(roomBox);
             });
+            document.querySelector('.loadingIndicator').style.display = 'none';
         })
         .catch(error => console.error('Map Create Error:', error));
 }
@@ -120,6 +122,8 @@ function displayCreateMapForm() {
 function createMap() {
     const roomName = document.getElementById('roomNameInput').value;
 
+    document.querySelector('.loadingIndicator').style.display = 'flex';
+
     fetch('/api/maps', {
         method: 'POST',
         headers: {
@@ -131,6 +135,7 @@ function createMap() {
         if (response.ok) {
             const information = document.getElementById('information');
             information.innerHTML = '上傳地圖成功! 請點擊地圖清單';
+            document.querySelector('.loadingIndicator').style.display = 'none';
         }
     })
     .catch(error => console.error('Map Create Error:', error));
@@ -163,6 +168,8 @@ function inviteUser() {
     }
     const inviteesMail = document.getElementById('inviteesMailInput').value;
 
+    document.querySelector('.loadingIndicator').style.display = 'flex';
+
     fetch('/api/maps', {
         method: 'PATCH',
         headers: {
@@ -174,6 +181,7 @@ function inviteUser() {
         if (response.ok) {
             const information = document.getElementById('information');
             information.innerHTML = '地圖分享成功!';
+            document.querySelector('.loadingIndicator').style.display = 'none';
         }
     })
     .catch(error => alert(error));
@@ -207,6 +215,8 @@ function showSearch() {
             mapListContainer.innerHTML = '';
             const keyword = mapListSearchInput.value;
             if (keyword) {
+                document.querySelector('.loadingIndicator').style.display = 'flex';
+
                 fetch(`/api/maps/search?keyword=${encodeURIComponent(keyword)}`)
                     .then(response => response.json())
                     .then(data => {
@@ -218,6 +228,7 @@ function showSearch() {
                             data.forEach(map => {
                                 const mapElement = createRoomBox(map);
                                 mapListContainer.appendChild(mapElement);
+                            document.querySelector('.loadingIndicator').style.display = 'none';
                             });
                         }
                     })
@@ -261,6 +272,7 @@ function createDeleteBtn (content, id) {
 
 async function deleteMap(mapId) {
     try {
+        document.querySelector('.loadingIndicator').style.display = 'flex';
         const response = await fetch("/api/maps", {
             method: "delete",
             headers: {
@@ -273,7 +285,8 @@ async function deleteMap(mapId) {
 
         if (response.ok) {
             marker.setMap(null);
-            socket.emit('deleteMarker', { _id: imageData._id }); // 尚未用到
+            //socket.emit('deleteMarker', { _id: imageData._id }); 尚未用到
+            document.querySelector('.loadingIndicator').style.display = 'none';
         } else {
             alert("地圖刪除失敗");
         }
@@ -299,6 +312,7 @@ function findMap(){
 
         mapListContainer.prepend(currentMap);
     } else {
+        document.querySelector('.loadingIndicator').style.display = 'flex';
         fetch(`/api/maps/map?mapId=${mapId}`)
         .then(response => response.json())
         .then(data => {
@@ -316,6 +330,8 @@ function findMap(){
             currentMap.appendChild(currentMapContent);
 
             mapListContainer.prepend(currentMap);
+            document.querySelector('.loadingIndicator').style.display = 'none';
+
         })
     }
 }
