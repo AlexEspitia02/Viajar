@@ -39,6 +39,7 @@ body {
 .gm-style-iw-chr{
   position:fixed;
   right: 0;
+  z-index: 1;
 }
 
 .gm-style-iw-d{
