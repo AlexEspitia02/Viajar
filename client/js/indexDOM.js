@@ -79,22 +79,19 @@ async function initMap() {
 
   map = new Map(document.getElementById("map"), mapOptions);
 
+  document.getElementById('toggleControl').innerHTML = '<';
   document.getElementById('toggleControl').addEventListener('click', function() {
     const leftInfo = document.querySelector('.leftInfo');
-    if (leftInfo.style.transform === "translateX(0px)") {
-        const toggleControl = document.getElementById('toggleControl');
-        toggleControl.innerHTML = '';
-        toggleControl.innerHTML = '>';
+    if (leftInfo.style.transform === "translateX(0px)" || leftInfo.style.transform === "") {
         leftInfo.style.transform = "translateX(-100%)";
-        this.style.transform = "translateY(-50%) translateX(0%)";
+        this.innerHTML = '>';
+        this.style.transform = "translateY(-50%) translateX(-425px)";
     } else {
         leftInfo.style.transform = "translateX(0px)";
-        this.style.transform = "translateY(-50%) translateX(425px)";
-        const toggleControl = document.getElementById('toggleControl');
-        toggleControl.innerHTML = '';
-        toggleControl.innerHTML = '<';
+        this.innerHTML = '<';
+        this.style.transform = "translateY(-50%) translateX(0%)";
     }
-});
+  });
 
   async function initializeUser() {
     const isHomepage = true;
