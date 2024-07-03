@@ -147,6 +147,13 @@ function createLocationContent(place, map, isFromFindPlaces = false) {
       map.setZoom(18);
   });
 
+  const photos = document.createElement('img');
+  const imgUrl = isFromFindPlaces
+      ? `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
+      : `${place.imgUrl}`;
+  photos.src = imgUrl;
+  locationContent.appendChild(photos);
+
   const locationLeftContent = document.createElement('div');
   locationLeftContent.id = 'locationLeftContent';
   locationLeftContent.className = 'locationLeftContent';
@@ -165,13 +172,6 @@ function createLocationContent(place, map, isFromFindPlaces = false) {
   websiteURI.innerText = 'website';
   websiteURI.href = place.websiteURI;
   locationLeftContent.appendChild(websiteURI);
-
-  const photos = document.createElement('img');
-  const imgUrl = isFromFindPlaces
-      ? `https://places.googleapis.com/v1/${place.photos[0].Eg}/media?maxHeightPx=400&maxWidthPx=400&key=AIzaSyBP6QgwDv2lnYLfEibqS1grCAh64BPnEJI`
-      : `${place.imgUrl}`;
-  photos.src = imgUrl;
-  locationContent.appendChild(photos);
 
   return locationContent;
 }
