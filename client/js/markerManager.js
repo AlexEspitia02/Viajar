@@ -153,5 +153,3 @@ function deleteMarkerPadding() {
         subtree: true
     });
 }
-
-deleteMarkerPadding();
