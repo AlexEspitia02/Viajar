@@ -24,51 +24,56 @@ function createAndDisplayMarker(imageData, map, markers, socket, AdvancedMarkerE
     markDeleteButton.className = 'markDeleteButton'
   
     markDeleteButton.addEventListener("click", async function () {
-        const userConfirmation = confirm('會同時刪除文章，你確定要繼續嗎？');
-        if (userConfirmation) {
-            try {
-            const response = await fetch("/api/marks/delete", {
-                method: "delete",
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                _id: imageData._id,
-                }),
-            });
-    
-            if (response.ok) {
-                marker.setMap(null);
-                socket.emit('deleteMarker', { _id: imageData._id });
-            } else {
-                alert("標記刪除失敗");
+        showCustomConfirm('會同時刪除文章，你確定要繼續嗎？', async (confirmed) => {
+            if (confirmed) {
+                try {
+                document.querySelector('.loadingIndicator').style.display = 'flex';
+                const response = await fetch("/api/marks/delete", {
+                    method: "delete",
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    _id: imageData._id,
+                    }),
+                });
+        
+                if (response.ok) {
+                    marker.setMap(null);
+                    socket.emit('deleteMarker', { _id: imageData._id });
+                    document.querySelector('.loadingIndicator').style.display = 'none';
+                } else {
+                    alert("標記刪除失敗");
+                }
+                } catch (error) {
+                console.error("Error:", error);
+                alert("發生錯誤");
+                }
+        
+                try {
+                document.querySelector('.loadingIndicator').style.display = 'flex';
+                const response = await fetch("/api/posts/delete", {
+                    method: "delete",
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    _id: imageData._id,
+                    }),
+                });
+        
+                if (response.ok) {
+                    showAlert("部落格也刪除了!");
+                    document.querySelector('.loadingIndicator').style.display = 'none';
+                } else {
+                    alert("部落格刪除失敗");
+                }
+                } catch (error) {
+                console.error("Error:", error);
+                alert("發生錯誤");
+                }
             }
-            } catch (error) {
-            console.error("Error:", error);
-            alert("發生錯誤");
-            }
-    
-            try {
-            const response = await fetch("/api/posts/delete", {
-                method: "delete",
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                _id: imageData._id,
-                }),
-            });
-    
-            if (response.ok) {
-                alert("部落格也刪除了!");
-            } else {
-                alert("部落格刪除失敗");
-            }
-            } catch (error) {
-            console.error("Error:", error);
-            alert("發生錯誤");
-            }
-        }
+        })
     });
   
     markDeleteButtonBox.appendChild(markDeleteButton);
