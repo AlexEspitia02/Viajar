@@ -215,3 +215,23 @@ function checkGoogleLoginStatus(fetchGoogleUserData, isHomepage) {
     return fetchGoogleUserData(isHomepage);
   }
 }
+
+function handleUserInfoClick() {
+  const information = document.getElementById('information');
+  information.innerHTML = '';
+  
+  const loginButtonBox = document.getElementById('loginButtonBox');
+  loginButtonBox.style.display = 'none'
+  
+  if (loginUserId) {
+    const user = {
+      name: loginUserName,
+      picture: loginImg,
+      email: loginEmail,
+      id: loginUserId
+    };
+    updateUserInterface(user);
+  } else {
+    handleAuthForm(true);
+  }
+}
