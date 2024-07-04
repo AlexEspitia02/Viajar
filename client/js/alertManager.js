@@ -30,3 +30,23 @@ function showAlert(message) {
     alert.style.display = 'block';
   }
   
+  function showCustomConfirm(message, callback) {
+    const confirmDialog = document.getElementById('custom-confirm');
+    const confirmMessage = confirmDialog.querySelector('p');
+    confirmMessage.textContent = message;
+  
+    const confirmYes = document.getElementById('confirm-yes');
+    const confirmNo = document.getElementById('confirm-no');
+  
+    confirmYes.onclick = () => {
+      callback(true);
+      confirmDialog.classList.add('hidden');
+    };
+  
+    confirmNo.onclick = () => {
+      callback(false);
+      confirmDialog.classList.add('hidden');
+    };
+  
+    confirmDialog.classList.remove('hidden');
+  }
