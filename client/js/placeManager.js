@@ -54,6 +54,8 @@ async function findPlaces(placeText, map) {
 
       map.fitBounds(bounds, { padding: 50 });
 
+      document.querySelector('.loadingIndicator').style.display = 'flex';
+
       fetch('/api/places', {
           method: 'POST',
           headers: {
@@ -61,7 +63,11 @@ async function findPlaces(placeText, map) {
           },
           body: JSON.stringify(organizedPlaces),
       })
-          .catch(error => console.error('輸入資料錯誤:', error));
+        .then(response => response.json())
+        .then(() => {
+            document.querySelector('.loadingIndicator').style.display = 'none';
+        })
+        .catch(error => console.error('輸入資料錯誤:', error));
 
   } else {
       console.log("No results");
@@ -97,6 +103,7 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
   landmarkSearchContentBtn.id = 'landmarkSearchContentBtn';
   landmarkSearchContentBtn.className = 'landmarkSearchContentBtn';
   landmarkSearchContentBtn.addEventListener('click',()=>{
+    document.querySelector('.loadingIndicator').style.display = 'flex';
     fetch(`/api/places/location?lat=${place.location.lat}&lng=${place.location.lng}`)
         .then(response => response.json())
         .then(async (data) => {
@@ -114,8 +121,10 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
                 });
 
                 map.fitBounds(bounds, { padding: 50 });
+                document.querySelector('.loadingIndicator').style.display = 'none';
             } else {
                 nearbySearch(place.location);
+                document.querySelector('.loadingIndicator').style.display = 'none';
             }
         })
         .catch(error => console.error('Place Search Error:', error));
@@ -199,29 +208,35 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
 
       placeListSearchButton.addEventListener("click", () => {
           const placeResult = document.getElementById('placeListSearchInput').value.trim();
-          if( !placeResult ){
-            showAlert('請輸入地點，內容不得為空')
-          }
+
+          document.querySelector('.loadingIndicator').style.display = 'flex';
 
           fetch(`/api/places?keyword=${placeResult}`)
               .then(response => response.json())
               .then(async (data) => {
-                  if (data.length > 0) {
-                      const { LatLngBounds } = await google.maps.importLibrary("core");
-                      const bounds = new LatLngBounds();
-
-                      data.forEach((place) => {
-                          const markerView = createMarker(map, place, AdvancedMarkerElement, false, false);
-                          bounds.extend(place.location);
-
-                          const locationContent = createLocationContent(place, map, false);
-                          information.appendChild(locationContent);
-                      });
-
-                      map.fitBounds(bounds, { padding: 50 });
-
+                  if (data.success === false){
+                    showAlert(data.error);
+                    document.querySelector('.loadingIndicator').style.display = 'none';
                   } else {
-                      findPlaces(placeResult, map);
+                    if (data.length > 0) {
+                        const { LatLngBounds } = await google.maps.importLibrary("core");
+                        const bounds = new LatLngBounds();
+  
+                        data.forEach((place) => {
+                            const markerView = createMarker(map, place, AdvancedMarkerElement, false, false);
+                            bounds.extend(place.location);
+  
+                            const locationContent = createLocationContent(place, map, false);
+                            information.appendChild(locationContent);
+                        });
+  
+                        map.fitBounds(bounds, { padding: 50 });
+  
+                        document.querySelector('.loadingIndicator').style.display = 'none';
+                    } else {
+                        findPlaces(placeResult, map);
+                        document.querySelector('.loadingIndicator').style.display = 'none';
+                    }
                   }
               })
               .catch(error => console.error('Place Search Error:', error));
@@ -291,12 +306,18 @@ async function nearbySearch(location) {
       });
       map.fitBounds(bounds);
 
+      document.querySelector('.loadingIndicator').style.display = 'flex';
+
       fetch('/api/places', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(organizedPlaces),
+        })
+        .then(response => response.json())
+        .then(()=>{
+            document.querySelector('.loadingIndicator').style.display = 'none';
         })
         .catch(error => console.error('輸入資料錯誤:', error));
 

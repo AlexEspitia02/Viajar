@@ -32,10 +32,37 @@ const s3Client = new S3Client({
   },
 });
 
+async function downloadImage(url, filename) {
+  return new Promise((resolve, reject) => {
+    request({ url, encoding: null }, async (err, res, body) => {
+      if (err) {
+        console.log('Failed to download image:', err);
+        return reject(err);
+      }
+      try {
+        const mainImageCommand = new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: `placeImg/${filename}`,
+          Body: body,
+          ContentType: res.headers['content-type'],
+        });
+        await s3Client.send(mainImageCommand);
+        console.log('Image successfully uploaded to S3.');
+        resolve();
+      } catch (uploadErr) {
+        console.log('Failed to upload image to S3:', uploadErr);
+        reject(uploadErr);
+      }
+    });
+  });
+}
+
 router.get('/api/places', async (req, res) => {
   const { keyword } = req.query;
   if (!keyword) {
-    return res.status(400).json({ error: 'Keyword is required' });
+    return res
+      .status(400)
+      .json({ success: false, error: '請輸入地點，內容不得為空' });
   }
 
   const regex = new RegExp(keyword, 'i');
@@ -68,7 +95,7 @@ router.get('/api/places/location', async (req, res) => {
   const deltaLng =
     radius / (earthRadiusInMeters * Math.cos((Math.PI * location.lat) / 180));
 
-  const rangeFactor = 15;
+  const rangeFactor = 50;
   const minLat = location.lat - deltaLat * rangeFactor;
   const maxLat = location.lat + deltaLat * rangeFactor;
   const minLng = location.lng - deltaLng * rangeFactor;
@@ -90,31 +117,6 @@ router.get('/api/places/location', async (req, res) => {
     res.status(500).json({ error: 'Could not fetch the documents' });
   }
 });
-
-async function downloadImage(url, filename) {
-  return new Promise((resolve, reject) => {
-    request({ url, encoding: null }, async (err, res, body) => {
-      if (err) {
-        console.log('Failed to download image:', err);
-        return reject(err);
-      }
-      try {
-        const mainImageCommand = new PutObjectCommand({
-          Bucket: BUCKET_NAME,
-          Key: `placeImg/${filename}`,
-          Body: body,
-          ContentType: res.headers['content-type'],
-        });
-        await s3Client.send(mainImageCommand);
-        console.log('Image successfully uploaded to S3.');
-        resolve();
-      } catch (uploadErr) {
-        console.log('Failed to upload image to S3:', uploadErr);
-        reject(uploadErr);
-      }
-    });
-  });
-}
 
 router.post('/api/places', async (req, res) => {
   const organizedPlaces = req.body;
