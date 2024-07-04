@@ -61,7 +61,10 @@ router.get('/api/marks', async (req, res) => {
 
 router.post('/api/marks', upload.single('main_image'), async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+    return res.status(400).json({ success: false, error: '請上傳檔案' });
+  }
+  if (!req.body.title) {
+    return res.status(400).json({ success: false, error: '請填寫Title' });
   }
 
   const mainImageFile = req.file;
@@ -91,11 +94,13 @@ router.post('/api/marks', upload.single('main_image'), async (req, res) => {
   db.collection('marks')
     .insertOne(newMark)
     .then((result) => {
-      res.status(201).json(result);
+      res.status(201).json({ result, success: true, message: '資料上傳成功' });
       req.io.emit('newMarker', newMark);
     })
     .catch(() => {
-      res.status(500).json({ error: 'Could not create a new document' });
+      res
+        .status(500)
+        .json({ success: false, error: 'Could not create a new document' });
     });
 });
 

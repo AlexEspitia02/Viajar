@@ -158,3 +158,91 @@ function deleteMarkerPadding() {
         subtree: true
     });
 }
+
+function createInfowindowForm(mapId){
+    const inputDiv = document.createElement("div");
+    inputDiv.className = "inputDiv";
+  
+    const inputContent = document.createElement("div");
+    inputContent.className = "form__group";
+    inputContent.classList.add("field");
+  
+    const inputTitleBox = document.createElement("input");
+    inputTitleBox.setAttribute("type", "text");
+    inputTitleBox.className = "form__field";
+    inputTitleBox.setAttribute("placeholder", "Title");
+    inputTitleBox.setAttribute("tabindex", "-1");
+  
+    const inputLabel = document.createElement("label");
+    inputLabel.className = 'form__label';
+    inputLabel.innerText = 'Title';
+  
+    const inputImgLabel = document.createElement("label");
+    inputImgLabel.setAttribute("for", "id_img");
+    inputImgLabel.className = 'inputImgLabel';
+  
+    const inputImgDiv = document.createElement("div");
+    inputImgDiv.className = 'inputImgDiv';
+    inputImgLabel.appendChild(inputImgDiv);
+  
+    const inputImgDivImg = document.createElement("img");
+    inputImgDivImg.src = "../images/imgUpload.png";
+    inputImgDivImg.alt = "Upload Icon";
+    inputImgDivImg.className = 'icon'
+    inputImgDiv.appendChild(inputImgDivImg);
+  
+    const inputImgBox = document.createElement("input");
+    inputImgBox.setAttribute("type", "file");
+    inputImgBox.className = "inputImgBox";
+    inputImgBox.id = "id_img";
+    inputImgLabel.appendChild(inputImgBox);
+  
+    const inputButton = document.createElement("button");
+    inputButton.innerText = "上傳資料";
+    
+    inputContent.appendChild(inputTitleBox);
+    inputContent.appendChild(inputLabel);
+  
+    inputDiv.appendChild(inputContent);
+    inputDiv.appendChild(inputImgLabel);
+    inputDiv.appendChild(inputButton);
+
+    inputButton.addEventListener("click", async () => {
+        const title = inputTitleBox.value;
+        const file = inputImgBox.files[0];
+      
+        const formData = new FormData();
+        formData.append('main_image', file);
+        formData.append('title', title);
+        formData.append('lat', selectedLatLng.lat());
+        formData.append('lng', selectedLatLng.lng());
+        formData.append('loginUserId', loginUserId);
+        formData.append('mapId', mapId);
+      
+        try {
+          document.querySelector('.loadingIndicator').style.display = 'flex';
+          fetch("/api/marks", {
+            method: "POST",
+            body: formData,
+          })
+          .then(response => response.json())
+          .then(data =>{
+            if (data.success) {
+                showAlert(data.message);
+                inputTitleBox.value = "";
+                inputImgBox.value = "";
+                document.querySelector('.loadingIndicator').style.display = 'none';
+              } else {
+                showAlert(data.error);
+                document.querySelector('.loadingIndicator').style.display = 'none';
+              }
+
+          })
+        } catch (error) {
+          console.error("Error:", error);
+          alert("發生錯誤");
+        }
+    }); 
+
+    return inputDiv;
+}

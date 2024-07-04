@@ -226,7 +226,7 @@ async function initMap() {
   const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
   const hasLocalStorageToken = localStorage.getItem('jwtToken');
   if (hasCookieToken && hasLocalStorageToken){
-    alert("重複登入，請重新登入");
+    showAlert("重複登入，請重新登入");
     clearCookieJWT();
     clearJWT();
     location.reload();
@@ -261,25 +261,7 @@ async function initMap() {
     }
   });
 
-  document.getElementById('userInfo').addEventListener("click", () => {
-    const information = document.getElementById('information');
-    information.innerHTML = '';
-    
-    const loginButtonBox = document.getElementById('loginButtonBox');
-    loginButtonBox.style.display = 'none'
-    
-    if (loginUserId) {
-      const user = {
-        name: loginUserName,
-        picture: loginImg,
-        email: loginEmail,
-        id: loginUserId
-      };
-      updateUserInterface(user);
-    } else {
-      handleAuthForm(true);
-    }
-  });
+  document.getElementById('userInfo').addEventListener("click", handleUserInfoClick);
 
   document.getElementById('mapList').addEventListener("click", handleMapListClick);
 
@@ -289,53 +271,9 @@ async function initMap() {
     handlePlaceListClick(map, AdvancedMarkerElement)
   });
 
-  const inputDiv = document.createElement("div");
-  inputDiv.className = "inputDiv";
-
-  const inputContent = document.createElement("div");
-  inputContent.className = "form__group";
-  inputContent.classList.add("field");
-
-  const inputTitleBox = document.createElement("input");
-  inputTitleBox.setAttribute("type", "text");
-  inputTitleBox.className = "form__field";
-  inputTitleBox.setAttribute("placeholder", "Title");
-  inputTitleBox.setAttribute("tabindex", "-1");
-
-  const inputLabel = document.createElement("label");
-  inputLabel.className = 'form__label';
-  inputLabel.innerText = 'Title';
-
-  const inputImgLabel = document.createElement("label");
-  inputImgLabel.setAttribute("for", "id_img");
-  inputImgLabel.className = 'inputImgLabel';
-
-  const inputImgDiv = document.createElement("div");
-  inputImgDiv.className = 'inputImgDiv';
-  inputImgLabel.appendChild(inputImgDiv);
-
-  const inputImgDivImg = document.createElement("img");
-  inputImgDivImg.src = "../images/imgUpload.png";
-  inputImgDivImg.alt = "Upload Icon";
-  inputImgDivImg.className = 'icon'
-  inputImgDiv.appendChild(inputImgDivImg);
-
-  const inputImgBox = document.createElement("input");
-  inputImgBox.setAttribute("type", "file");
-  inputImgBox.className = "inputImgBox";
-  inputImgBox.id = "id_img";
-  inputImgLabel.appendChild(inputImgBox);
-
-  const inputButton = document.createElement("button");
-  inputButton.innerText = "上傳資料";
-  
-  inputContent.appendChild(inputTitleBox);
-  inputContent.appendChild(inputLabel);
-
-  inputDiv.appendChild(inputContent);
-  inputDiv.appendChild(inputImgLabel);
-  inputDiv.appendChild(inputButton);
-
+  const urlParams = new URLSearchParams(window.location.search);
+  const mapId = urlParams.get('mapId');
+  const inputDiv = createInfowindowForm(mapId);
   const infowindow = new google.maps.InfoWindow({
     content: inputDiv,
   });
@@ -357,46 +295,6 @@ async function initMap() {
       infowindow.open(map, marker);
     });
   }
-
-  inputButton.addEventListener("click", async () => {
-    const title = inputTitleBox.value;
-    const file = inputImgBox.files[0];
-  
-    if (!title || !file || !selectedLatLng) {
-      alert("請填寫所有字段並選擇地圖上的位置");
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append('main_image', file);
-    formData.append('title', title);
-    formData.append('lat', selectedLatLng.lat());
-    formData.append('lng', selectedLatLng.lng());
-    formData.append('loginUserId', loginUserId);
-    formData.append('mapId', mapId);
-  
-    try {
-      const response = await fetch("/api/marks", {
-        method: "POST",
-        body: formData,
-      });
-  
-      if (response.ok) {
-        alert("數據上傳成功");
-        inputTitleBox.value = "";
-        inputImgBox.value = "";
-
-      } else {
-        alert("數據上傳失敗");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("發生錯誤");
-    }
-  }); 
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const mapId = urlParams.get('mapId');
 
   const images = await fetchImages(mapId);
   displayImages(images);
