@@ -232,6 +232,9 @@ function createInfowindowForm(mapId){
                 inputTitleBox.value = "";
                 inputImgBox.value = "";
                 document.querySelector('.loadingIndicator').style.display = 'none';
+                document.querySelector('.gm-style-iw').style.display = 'none';
+                document.querySelector('.gm-style-iw-c').style.display = 'none';
+                document.querySelector('.gm-style-iw-tc').style.display = 'none';
               } else {
                 showAlert(data.error);
                 document.querySelector('.loadingIndicator').style.display = 'none';
