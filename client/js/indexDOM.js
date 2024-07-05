@@ -252,7 +252,10 @@ async function initMap() {
     clearJWT();
     location.reload();
   }
-  
+  if (!hasLocalStorageToken && !hasCookieToken) {
+    showAlert("請先<b>註冊</b>或<b>登入</b>");
+    const element = document.querySelector('.alertClosure').style.display = 'none';
+  }
 
   map.addListener("click", async (e) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -262,7 +265,7 @@ async function initMap() {
         .catch(error => showAlert(error));
     const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
     
-    if (!localStorage.getItem('jwtToken') && !hasCookieToken) {
+    if (!hasLocalStorageToken && !hasCookieToken) {
       showAlert("請先<b>註冊</b>或<b>登入</b>");
     } else if (!mapId) {
       showAlert("您需要先<b>選擇地圖</b>或<b>創建地圖</b>再來進行這個操作");
