@@ -6,6 +6,12 @@ module.exports = (io) => {
 
     socket.emit('init', { id: userId });
 
+    socket.on('joinRoom', ({ mapId }) => {
+      if (mapId) {
+        socket.join(mapId);
+      }
+    });
+
     socket.on('requestMapControl', (callback) => {
       if (!mapLock) {
         mapLock = userId;
@@ -21,20 +27,39 @@ module.exports = (io) => {
       }
     });
 
+    socket.on('requestControl', ({ mapId }) => {
+      if (mapId) {
+        socket.to(mapId).emit('disableButton');
+      }
+    });
+
+    socket.on('releaseControl', ({ mapId }) => {
+      if (mapId) {
+        socket.to(mapId).emit('enableButton');
+      }
+    });
+
     socket.on('mouseMove', (data) => {
-      data.id = userId;
-      const { clientX, clientY, innerWidth, innerHeight } = data;
+      const {
+        mapId,
+        loginUserId,
+        loginUserName,
+        clientX,
+        clientY,
+        innerWidth,
+        innerHeight,
+      } = data;
       const centerX = innerWidth / 2;
       const centerY = innerHeight / 2;
       const xOffset = clientX - centerX;
       const yOffset = clientY - centerY;
 
-      if(data.loginUserId) {
-        socket.broadcast.emit('mouseMove', {
+      if (loginUserId && mapId) {
+        socket.to(mapId).emit('mouseMove', {
           id: userId,
-          mapId: data.mapId,
-          loginUserId: data.loginUserId,
-          loginUserName: data.loginUserName,
+          mapId,
+          loginUserId,
+          loginUserName,
           xOffset,
           yOffset,
         });
@@ -43,7 +68,7 @@ module.exports = (io) => {
 
     socket.on('mapMove', (data) => {
       if (mapLock === userId) {
-        socket.broadcast.emit('mapMove', data);
+        socket.to(data.mapId).emit('mapMove', data);
       }
     });
 

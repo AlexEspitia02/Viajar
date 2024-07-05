@@ -38,7 +38,6 @@ const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
 const mapRoomHandling = require('./routes/mapRoomHandling');
 const placeHandling = require('./routes/placeHandling');
-// const authRouter = require('./routes/auth');
 const index = require('./routes/index');
 
 app.use(markHandling);
@@ -47,7 +46,6 @@ app.use(blogListHandling);
 app.use(signInHandling);
 app.use(mapRoomHandling);
 app.use(placeHandling);
-// app.use('/auth', authRouter);
 app.use(index);
 
 server.listen(3000, () => {

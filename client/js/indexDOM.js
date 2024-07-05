@@ -14,6 +14,14 @@ socket.on('init', (data) => {
   console.log(userId);
 });
 
+socket.on('connect', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const mapId = urlParams.get('mapId');
+  if (mapId) {
+    socket.emit('joinRoom', { mapId });
+  }
+});
+
 let map;
 let selectedLatLng;
 let cursorsVisible = true;
@@ -114,14 +122,10 @@ async function initMap() {
   }, 100);
 
   socket.on('mapMove', (data) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mapId = urlParams.get('mapId');
-    if (data.mapId === mapId){
-      if (map && data.id !== activeWindowId) { // 只在不是活動視窗時同步
-        const center = new google.maps.LatLng(data.lat, data.lng);
-        map.setCenter(center);
-        map.setZoom(data.zoom);
-      }
+    if (map && data.id !== activeWindowId) { // 只在不是活動視窗時同步
+      const center = new google.maps.LatLng(data.lat, data.lng);
+      map.setCenter(center);
+      map.setZoom(data.zoom);
     }
   });
 
@@ -139,16 +143,33 @@ async function initMap() {
   let controlActive = false;
 
   const controlButton  = document.getElementById('controlButton');
-  controlButton.addEventListener("click", () => {
+
+  function handleControlClick() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mapId = urlParams.get('mapId');
     if (!controlActive) {
-      controlButton.innerHTML=`<b style="color:#009382;">釋放</b>控制`;
+      controlButton.innerHTML = `<b style="color:#009382;">釋放</b>控制`;
+      socket.emit('requestControl', { mapId });
       debounceEmitMapMove();
       requestControl();
     } else {
-      controlButton.innerHTML=`<b style="color:#009382;">獲取</b>控制`;
+      controlButton.innerHTML = `<b style="color:#009382;">獲取</b>控制`;
+      socket.emit('releaseControl', { mapId });
       socket.emit('releaseMapControl');
     }
     controlActive = !controlActive;
+  }
+
+  controlButton.addEventListener("click", handleControlClick);
+
+  socket.on('disableButton', () => {
+    controlButton.classList.add('disabled');
+    controlButton.removeEventListener("click", handleControlClick);
+  });
+  
+  socket.on('enableButton', () => {
+    controlButton.classList.remove('disabled');
+    controlButton.addEventListener("click", handleControlClick);
   });
 
   document.getElementById('toggleCursors').addEventListener('click', () => {
