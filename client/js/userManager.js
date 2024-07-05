@@ -21,7 +21,7 @@ function updateUserInterface(user) {
     logoutBtn.addEventListener('click',() => {
         clearCookieJWT();
         clearJWT();
-        location.reload();
+        window.location.href = '/';
     })
     information.appendChild(logoutBtn);
 }
