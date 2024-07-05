@@ -338,6 +338,12 @@ button:hover {
   text-align: center;
 }
 
+.controlButton.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
 .toggleCursors:hover, .controlButton:hover{
   background-color: #e0e0e0;
 }
