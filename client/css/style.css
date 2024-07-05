@@ -376,7 +376,7 @@ button:hover {
   top: 50%; 
   left: 425px;
   transform: translateY(-50%) translateX(0%);
-  z-index: 1005;
+  z-index: 1000;
   background-color: #ffffff;
   color:black;
   border-radius: 0 10px 10px 0;
