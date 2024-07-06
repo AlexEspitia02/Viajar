@@ -87,12 +87,14 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function loadEditorData() {
+    document.querySelector('.loadingIndicator').style.display = 'flex';
     fetch(`/api/posts/${postId}`)
         .then(response => response.json())
         .then(data => {
             editor.isReady
                 .then(() => {
                     editor.render(data);
+                    document.querySelector('.loadingIndicator').style.display = 'none';
                 })
                 .catch(error => {
                     console.error('Error loading the post:', error);
@@ -111,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData();
             formData.append('data', JSON.stringify(outputData));
 
+            document.querySelector('.loadingIndicator').style.display = 'flex';
             fetch("/api/posts", {
                 method: "POST",
                 body: formData
@@ -125,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success === true){
                     showAlert(data.message);
+                    document.querySelector('.loadingIndicator').style.display = 'none';
                 }
             })
             .catch(error => {
@@ -143,6 +147,7 @@ blogListButton.addEventListener('click', function() {
 });
 
 function findUser(loginUserId, saveBtn) {
+    document.querySelector('.loadingIndicator').style.display = 'flex';
     fetch(`/api/post/user?loginUserId=${loginUserId}&mapId=${mapId}`, {
         method: "GET"
     })
@@ -150,6 +155,9 @@ function findUser(loginUserId, saveBtn) {
     .then(data => {
         if (data === null) {
             saveBtn.style.display = 'none';
+            document.querySelector('.loadingIndicator').style.display = 'none';
+        } else {
+            document.querySelector('.loadingIndicator').style.display = 'none';
         }
     })
     .catch(error => {
