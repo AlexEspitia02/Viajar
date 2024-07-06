@@ -101,12 +101,30 @@ async function initMap() {
     }
   });
 
+  const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
+  const hasLocalStorageToken = localStorage.getItem('jwtToken');
+  const urlParams = new URLSearchParams(window.location.search);
+  const mapId = urlParams.get('mapId');
+
   async function initializeUser() {
     const isHomepage = true;
-    let loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
+    loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
   
     if (!loginUserId) {
         loginUserId = await checkLoginStatus(fetchUserData, isHomepage);
+    }
+
+    if (hasCookieToken && hasLocalStorageToken){
+      showAlert("重複登入，請重新登入");
+      clearCookieJWT();
+      clearJWT();
+      location.reload();
+    }
+    if (!hasLocalStorageToken && !hasCookieToken) {
+      showAlert("請先<b>註冊</b>或<b>登入</b>");
+      const element = document.querySelector('.alertClosure').style.display = 'none';
+    } else {
+      afterLoginUserIdInitialized(loginUserId, mapId);
     }
   }
   
@@ -244,22 +262,7 @@ async function initMap() {
     }
   });
 
-  const hasCookieToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith(`token=`));
-  const hasLocalStorageToken = localStorage.getItem('jwtToken');
-  if (hasCookieToken && hasLocalStorageToken){
-    showAlert("重複登入，請重新登入");
-    clearCookieJWT();
-    clearJWT();
-    location.reload();
-  }
-  if (!hasLocalStorageToken && !hasCookieToken) {
-    showAlert("請先<b>註冊</b>或<b>登入</b>");
-    const element = document.querySelector('.alertClosure').style.display = 'none';
-  }
-
   map.addListener("click", async (e) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mapId = urlParams.get('mapId');
     const userAndMapMatch = await fetch(`/api/maps/match?loginUserId=${loginUserId}&mapId=${mapId}`)
         .then(response => response.json())
         .catch(error => showAlert(error));
@@ -295,8 +298,6 @@ async function initMap() {
     handlePlaceListClick(map, AdvancedMarkerElement)
   });
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const mapId = urlParams.get('mapId');
   const inputDiv = createInfowindowForm(mapId);
   const infowindow = new google.maps.InfoWindow({
     content: inputDiv,
