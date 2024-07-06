@@ -5,19 +5,18 @@ import List from '@editorjs/list';
 import Embed from '@editorjs/embed';
 import ImageTool from '@editorjs/image';
 import ColorPlugin from 'editorjs-text-color-plugin';
-// import io from 'socket.io-client';
 
-// const socket = io();
 let editor;
+let loginUserId;
 
 const urlParams = new URLSearchParams(window.location.search);
 const postId = urlParams.get('id');
 const title = urlParams.get('title');
 const mapId = urlParams.get('mapId');
 
-async function initializeUser() {
+async function initializeBlogUser() {
     const isHomepage = false;
-    let loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
+    loginUserId = await checkGoogleLoginStatus(fetchGoogleUserData, isHomepage);
 
     if (!loginUserId) {
         loginUserId = await checkLoginStatus(fetchUserData, isHomepage);
@@ -27,7 +26,7 @@ async function initializeUser() {
     findUser(loginUserId, saveBtn);
 }
 
-initializeUser();
+initializeBlogUser();
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -61,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 config: {
                     endpoints: {
                         byFile: '/api/upload',
-                        byUrl: 'http://localhost:8008/fetchUrl',
+                        byUrl: '/api/upload',
                     }
                 }
             },
@@ -99,10 +98,6 @@ function loadEditorData() {
                     console.error('Error loading the post:', error);
                 });
         });
-
-    // socket.on('newPost', function(data) {
-    //     console.log('New post received:', data);
-    // });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -115,12 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
             outputData.mapId = mapId;
             const formData = new FormData();
             formData.append('data', JSON.stringify(outputData));
-            const fileInput = document.querySelector('input[type="file"]');
-            if (fileInput.files[0]) {
-                formData.append('main_image', fileInput.files[0]);
-            }
-            
-            // socket.emit('newPost', formData);
 
             fetch("/api/posts", {
                 method: "POST",
@@ -134,8 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(data => {
-                alert("數據上傳成功");
-                console.log('Success:', data);
+                if (data.success === true){
+                    showAlert(data.message);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -153,19 +143,13 @@ blogListButton.addEventListener('click', function() {
 });
 
 function findUser(loginUserId, saveBtn) {
-    fetch(`/api/post/user?loginUserId=${loginUserId}`, {
+    fetch(`/api/post/user?loginUserId=${loginUserId}&mapId=${mapId}`, {
         method: "GET"
     })
     .then(response => response.json())
     .then(data => {
-        if (!data) {
-            if( !loginUserId){
-                saveBtn.style.display = 'none';
-            }
-        }else{
-            if( loginUserId !== data.loginUserId){
-                saveBtn.style.display = 'none';
-            }
+        if (data === null) {
+            saveBtn.style.display = 'none';
         }
     })
     .catch(error => {

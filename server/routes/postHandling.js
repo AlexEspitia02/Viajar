@@ -63,8 +63,9 @@ router.post('/api/posts', upload.array('images'), async (req, res) => {
     db.collection('posts')
       .updateOne({ _id: newPost._id }, { $set: { blocks: newPost.blocks } })
       .then((result) => {
-        res.status(201).json(result);
-        req.io.emit('newPost', newPost);
+        res
+          .status(201)
+          .json({ success: true, message: '文章成功更新', result });
       })
       .catch(() => {
         res.status(500).json({ error: 'Could not update the document' });
@@ -73,8 +74,9 @@ router.post('/api/posts', upload.array('images'), async (req, res) => {
     db.collection('posts')
       .insertOne(newPost)
       .then((result) => {
-        res.status(201).json(result);
-        req.io.emit('newPost', newPost);
+        res
+          .status(201)
+          .json({ success: true, message: '文章成功上傳', result });
       })
       .catch(() => {
         res.status(500).json({ error: 'Could not create a new document' });
@@ -126,10 +128,13 @@ router.delete('/api/posts/delete', async (req, res) => {
 });
 
 router.get('/api/post/user', async (req, res) => {
-  const { loginUserId } = req.query;
+  const { loginUserId, mapId } = req.query;
 
-  db.collection('posts')
-    .findOne({ loginUserId })
+  db.collection('maps')
+    .findOne({
+      _id: new ObjectId(mapId),
+      $or: [{ loginUserId }, { invitees: loginUserId }],
+    })
     .then((result) => {
       res.status(200).json(result);
     })
