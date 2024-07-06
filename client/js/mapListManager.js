@@ -334,3 +334,16 @@ function findMap(){
         })
     }
 }
+
+async function afterLoginUserIdInitialized(loginUserId, mapId) {
+    await fetch(`/api/maps/match?loginUserId=${loginUserId}&mapId=${mapId}`)
+      .then(response => response.json())
+      .then(data => {
+        if(data.length === 0){
+          showAlert("尚未選擇地圖，或您無權使用此地圖");
+          const element = document.querySelector('.alertClosure').style.display = 'none';
+        }
+      })
+      .catch(error => showAlert(error));
+}
+  
