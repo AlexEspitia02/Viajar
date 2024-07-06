@@ -58,6 +58,19 @@ button:active {
     transform: translateY(0);
 }
 
+.buttonContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.blogListButton{
+  margin-left: auto;
+  cursor: pointer;
+  color: #009382;
+}
+
 header {
     background-color: #00b7a2;
     color: #fff;
