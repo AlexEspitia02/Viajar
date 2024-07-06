@@ -15,15 +15,15 @@
     <script src="./js/blogDOM.js" type="module" defer></script>
 </head>
 <body>
+    <div id="loadingIndicator" class="loadingIndicator" style="display: none">Loading...</div>
+    <div id="custom-confirm" class="confirm-dialog hidden">
+      <div class="confirm-content">
+        <p></p>
+        <div id="confirm-yes" class="confirm-button">確定</div>
+        <div id="confirm-no" class="confirm-button">取消</div>
+      </div>
+    </div>
     <header>
-        <div id="loadingIndicator" class="loadingIndicator" style="display: none">Loading...</div>
-        <div id="custom-confirm" class="confirm-dialog hidden">
-          <div class="confirm-content">
-            <p></p>
-            <div id="confirm-yes" class="confirm-button">確定</div>
-            <div id="confirm-no" class="confirm-button">取消</div>
-          </div>
-        </div>
         <div class="container">
             <a class="logoLink" href="/"><img class="logo" src="./images/favicon.png"/></a>
             <img class="logoWord" src="./images/logoWord.png"/>
