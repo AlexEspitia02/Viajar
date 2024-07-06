@@ -8,10 +8,19 @@
     <link rel="stylesheet" href="./css/blogList.css">
     <script src="./js/authManager.js" charset="utf-8" defer></script>
     <script src="./js/userManager.js" charset="utf-8" defer></script>
+    <script src="./js/alertManager.js" charset="utf-8" defer></script>
     <script async src="./js/blogListDOM.js" charset="utf-8" defer></script>
 
 </head>
 <body>
+    <div id="loadingIndicator" class="loadingIndicator" style="display: none">Loading...</div>
+    <div id="custom-confirm" class="confirm-dialog hidden">
+      <div class="confirm-content">
+        <p></p>
+        <div id="confirm-yes" class="confirm-button">確定</div>
+        <div id="confirm-no" class="confirm-button">取消</div>
+      </div>
+    </div>
     <header>
         <div class="container">
             <a class="logoLink" href="/"><img class="logo" src="./images/favicon.png"/></a>
@@ -28,7 +37,8 @@
     </header>
     <div class="blogListSearch">    
         <input id="search" placeholder="輸入關鍵字"/>
-        <button id="submit">搜尋</button>
+        <button id="submit">搜尋所有的文章</button>
+        <button id="ownSubmit">搜尋自己的文章</button>
     </div>
     <div id="blogList" class="blogList"></div>
 
