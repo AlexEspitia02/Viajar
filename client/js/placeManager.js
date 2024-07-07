@@ -107,8 +107,8 @@ function createMarker(map, place, AdvancedMarkerElement, isFromFindPlaces = fals
     fetch(`/api/places/location?lat=${place.location.lat}&lng=${place.location.lng}`)
         .then(response => response.json())
         .then(async (data) => {
-            // const moreRestaurant = 10 - data.length;
-            if (data.length > 0 ){
+            const moreRestaurant = 10 - data.length;
+            if (moreRestaurant <= 0 ){
                 const { LatLngBounds } = await google.maps.importLibrary("core");
                 const bounds = new LatLngBounds();
 
@@ -275,10 +275,9 @@ async function nearbySearch(location) {
         region: "TW",
     };
     const { places } = await Place.searchNearby(request);
+    const organizedPlaces = [];
   
     if (places.length) {
-      const organizedPlaces = [];
-  
       const { LatLngBounds } = await google.maps.importLibrary("core");
       const bounds = new LatLngBounds();
   
@@ -306,21 +305,32 @@ async function nearbySearch(location) {
       });
       map.fitBounds(bounds);
 
-      document.querySelector('.loadingIndicator').style.display = 'flex';
+    const placeIds = organizedPlaces.map(place => place.placeId).join(',');
 
-      fetch('/api/places', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(organizedPlaces),
-        })
+    document.querySelector('.loadingIndicator').style.display = 'flex';
+    fetch(`/api/place?placeId=${placeIds}`)
         .then(response => response.json())
-        .then(()=>{
+        .then((existingPlaces)=>{
+            const newPlaces = organizedPlaces.filter(place => 
+                !existingPlaces.some(existingPlace => existingPlace.placeId === place.placeId)
+            );
+
+            document.querySelector('.loadingIndicator').style.display = 'flex';
+            fetch('/api/places', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newPlaces),
+                })
+                .then(response => response.json())
+                .then(()=>{
+                    document.querySelector('.loadingIndicator').style.display = 'none';
+                })
+                .catch(error => console.error('輸入資料錯誤:', error));
             document.querySelector('.loadingIndicator').style.display = 'none';
         })
         .catch(error => console.error('輸入資料錯誤:', error));
-
     } else {
       console.log("No results");
     }
