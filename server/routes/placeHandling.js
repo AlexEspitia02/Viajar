@@ -70,7 +70,7 @@ router.get('/api/places', async (req, res) => {
   try {
     const places = await db
       .collection('places')
-      .find({ displayName: { $regex: regex }, type: { $ne: 'restaurant' } })
+      .find({ displayName: { $regex: regex } })
       .toArray();
 
     res.status(200).json(places);
@@ -144,6 +144,10 @@ router.get('/api/places/location', async (req, res) => {
 
 router.post('/api/places', async (req, res) => {
   const organizedPlaces = req.body;
+
+  if (organizedPlaces.length === 0) {
+    return res.status(400).json({ error: '沒有需要存入的值' });
+  }
 
   const downloadPromises = organizedPlaces.map(async (place) => {
     const timestamp = Date.now();

@@ -13,7 +13,8 @@ async function findPlaces(placeText, map) {
           "formattedAddress",
           "websiteURI",
           // "regularOpeningHours", 
-          // "priceLevel"
+          // "priceLevel",
+          "types",
       ],
       // includedType: "restaurant",
       // isOpenNow: true,
@@ -47,6 +48,7 @@ async function findPlaces(placeText, map) {
               imgUrl,
               rating: place.rating,
               websiteURI: place.websiteURI,
+              type:place.types,
           };
 
           organizedPlaces.push(newPlace);
@@ -54,21 +56,33 @@ async function findPlaces(placeText, map) {
 
       map.fitBounds(bounds, { padding: 50 });
 
+      const placeIds = organizedPlaces.map(place => place.placeId).join(',');
+
       document.querySelector('.loadingIndicator').style.display = 'flex';
+      fetch(`/api/place?placeId=${placeIds}`)
+          .then(response => response.json())
+          .then((existingPlaces)=>{
+              const newPlaces = organizedPlaces.filter(place => 
+                  !existingPlaces.some(existingPlace => existingPlace.placeId === place.placeId)
+              );
+  
+              document.querySelector('.loadingIndicator').style.display = 'flex';
+              fetch('/api/places', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(newPlaces),
+              })
+                .then(response => response.json())
+                .then(() => {
+                    document.querySelector('.loadingIndicator').style.display = 'none';
+                })
+                .catch(error => console.error('輸入資料錯誤:', error));
 
-      fetch('/api/places', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(organizedPlaces),
-      })
-        .then(response => response.json())
-        .then(() => {
-            document.querySelector('.loadingIndicator').style.display = 'none';
-        })
-        .catch(error => console.error('輸入資料錯誤:', error));
-
+              document.querySelector('.loadingIndicator').style.display = 'none';
+          })
+          .catch(error => console.error('輸入資料錯誤:', error));
   } else {
       console.log("No results");
   }
@@ -263,6 +277,7 @@ async function nearbySearch(location) {
             "photos",
             "formattedAddress",
             "websiteURI",
+            "types",
         ],
         locationRestriction: {
             center: location,
@@ -299,7 +314,7 @@ async function nearbySearch(location) {
             imgUrl,
             rating: place.rating,
             websiteURI: place.websiteURI,
-            type:'restaurant'
+            type: place.types
         };
         organizedPlaces.push(newPlace);
       });
