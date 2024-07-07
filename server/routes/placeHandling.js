@@ -80,6 +80,30 @@ router.get('/api/places', async (req, res) => {
   }
 });
 
+router.get('/api/place', async (req, res) => {
+  const { placeId } = req.query;
+
+  if (!placeId) {
+    return res.status(400).json({ success: false, error: '附近沒有餐聽' });
+  }
+
+  const placeIds = placeId.split(',');
+
+  try {
+    const places = await db
+      .collection('places')
+      .find({
+        placeId: { $in: placeIds },
+      })
+      .toArray();
+
+    res.status(200).json(places);
+  } catch (error) {
+    console.error('Error fetching places:', error);
+    res.status(500).json({ error: 'Could not fetch the documents' });
+  }
+});
+
 router.get('/api/places/location', async (req, res) => {
   const { lat, lng } = req.query;
   if (!lat || !lng) {
@@ -88,7 +112,7 @@ router.get('/api/places/location', async (req, res) => {
 
   const location = { lat: parseFloat(lat), lng: parseFloat(lng) };
 
-  const radius = 500;
+  const radius = 600;
   const earthRadiusInMeters = 6378137;
 
   const deltaLat = radius / earthRadiusInMeters;
