@@ -17,7 +17,7 @@ function createBlogElement(blog) {
 
     const blogUrl = document.createElement('a');
     blogUrl.className = 'blogUrl';
-    blogUrl.href = `/dist/blog.html?id=${blog._id}&title=${encodeURIComponent(blog.title)}`;
+    blogUrl.href = `/dist/blog.html?id=${blog._id}&title=${encodeURIComponent(blog.title)}&mapId=${blog.mapId}`;
 
     const blogImg = document.createElement('img');
     blogImg.src = imageUrl;
