@@ -1,0 +1,225 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #333;
+    background-color: #f8f8f8;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .logoImg {
+    /* font-size: 24px;
+    font-weight: bold;
+    color: #333; */
+    background: url('../images/favicon.png') no-repeat center center/cover;
+    width: 50px;
+    height: 50px;
+    display: block;
+  }
+  
+  .logo {
+    /* font-size: 24px;
+    font-weight: bold;
+    color: #333; */
+    background: url('../images/logoWord.png') no-repeat center center/cover;
+    width: 200px;
+    height: 30px;
+    display: block;
+    margin-right: auto;
+  }
+  
+  .nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('../images/wordMapWithoutLandmark.png') no-repeat center center/cover;
+    color: black;
+    text-align: center;
+  }
+
+  .translucent-div {
+    background: rgba(255, 255, 255, 0.6); /* 半透明白色背景 */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    width: 50%;
+    text-align: center;
+  }
+  
+  .hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  
+  .hero p {
+    font-size: 24px;
+    margin-bottom: 40px;
+  }
+  
+  .cta-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #333;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #555;
+  }
+  
+  .about, .services, .contact {
+    padding: 60px 40px;
+    background-color: #fff;
+    text-align: center;
+  }
+  
+  .about h2, .services h2, .contact h2 {
+    font-size: 42px;
+    margin-bottom: 20px;
+  }
+  
+  .about p, .services p {
+    font-size: 24px;
+    color: #3a3a3a;
+  }
+
+  .services{
+    /* background-color: #e6e6e6; */
+    background: url('../images/pexels-ollivves-1078981.jpg') no-repeat center center/cover;
+    background-blend-mode: lighten;
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .about{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+  }
+
+  .aboutContent{
+    width: 80%;
+    margin-bottom: 30px;
+  }
+  
+  .service-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 40px;
+    align-items: center;
+  }
+  
+  .card, .cardReverse {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    flex: 1;
+    text-align: left;
+    display: flex;
+    max-height: 400px;
+    min-height: 400px;
+    width: 70%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  }
+
+  .card:hover, .cardReverse:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+  .cardReverse{
+    flex-direction:row-reverse;
+  }
+
+  .cardImg, .cardImgReverse{
+    width: 50%;
+    border-radius: 8px 0px 0px 8px;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .cardImgReverse{
+    border-radius: 0px 8px 8px 0px;
+    
+  }
+
+  .cardContent{
+    margin: 0px 20px;
+  }
+  
+  .card h3 ,.cardReverse h3{
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .card p ,.cardReverse p{
+    font-size: 24px;
+    color: #3a3a3a;
+    font-weight: 500;
+  }
+  
+  .contact form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .contact input, .contact textarea, .contact button {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .contact button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .contact button:hover {
+    background-color: #555;
+  }
+  
+  .footer {
+    padding: 20px 40px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
