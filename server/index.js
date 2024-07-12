@@ -3,10 +3,21 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const session = require('express-session');
+const Redis = require('ioredis');
+const { createAdapter } = require('@socket.io/redis-adapter');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+// Configure Redis adapter for Socket.IO
+const redisEndpoint = process.env.REDIS_HOST;
+const pubClient = new Redis(`redis://${redisEndpoint}:6379`);
+const subClient = pubClient.duplicate();
+io.adapter(createAdapter(pubClient, subClient));
 
 app.use((req, res, next) => {
   req.io = io;
