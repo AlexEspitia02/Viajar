@@ -9,15 +9,28 @@
   <script src="./js/landingPageDOM.js" defer></script>
 </head>
 <body>
-  <header class="header">
-    <div class="logoImg"></div>
-    <div class="logo"></div>
+  <div id="loadingIndicator" class="loadingIndicator" style="display: none">Loading...</div>
+
+  <header id="header" class="header">
     <nav class="nav">
-      <ul>
-        <li><a class="homeBtn">首頁</a></li>
-        <li><a class="aboutBtn">關於我們</a></li>
-        <li><a class="servicesBtn">服務內容</a></li>
-        <li><a class="contactBtn">聯絡我們</a></li>
+      <a href="#" class="airplaneLogo"></a>
+      <a href="#" class="logo"></a>
+      <ul class="nav-item-container">
+        <li class="nav-item">
+          <button onclick="scrollToSection('home')" class="nav-item-child">首頁</button>
+        </li>
+        <li class="nav-item">
+          <button onclick="scrollToSection('about')" class="nav-item-child">關於我們</button>
+        </li>
+        <li class="nav-item">
+          <button onclick="scrollToSection('article')" class="nav-item-child">文章列表</button>
+        </li>
+        <li class="nav-item">
+          <button onclick="scrollToSection('services')" class="nav-item-child">服務內容</button>
+        </li>
+        <li class="nav-item">
+          <button onclick="scrollToSection('contact')" class="nav-item-child">聯絡我們</button>
+        </li>
       </ul>
     </nav>
   </header>
@@ -33,7 +46,17 @@
   <section id="about" class="about">
     <div class="aboutContent">
       <h2>關於 My Travel </h2>
-      <p>歡迎來到 My Travel ！我們的平台致力於為愛旅遊的你提供一個獨特的地圖互動體驗。在這裡，每一個地標都不僅僅是地理位置的標記，更是無數旅者心中難忘的回憶和故事。<br/><br/>我們創建一個共享和紀念個人旅行經歷的平台。透過視覺化的世界地圖，我們鼓勵使用者記錄每一次的旅行足跡，分享獨特的故事和美妙的體驗。</p>
+      <p>歡迎來到 My Travel ！我們的平台致力於為愛旅遊的你提供一個獨特的地圖互動體驗。<br/>在這裡，每一個地標都不僅僅是地理位置的標記，更是無數旅者心中難忘的回憶和故事。<br/><br/>我們創建一個共享和紀念個人旅行經歷的平台。透過視覺化的世界地圖，我們鼓勵使用者記錄每一次的旅行足跡，分享獨特的故事和美妙的體驗。</p>
+    </div>
+  </section>
+
+  <section id="article" class="article">
+    <h2>探索世界的美麗與奇蹟</h2>
+    <div class="carousel">
+        <div class="carousel-inner" id="carousel-inner">
+        </div>
+        <button class="carousel-button prev" onclick="prevSlide()">&#10094;</button>
+        <button class="carousel-button next" onclick="nextSlide()">&#10095;</button>
     </div>
   </section>
 
@@ -49,7 +72,7 @@
       </div>
       <div class="cardReverse">
         <img class="cardImgReverse" src="./images/place.png"/>
-        <div class="cardContent">
+        <div class="cardContentReverse">
           <h3>探索景點並發掘美食</h3>
           <p>利用我們的搜尋工具，輕鬆找到您心儀的旅遊景點。同時，我們還提供周邊餐廳的推薦，讓您在享受美景的同時，品味美食。<br/><br/>無論是當地的特色餐館還是國際知名的美食，我們都能幫助您發現最合適的用餐地點，為您的旅程增添更多愉快的回憶。</p>
         </div>
@@ -63,7 +86,7 @@
       </div>
       <div class="cardReverse">
         <img class="cardImgReverse" src="./images/post.gif"/>
-        <div class="cardContent">
+        <div class="cardContentReverse">
           <h3>多功能部落格頁面</h3>
           <p>我們的部落格頁面支持多種內容格式，您可以輕鬆地複製和上傳圖片，嵌入YouTube影片連結，並靈活調整文字的顏色和大小。此外，您還可以使用豐富的emoji表情，讓您的文章更加生動有趣。</p>
         </div>
@@ -79,13 +102,24 @@
   </section>
 
   <section id="contact" class="contact">
-    <h2>Contact Us</h2>
-    <form>
-      <input type="text" placeholder="Name" required>
-      <input type="email" placeholder="Email" required>
-      <textarea placeholder="Message" required></textarea>
-      <button type="submit">Send</button>
-    </form>
+    <div>
+      <h2>聯絡我們</h2>
+      <div>
+        <a href="https://www.linkedin.com/in/%E5%8F%88%E7%91%84-%E7%B4%80-4621382a5/"><img src="./images/linkedin.png"/></a>
+      </div>
+      <div>
+        <a href="https://github.com/AlexEspitia02"><img src="./images/github.png"/></a>
+      </div>
+      <div>
+        <a href="https://www.facebook.com/"><img src="./images/facebook.png"/></a>
+      </div>
+      <div>
+        <a href="https://www.instagram.com/"><img src="./images/instagram.png"/></a>
+      </div>
+      <div>
+        <a href="https://line.me/tw/"><img src="./images/line.png"/></a>
+      </div>
+    </div>
   </section>
 
   <footer class="footer">
