@@ -202,7 +202,11 @@ function createLocationContent(place, map, isFromFindPlaces = false) {
 function handlePlaceListClick(map, AdvancedMarkerElement) {
   if (loginUserId) {
       const information = document.getElementById('information');
-      information.innerHTML = '';
+      information.innerHTML = `
+      <div class="WithoutMapId">
+          <div>查詢後顯示地點</div>
+      </div>
+      `;
 
       const loginButtonBox = document.getElementById('loginButtonBox');
       loginButtonBox.style.display = 'flex';
@@ -232,6 +236,7 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
                     showAlert(data.error);
                     document.querySelector('.loadingIndicator').style.display = 'none';
                   } else {
+                    information.innerHTML = '';
                     if (data.length > 0) {
                         const { LatLngBounds } = await google.maps.importLibrary("core");
                         const bounds = new LatLngBounds();
@@ -259,7 +264,11 @@ function handlePlaceListClick(map, AdvancedMarkerElement) {
       const loginButtonBox = document.getElementById('loginButtonBox');
       loginButtonBox.style.display = 'none';
       const information = document.getElementById('information');
-      information.innerHTML = '登入後查詢地點';
+      information.innerHTML =  `
+      <div class="WithoutMapId">
+          <div>登入後查詢地點</div>
+      </div>
+      `;
   }
 }
 

@@ -41,7 +41,11 @@ function createButton(id, className, text) {
 function fetchMapList() {
     if (!loginUserId) {
         const information = document.getElementById('information');
-        information.innerText = '登入後查看地圖清單';
+        information.innerHTML = `
+        <div class="WithoutMapId">
+            <div>登入後查看地圖清單</div>
+        </div>
+        `;
         return;
     }
     document.querySelector('.loadingIndicator').style.display = 'flex';
@@ -92,7 +96,11 @@ function createRoomDetail(className, text) {
 }
 
 function displayLoginPrompt(information, loginButtonBox) {
-    information.innerHTML = '登入後查看地圖清單';
+    information.innerHTML = `
+                <div class="WithoutMapId">
+                    <div>登入後查看地圖清單</div>
+                </div>
+    `;
     information.style.display = 'flex';
     loginButtonBox.style.display = 'none'; 
 }
