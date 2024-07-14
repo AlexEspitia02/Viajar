@@ -19,7 +19,8 @@ jobs:
 
             - name: deploy to ec2
               run: |
-                ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_IP }} << 'EOF'
+                for host in ${{ secrets.HOST_IP_1 }} ${{ secrets.HOST_IP_2 }}
+                ssh -o StrictHostKeyChecking=no ubuntu@$host << 'EOF'
                   echo "Hello from github action, start deploy main to ec2"
                   cd ~/MyTravel
                   git switch main
