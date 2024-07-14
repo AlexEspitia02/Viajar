@@ -6,7 +6,7 @@ on:
             - main
 
 jobs:
-    deploy:
+    deploy-ec2-1:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
@@ -17,20 +17,43 @@ jobs:
               with:
                 ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-            - name: deploy to ec2
+            - name: Deploy to EC2 Instance 1
               run: |
-                for host in ${{ secrets.HOST_IP_1 }} ${{ secrets.HOST_IP_2 }}
-                do
-                  ssh -o StrictHostKeyChecking=no ubuntu@$host << 'EOF'
-                    echo "Hello from github action, start deploy main to ec2"
-                    cd ~/MyTravel
-                    git switch main
-                    git pull
-                    cd server
-                    export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
-                    which npm
-                    which pm2
-                    npm install
-                    pm2 restart index
-                  EOF
-                done
+                ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_IP_1 }} <<'EOF'
+                  echo "Hello from github action, start deploy main to ec2 instance 1"
+                  cd ~/MyTravel
+                  git switch main
+                  git pull
+                  cd server
+                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
+                  which npm
+                  which pm2
+                  npm install
+                  pm2 restart index
+                EOF
+
+    deploy-ec2-2:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Install SSH key
+              uses: webfactory/ssh-agent@v0.6.0
+              with:
+                ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+            - name: Deploy to EC2 Instance 2
+              run: |
+                ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST_IP_2 }} <<'EOF'
+                  echo "Hello from github action, start deploy main to ec2 instance 2"
+                  cd ~/MyTravel
+                  git switch main
+                  git pull
+                  cd server
+                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
+                  which npm
+                  which pm2
+                  npm install
+                  pm2 restart index
+                EOF
