@@ -20,15 +20,17 @@ jobs:
             - name: deploy to ec2
               run: |
                 for host in ${{ secrets.HOST_IP_1 }} ${{ secrets.HOST_IP_2 }}
-                ssh -o StrictHostKeyChecking=no ubuntu@$host << 'EOF'
-                  echo "Hello from github action, start deploy main to ec2"
-                  cd ~/MyTravel
-                  git switch main
-                  git pull
-                  cd server
-                  export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
-                  which npm
-                  which pm2
-                  npm install
-                  pm2 restart index
-                EOF
+                do
+                  ssh -o StrictHostKeyChecking=no ubuntu@$host << 'EOF'
+                    echo "Hello from github action, start deploy main to ec2"
+                    cd ~/MyTravel
+                    git switch main
+                    git pull
+                    cd server
+                    export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.3.0/bin
+                    which npm
+                    which pm2
+                    npm install
+                    pm2 restart index
+                  EOF
+                done
