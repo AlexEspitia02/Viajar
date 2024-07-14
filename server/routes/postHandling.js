@@ -58,6 +58,24 @@ router.get('/api/posts/:id', async (req, res) => {
 router.post('/api/posts', upload.array('images'), async (req, res) => {
   const newPost = JSON.parse(req.body.data);
   const hasBlog = await db.collection('posts').findOne({ _id: newPost._id });
+  const hasImageBlock = newPost.blocks.some((block) => block.type === 'image');
+  const imageBlock = {
+    id: 'aQgm-uAlzT',
+    type: 'image',
+    data: {
+      file: {
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0KLWLbFOK60yIV6IoEhuEr8F3kNEcDpPBg&s',
+      },
+      caption: '🐷表示：這傢伙居然沒有上傳任何圖片...🐽',
+      withBorder: false,
+      stretched: false,
+      withBackground: true,
+    },
+  };
+
+  if (!hasImageBlock) {
+    newPost.blocks.push(imageBlock);
+  }
 
   if (hasBlog) {
     db.collection('posts')
