@@ -37,14 +37,14 @@ async function sendInvitationEmail(
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: inviteesEmail,
-    subject: `您好${inviteesName},歡迎來到 My Travel, 您受到${user}的邀請共同編輯地圖!`,
+    subject: `您好${inviteesName},歡迎來到 Viajar, 您受到${user}的邀請共同編輯地圖!`,
     html: `
-      <h2>您好${inviteesName},歡迎來到 <span style="color:#00b7a2;">My Travel</span>。</h2>
+      <h2>您好${inviteesName},歡迎來到 <span style="color:#00b7a2;">Viajar</span>。</h2>
       <div>請點以下連結獲取地圖編輯權：</div>
       <a href="${confirmationLink}">${confirmationLink}</a>
       <br>
       <br>
-      <div><span style="color:#00b7a2;">My Travel</span>歡迎您~</div>
+      <div><span style="color:#00b7a2;">Viajar</span>歡迎您~</div>
       `,
   };
 
