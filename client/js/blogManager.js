@@ -18,6 +18,7 @@ function createBlogElement(blog) {
     const blogUrl = document.createElement('a');
     blogUrl.className = 'blogUrl';
     blogUrl.href = `/dist/blog.html?id=${blog._id}&title=${encodeURIComponent(blog.title)}&mapId=${blog.mapId}`;
+    blogUrl.target = '_blank';
 
     const blogImg = document.createElement('img');
     blogImg.src = imageUrl;
@@ -96,11 +97,23 @@ function displayBlogList(data) {
                 const blogElement = createBlogElement(blog);
                 blogListContainer.appendChild(blogElement);
             });
+            if (data.length === 0) {
+                blogListContainer.innerHTML = `
+                <div class="WithoutMapId">
+                    <div>尚未建立文章，請先建立文章：</div>
+                    <div>點地圖 → 打開地標 → 上傳Title和圖片 → 打開地標點擊圖片</div>
+                </div>
+                `;
+            }
         }
     } else {
         loginButtonBox.style.display = 'none';
         const contentDiv = document.getElementById("information");
-        contentDiv.innerHTML = `登入後查看文章清單`;
+        contentDiv.innerHTML = `
+        <div class="WithoutMapId">
+            <div>登入後查看文章清單</div>
+        </div>
+        `;
         contentDiv.style.display = 'flex';
     }
 }
