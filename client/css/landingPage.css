@@ -260,11 +260,17 @@ header {
   min-height: 100%;
   display: block;
   object-fit: cover;
-  object-position: center center
+  object-position: center center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
+
+.article img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  filter: brightness(80%);
 }
 
 .services{
-  /* background-color: #e6e6e6; */
   background: url('../images/pexels-ollivves-1078981.jpg') no-repeat center center/cover;
   background-blend-mode: lighten;
   background-color: rgba(255, 255, 255, 0.4);
