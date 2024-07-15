@@ -37,7 +37,7 @@ function displayBlogList(data) {
     loginButtonBox.innerHTML = '';
 
     const blogListSearchInput = document.createElement('input');
-    blogListSearchInput.setAttribute("placeholder", "搜尋文章");
+    blogListSearchInput.setAttribute("placeholder", "搜尋本地圖文章");
     blogListSearchInput.className = 'blogListSearchInput';
     blogListSearchInput.id = 'blogListSearchInput';
     loginButtonBox.appendChild(blogListSearchInput);
@@ -100,7 +100,7 @@ function displayBlogList(data) {
             if (data.length === 0) {
                 blogListContainer.innerHTML = `
                 <div class="WithoutMapId">
-                    <div>尚未建立文章，請先建立文章：</div>
+                    <div>本地圖尚未建立文章，請先建立文章：</div>
                     <div>點地圖 → 打開地標 → 上傳Title和圖片 → 打開地標點擊圖片</div>
                 </div>
                 `;
