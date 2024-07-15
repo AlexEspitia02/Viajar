@@ -59,6 +59,20 @@ router.post('/api/posts', upload.array('images'), async (req, res) => {
   const newPost = JSON.parse(req.body.data);
   const hasBlog = await db.collection('posts').findOne({ _id: newPost._id });
   const hasImageBlock = newPost.blocks.some((block) => block.type === 'image');
+  const imageLogoBlock = {
+    id: 'aQgm-uAlzT',
+    type: 'image',
+    data: {
+      file: {
+        url: 'https://alexespitia.s3.amazonaws.com/posts/1720944037593-ec3db85b2c44ee62.webp',
+      },
+      caption: '',
+      withBorder: false,
+      stretched: false,
+      withBackground: false,
+    },
+  };
+
   const imageBlock = {
     id: 'aQgm-uAlzT',
     type: 'image',
@@ -74,6 +88,7 @@ router.post('/api/posts', upload.array('images'), async (req, res) => {
   };
 
   if (!hasImageBlock) {
+    newPost.blocks.push(imageLogoBlock);
     newPost.blocks.push(imageBlock);
   }
 
