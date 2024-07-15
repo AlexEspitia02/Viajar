@@ -65,10 +65,24 @@ button:active {
   width: 100%;
 }
 
-.blogListButton{
-  margin-left: auto;
+.blogListButton {
+  background-color: #ffffff;
   cursor: pointer;
   color: #009382;
+  width: 80%;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.blogListButton:hover {
+  background-color: #009382;
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
 }
 
 .header {
