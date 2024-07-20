@@ -43,7 +43,6 @@ app.use('/placeImg', express.static(path.join(__dirname, 'placeImg')));
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-const markHandling = require('./routes/markHandling');
 const postHandling = require('./routes/postHandling');
 const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
@@ -51,8 +50,9 @@ const mapRoomHandling = require('./routes/mapRoomHandling');
 const index = require('./routes/index');
 
 const placeRoutes = require('./routes/placeRoutes');
+const markRoutes = require('./routes/markRoutes');
 
-app.use(markHandling);
+app.use(markRoutes);
 app.use(postHandling);
 app.use(blogListHandling);
 app.use(signInHandling);
