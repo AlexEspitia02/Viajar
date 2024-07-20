@@ -48,15 +48,16 @@ const postHandling = require('./routes/postHandling');
 const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
 const mapRoomHandling = require('./routes/mapRoomHandling');
-const placeHandling = require('./routes/placeHandling');
 const index = require('./routes/index');
+
+const placeRoutes = require('./routes/placeRoutes');
 
 app.use(markHandling);
 app.use(postHandling);
 app.use(blogListHandling);
 app.use(signInHandling);
 app.use(mapRoomHandling);
-app.use(placeHandling);
+app.use(placeRoutes);
 app.use(index);
 
 server.listen(3000, () => {
