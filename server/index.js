@@ -44,13 +44,13 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 const blogListHandling = require('./routes/blogListHandling');
-const index = require('./routes/index');
 
 const placeRoutes = require('./routes/placeRoutes');
 const markRoutes = require('./routes/markRoutes');
 const postRoutes = require('./routes/postRoutes');
 const mapRoutes = require('./routes/mapRoutes');
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 app.use(markRoutes);
 app.use(postRoutes);
@@ -58,7 +58,7 @@ app.use(blogListHandling);
 app.use(userRoutes);
 app.use(mapRoutes);
 app.use(placeRoutes);
-app.use(index);
+app.use(authRoutes);
 
 server.listen(3000, () => {
   console.log('Server is running on port 3000');
