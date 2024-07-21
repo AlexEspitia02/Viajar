@@ -6,6 +6,7 @@ const session = require('express-session');
 const Redis = require('ioredis');
 const { createAdapter } = require('@socket.io/redis-adapter');
 const dotenv = require('dotenv');
+const { connectToDb } = require('./models/db');
 
 dotenv.config();
 
@@ -43,23 +44,29 @@ app.use('/placeImg', express.static(path.join(__dirname, 'placeImg')));
 app.use(express.static(path.join(__dirname, '../client')));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-const blogListHandling = require('./routes/blogListHandling');
-
 const placeRoutes = require('./routes/placeRoutes');
 const markRoutes = require('./routes/markRoutes');
 const postRoutes = require('./routes/postRoutes');
 const mapRoutes = require('./routes/mapRoutes');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 
-app.use(markRoutes);
-app.use(postRoutes);
-app.use(blogListHandling);
-app.use(userRoutes);
-app.use(mapRoutes);
-app.use(placeRoutes);
-app.use(authRoutes);
+// Connect to the database and initialize routes only after a successful connection
+connectToDb((err) => {
+  if (!err) {
+    app.use(markRoutes);
+    app.use(postRoutes);
+    app.use(blogRoutes);
+    app.use(userRoutes);
+    app.use(mapRoutes);
+    app.use(placeRoutes);
+    app.use(authRoutes);
 
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+    server.listen(3000, () => {
+      console.log('Server is running on port 3000');
+    });
+  } else {
+    console.error('Failed to connect to the database:', err);
+  }
 });
