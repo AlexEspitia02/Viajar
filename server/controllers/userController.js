@@ -1,49 +1,9 @@
-const express = require('express');
-const multer = require('multer');
-const crypto = require('crypto');
-const path = require('path');
-const { ObjectId } = require('mongodb');
+/* eslint-disable prettier/prettier */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { connectToDb, getDb } = require('../models/db');
+const userModel = require('../models/userModel');
 
-const router = express.Router();
-
-router.use(express.json());
-
-let db;
-
-connectToDb((err) => {
-  if (!err) {
-    db = getDb();
-  }
-});
-
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    const uploadsDir = path.join(__dirname, '../uploads');
-    cb(null, uploadsDir);
-  },
-  filename(req, file, cb) {
-    const extension = file.originalname.split('.').pop();
-    const timestamp = Date.now();
-    const randomString = crypto.randomBytes(8).toString('hex');
-    const filename = `${timestamp}-${randomString}.${extension}`;
-    cb(null, filename);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('不支援的檔案格式，請上傳圖片檔案！'), false);
-  }
-};
-
-const upload = multer({ storage, fileFilter });
-
-router.post('/user/signup', async (req, res) => {
+async function signUp(req, res) {
   try {
     const { name, email, password } = req.body;
 
@@ -53,7 +13,7 @@ router.post('/user/signup', async (req, res) => {
         .json({ success: false, error: '所有空格都是必填的' });
     }
 
-    const hasEmail = await db.collection('users').findOne({ email });
+    const hasEmail = await userModel.findUserByEmail(email);
 
     if (hasEmail) {
       return res.status(403).json({ success: false, error: '信箱已被使用' });
@@ -76,12 +36,7 @@ router.post('/user/signup', async (req, res) => {
       role: 'user',
     };
 
-    const dbUser = await db
-      .collection('users')
-      .insertOne(newUser)
-      .catch(() => {
-        res.status(500).json({ error: 'Could not create a new document' });
-      });
+    const dbUser = await userModel.insertUser(newUser);
 
     const expiresInTime = 3600;
     const token = jwt.sign(
@@ -116,9 +71,9 @@ router.post('/user/signup', async (req, res) => {
     console.error('Error handling request:', error);
     res.status(500).json({ success: false, error: 'Server Error' });
   }
-});
+}
 
-router.post('/user/signIn', async (req, res) => {
+async function signIn(req, res) {
   const { email, password } = req.body;
   try {
     if (!email || !password) {
@@ -127,7 +82,7 @@ router.post('/user/signIn', async (req, res) => {
         .json({ success: false, error: '所有空格都是必填的' });
     }
 
-    const userMatch = await db.collection('users').findOne({ email });
+    const userMatch = await userModel.findUserByEmail(email);
 
     if (!userMatch) {
       return res
@@ -183,9 +138,9 @@ router.post('/user/signIn', async (req, res) => {
     console.error('Error handling request:', error);
     res.status(500).json({ success: false, error: 'Server Error' });
   }
-});
+}
 
-router.get('/user/profile', async (req, res) => {
+async function getProfile(req, res) {
   try {
     const { provider } = req.body;
     const authHeader = req.headers.authorization;
@@ -221,6 +176,6 @@ router.get('/user/profile', async (req, res) => {
     }
     res.status(500).send('Server Error');
   }
-});
+}
 
-module.exports = router;
+module.exports = { signUp, signIn, getProfile };
