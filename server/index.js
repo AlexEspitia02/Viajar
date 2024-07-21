@@ -34,7 +34,7 @@ app.use(
   })
 );
 
-const setupSocket = require('./models/socketHandler');
+const setupSocket = require('./services/socketHandler');
 
 setupSocket(io);
 
