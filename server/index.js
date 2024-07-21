@@ -45,18 +45,18 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 
 const blogListHandling = require('./routes/blogListHandling');
 const signInHandling = require('./routes/signInHandling');
-const mapRoomHandling = require('./routes/mapRoomHandling');
 const index = require('./routes/index');
 
 const placeRoutes = require('./routes/placeRoutes');
 const markRoutes = require('./routes/markRoutes');
 const postRoutes = require('./routes/postRoutes');
+const mapRoutes = require('./routes/mapRoutes');
 
 app.use(markRoutes);
 app.use(postRoutes);
 app.use(blogListHandling);
 app.use(signInHandling);
-app.use(mapRoomHandling);
+app.use(mapRoutes);
 app.use(placeRoutes);
 app.use(index);
 
