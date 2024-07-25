@@ -85,17 +85,18 @@ function createUserNameForm() {
   information.appendChild(username);
 }
 
-function createForm(isSignUp) {
+function createForm(isSignIn) {
   const information = document.getElementById("information");
   information.innerHTML = "";
 
-  isSignUp ? createUserNameForm() : "";
+  isSignIn ? "" : createUserNameForm() ;
 
   const email = document.createElement("input");
   email.setAttribute("type", "text");
   email.className = "logInInput";
   email.setAttribute("placeholder", "輸入信箱");
   email.id = "inputEmail";
+  email.value = "test@example.com";
   information.appendChild(email);
 
   const password = document.createElement("input");
@@ -103,12 +104,13 @@ function createForm(isSignUp) {
   password.className = "logInInput";
   password.setAttribute("placeholder", "輸入密碼");
   password.id = "inputPassword";
+  password.value = "testtesttest";
   information.appendChild(password);
 
   const loginButton = document.createElement("button");
-  loginButton.innerText = isSignUp ? "註冊" : "登入";
+  loginButton.innerText = isSignIn ?  "登入" : "註冊";
   loginButton.onclick = function () {
-    isSignUp ? submitSignupForm() : submitSignInForm();
+    isSignIn ? submitSignInForm() : submitSignupForm();
   };
   information.appendChild(loginButton);
 
@@ -142,24 +144,24 @@ function handleAuthForm(isSignUp) {
   loginButtonBox.style.display = "flex";
   loginButtonBox.innerHTML = "";
 
-  const signUpBtn = document.createElement("div");
-  signUpBtn.id = "signUp";
-  signUpBtn.className = "signUp";
-  signUpBtn.innerText = "註冊";
-  loginButtonBox.appendChild(signUpBtn);
-
   const signInBtn = document.createElement("div");
   signInBtn.id = "signIn";
   signInBtn.className = "signIn";
   signInBtn.innerText = "登入";
   loginButtonBox.appendChild(signInBtn);
 
+  const signUpBtn = document.createElement("div");
+  signUpBtn.id = "signUp";
+  signUpBtn.className = "signUp";
+  signUpBtn.innerText = "註冊";
+  loginButtonBox.appendChild(signUpBtn);
+
   document
     .getElementById("signUp")
-    .addEventListener("click", () => createForm(true));
+    .addEventListener("click", () => createForm(false));
   document
     .getElementById("signIn")
-    .addEventListener("click", () => createForm(false));
+    .addEventListener("click", () => createForm(true));
 
   createForm(isSignUp);
 }
