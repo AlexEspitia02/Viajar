@@ -29,9 +29,7 @@ async function findPlaces(placeText, map) {
   if (places.length) {
     const organizedPlaces = await handlePlaceSearch(places, map, AdvancedMarkerElement, true);
     await handleAPIRequests(organizedPlaces);
-  } else {
-    console.log("No results");
-  }
+  } 
 }
 
 async function nearbySearch(location) {
@@ -63,9 +61,7 @@ async function nearbySearch(location) {
   if (places.length) {
     const organizedPlaces = await handlePlaceSearch(places, map, AdvancedMarkerElement, true, true);
     await handleAPIRequests(organizedPlaces);
-  } else {
-    console.log("No results");
-  }
+  } 
 }
 
 async function handlePlaceSearch(places, map, AdvancedMarkerElement, isFromFindPlaces, isRestaurant = false) {

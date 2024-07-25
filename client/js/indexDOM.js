@@ -11,7 +11,6 @@ let mapId = null;
 
 socket.on('init', (data) => {
   userId = data.id;
-  console.log(userId);
 });
 
 socket.on('connect', () => {
