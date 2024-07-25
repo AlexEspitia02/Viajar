@@ -32,7 +32,18 @@ async function findPlacesByLocation(minLat, maxLat, minLng, maxLng) {
 
 async function insertPlaces(places) {
   const db = getDb();
-  return db.collection('places').insertMany(places);
+
+  const sixMonthsFromNow = new Date();
+  sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+
+  const placesWithExpiry = places.map(place => ({
+    ...place,
+    expiryDate: sixMonthsFromNow,
+  }));
+
+  await db.collection('places').createIndex({ expiryDate: 1 }, { expireAfterSeconds: 0 });
+
+  return db.collection('places').insertMany(placesWithExpiry);
 }
 
 module.exports = {
