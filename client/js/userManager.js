@@ -28,15 +28,10 @@ function updateUserInterface(user) {
   
 function clearJWT() {
     localStorage.removeItem('jwtToken');
-    console.log('JWT cleared from LocalStorage');
 }
 
 async function fetchUserData(isHomepage) {
     const jwtToken = localStorage.getItem('jwtToken');
-    if (!jwtToken) {
-        console.log('No JWT token found, please log in.');
-        return;
-    }
   
     try {
         const response = await fetch('/user/profile', {
@@ -52,7 +47,6 @@ async function fetchUserData(isHomepage) {
         }
     
         const data = await response.json();
-        console.log('User data:', data);
         isHomepage ? updateUserInterface(data.data) : null;
         loginUserName = data.data.name;
         loginUserId = data.data.id;

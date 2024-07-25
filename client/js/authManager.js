@@ -1,10 +1,5 @@
 function storeJWT(jwtToken) {
-  if (jwtToken) {
-    localStorage.setItem("jwtToken", jwtToken);
-    console.log("JWT stored successfully");
-  } else {
-    console.error("No JWT token provided");
-  }
+  localStorage.setItem("jwtToken", jwtToken);
 }
 
 function submitSignupForm() {
@@ -23,9 +18,7 @@ function submitSignupForm() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Signup Success:", data);
       if (data.success && data.data.access_token) {
-        console.log("Access Token Received:", data.data.access_token);
         storeJWT(data.data.access_token);
         updateUserInterface(data.data.user);
         loginUserId = data.data.user.id;
@@ -57,9 +50,7 @@ function submitSignInForm() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("SignIn Success:", data);
       if (data.success && data.data.access_token) {
-        console.log("Access Token Received:", data.data.access_token);
         storeJWT(data.data.access_token);
         updateUserInterface(data.data.user);
         loginUserId = data.data.user.id;
