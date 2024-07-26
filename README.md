@@ -42,18 +42,18 @@ Viajar 是一個利用圖形化方式，讓使用者記錄旅遊經歷和規劃�
 
 ## 技術與工具
 
-###Front-End : <br>
+### Front-End : <br>
 - HTML
 - CSS
 - JavaScript<br>
-###Back-End : <br>
+### Back-End : <br>
 - Node.js
 - Express
 - JWT
 - MVC
 - CRUD
 - RESTful API<br>
-###Cloud services : <br>
+### Cloud services : <br>
 - EC2
 - Load Balancer
 - ElastiCache
@@ -61,7 +61,7 @@ Viajar 是一個利用圖形化方式，讓使用者記錄旅遊經歷和規劃�
 - CloudFront
 - S3
 - Route 53<br>
-###Other tools : <br>
+### Other tools : <br>
 - Git
 - GitHub
 - GitHub Actions
